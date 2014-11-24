@@ -1,0 +1,10 @@
+{
+	"curly": true,
+	"eqeqeq": true,
+	"indent": 4,
+	"newcap": false,
+	"maxlen": 140,
+	"devel": true,
+	"jquery": true,
+	"node": true
+}
