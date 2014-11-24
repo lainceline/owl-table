@@ -4,6 +4,7 @@ var gulp 		= require('gulp');
 
 var coffee 		= require('gulp-coffee');
 var sass 		= require('gulp-sass');
+var jade		= require('gulp-jade');
 var react 		= require('gulp-react');
 var ngHtml2Js 	= require('gulp-ng-html2js');
 
@@ -45,12 +46,28 @@ gulp.task('coffee', function () {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('partials', function () {
+	return gulp.src('./partials/*.jade')
+		.pipe(jade())
+		.pipe(minifyHtml({
+			empty: true,
+			spare: true,
+			quotes: true
+		}))
+		.pipe(ngHtml2Js({
+			moduleName: 'owlTable',
+			prefix: 'partials/'
+		}))
+		.pipe(concat('compiled-partials.js'))
+		.pipe(gulp.dest('./build'));
+});
+
 gulp.task('compile', function (callback) {
-	runSequence(['jsx', 'sass', 'coffee'], callback);
+	runSequence(['jsx', 'sass', 'coffee', 'partials'], callback);
 });
 
 gulp.task('link', function () {
-	return gulp.src(['./build/compiled-react-components.js', './build/compiled-coffee.js'])
+	return gulp.src(['./build/compiled-react-components.js', './compiled-partials.js', './build/compiled-coffee.js'])
 			.pipe(uglify())
 			.pipe(concat('owl-table.min.js'))
 			.pipe(gulp.dest('./dist'));
@@ -59,11 +76,10 @@ gulp.task('link', function () {
 gulp.task('vendor', function () {
 	return gulp.src([
 
-		'./bower_components/jquery/dist/jquery.min.js',
+		'./bower_components/jquery/dist/jquery.js',
 		'./bower_components/react/react-with-addons.min.js',
 
-		'./bower_components/angular/angular.min.js',
-		'./bower_components/angular-sanitize/angular-sanitize.min.js',
+		'./bower_components/angular/angular.js',
 		'./bower_components/ladda/dist/spin.min.js',
 		'./bower_components/ladda/dist/ladda.min.js',
 		'./bower_components/ladda/dist/angular-ladda.min.js',
