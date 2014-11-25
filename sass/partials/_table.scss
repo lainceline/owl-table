@@ -4,6 +4,17 @@
 	height: 100%;
 }
 
+.owl-top-controls {
+	display: inline-block;
+	width: 100%;
+
+	.btn {
+		margin: 0 10px 10px 10px;
+		float: right;
+		display: inline-block;
+	}
+}
+
 .owl-table-wrapper {
 	border: 1px solid #aaaaaa;
 }
