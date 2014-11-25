@@ -3,6 +3,8 @@ owl-table
 
 AngularJS table directive built with ReactJS for high performance
 
+Demo: [http://onijim.github.io/owl-table](http://onijim.github.io/owl-table)
+
 ## Why?
 
 I ran into performance issues with stock AngularJS doing ng-repeat on 1000+ data items.  I've come across many optimizations, some of which I will be using in this project.
