@@ -35,4 +35,27 @@ function owlTableDirective (owlTableService) {
 	};
 }
 
-angular.module('owlTable').directive('owlTable', ['owlTableService', owlTableDirective]);
+function owlPagination (owlTableService) {
+	return {
+		restrict: 'EA',
+		templateUrl: 'partials/pagination.html',
+		compile: function (tElem, tAttrs) {
+			return function link (scope, elem, attrs) {};
+		}
+	};
+}
+
+function owlFilterControls (owlTableService) {
+	return {
+		restrict: 'EA',
+		templateUrl: 'partials/filter.html',
+		compile: function (tElem, tAttrs) {
+			return function link (scope, elem, attrs) {};
+		}
+	};
+}
+
+angular.module('owlTable')
+	.directive('owlTable', ['owlTableService', owlTableDirective])
+	.directive('owlPagination', ['owlTableService', owlPagination])
+	.directive('owlFilterControls', ['owlTableService', owlFilterControls]);

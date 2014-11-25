@@ -30,6 +30,10 @@
 			height: 300px;
 		}
 
+		.demo-navbar-label {
+			margin-right: 0.5em;
+		}
+
 	</style>
 
 </head>
@@ -38,9 +42,22 @@
 
 	<div class="container-fluid content">
 
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Owl Table Demo</a>
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">Owl Table Demo</a>
+				</div>
+				<div class="navbar-right navbar-form">
+					<div class="form-group">
+						<span class="demo-navbar-label">Page count</span>
+						<div class="input-group btn-group btn-group-sm">
+						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(10)">10</button>
+						<button class="active btn btn-default" ng-click="demoCtrl.owlTable.setCount(25)">25</button>
+						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(50)">50</button>
+						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(100)">100</button>
+					</div>
+					</div>
+				</div>
 			</div>
 		</nav>
 

@@ -15,6 +15,10 @@ function owlTableService () {
 		});
 	};
 
+	service.setCount = function (count) {
+		console.log('update page count here');
+	}
+
 	return service;
 }
 
