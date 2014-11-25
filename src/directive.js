@@ -55,7 +55,18 @@ function owlFilterControls (owlTableService) {
 	};
 }
 
+function owlExportControls (owlTableService) {
+	return {
+		restrict: 'EA',
+		templateUrl: 'partials/export.html',
+		compile: function (tElem, tAttrs) {
+			return function link (scope, elem, attrs) {};
+		}
+	};
+}
+
 angular.module('owlTable')
 	.directive('owlTable', ['owlTableService', owlTableDirective])
 	.directive('owlPagination', ['owlTableService', owlPagination])
-	.directive('owlFilterControls', ['owlTableService', owlFilterControls]);
+	.directive('owlFilterControls', ['owlTableService', owlFilterControls])
+	.directive('owlExportControls', ['owlTableService', owlExportControls]);
