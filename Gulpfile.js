@@ -46,8 +46,15 @@ gulp.task('coffee', function () {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('js', function () {
+	return gulp.src(['./src/app.js', './src/constants.js', './src/service.js', './src/directive.js'])
+		//.pipe(uglify())
+		.pipe(concat('compiled-js.js'))
+		.pipe(gulp.dest('./build'));
+});
+
 gulp.task('partials', function () {
-	return gulp.src('./partials/*.jade')
+	return gulp.src('./views/*.jade')
 		.pipe(jade())
 		.pipe(minifyHtml({
 			empty: true,
@@ -55,7 +62,7 @@ gulp.task('partials', function () {
 			quotes: true
 		}))
 		.pipe(ngHtml2Js({
-			moduleName: 'owlTable',
+			moduleName: 'owlTablePartials',
 			prefix: 'partials/'
 		}))
 		.pipe(concat('compiled-partials.js'))
@@ -63,12 +70,12 @@ gulp.task('partials', function () {
 });
 
 gulp.task('compile', function (callback) {
-	runSequence(['jsx', 'sass', 'coffee', 'partials'], callback);
+	runSequence(['jsx', 'js', 'sass', 'coffee', 'partials'], callback);
 });
 
 gulp.task('link', function () {
-	return gulp.src(['./build/compiled-react-components.js', './compiled-partials.js', './build/compiled-coffee.js'])
-			.pipe(uglify())
+	return gulp.src(['./build/compiled-react-components.js', './build/compiled-partials.js', './build/compiled-coffee.js', './build/compiled-js.js'])
+		//	.pipe(uglify())
 			.pipe(concat('owl-table.min.js'))
 			.pipe(gulp.dest('./dist'));
 });
@@ -110,4 +117,10 @@ gulp.task('clean', function (callback) {
 
 gulp.task('build', function (callback) {
 	runSequence('clean', 'compile', ['link', 'vendor'], 'clean-build', callback);
+});
+
+// Watch tasks
+
+gulp.task('watch', function (callback) {
+	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss'], ['build']);
 });

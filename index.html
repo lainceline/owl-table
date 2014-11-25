@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" ng-app="owlTableDemo">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,14 +19,59 @@
 	<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css">
 
 	<link rel="stylesheet" href="dist/owl-table.min.css">
+
 </head>
 
-<body>
+<body ng-controller="demoController as demoCtrl">
+
+	<div class="container-fluid">
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#">Owl Table Demo</a>
+			</div>
+		</nav>
+
+		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data"></owl-table>
+
+	</div>
 
 	<script src="dist/vendor.min.js"></script>
 
 	<script src="dist/owl-table.min.js"></script>
 
+	<script>
+
+		angular.module('owlTableDemo', ['owlTable'])
+			.controller('demoController', function () {
+				this.columns = [];
+				this.data = [];
+
+				for (var i = 0; i < 50; i++) {
+					var col = {
+						field: 'custom_200000' + i,
+						title: 'Custom 200000' + i,
+						type: 'text',
+						options: []
+					}
+
+					this.columns.push(col);
+				}
+
+				for (var i = 0; i < 25; i++) {
+					var row = {
+						id: i
+					}
+
+					for (var j = 0; j < 50;  j++) {
+						row['custom_200000'+j] = Math.ceil(Math.random () * 100);
+					}
+
+					this.data.push(row);
+				}
+			});
+
+	</script>
 </body>
 
 </html>
