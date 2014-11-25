@@ -122,5 +122,5 @@ gulp.task('build', function (callback) {
 // Watch tasks
 
 gulp.task('watch', function (callback) {
-	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss'], ['build']);
+	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
 });

@@ -1,0 +1,63 @@
+  // Styles for the table itself
+
+.owl-wrapper, .owl-table-wrapper, .owl-table-inner-wrapper, .owl-react-container {
+	height: 100%;
+}
+
+.owl-table-wrapper {
+	border: 1px solid #aaaaaa;
+}
+
+.owl-table {
+	max-width: 100%;
+	font-size: 12px;
+	vertical-align: top;
+	height: auto;
+	border-spacing: 0;
+
+	text-align: left;
+	display: inline-block;
+
+	th, td {
+		position: relative;
+		z-index: 0;
+		padding: 2px 5px;
+		min-width: 50px;
+		background-color: inherit;
+		white-space: nowrap;
+		font-size: 12px;
+		overflow: hidden;
+		font-family: inherit;
+		border: 1px solid #cccccc;
+		border-width: 0 0 0 1px;
+		border-top: none;
+	}
+
+	thead, tfoot {
+		tr, tr:hover {
+			background-color: #F6F6F6;
+		}
+	}
+
+	tbody {
+		tr:nth-child(odd) {
+			background-color: #ddefff;
+		}
+		tr:hover {
+			background-color: #bdcfef;
+		}
+	}
+
+	.owl-table-icon {
+		transform: translate(0px, 0px);
+		min-width: 24px !important;
+		width: 3em !important;
+		max-width: 26px !important;
+		text-align: center;
+	}
+
+	th:first-child,
+	td:first-child {
+		border-left: 0 !important;
+	}
+}

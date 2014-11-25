@@ -22,7 +22,9 @@ function owlTableDirective (owlTableService) {
 				rendered = React.render(table, container);
 
 				scope.$watchCollection('data', function (newValue, oldValue) {
+					console.log('owl table watch on data was called');
 					if (newValue !== oldValue) {
+						console.log('and a change was detected');
 						rendered.setProps({
 							data: newValue
 						});
