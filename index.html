@@ -72,32 +72,50 @@
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function () {
+			.controller('demoController', function ($scope, $timeout) {
 				this.columns = [];
 				this.data = [];
 
-				for (var i = 0; i < 50; i++) {
-					var col = {
-						field: 'custom_200000' + i,
-						title: 'Custom 200000' + i,
-						type: 'text',
-						options: []
+				$scope.refreshData = function () {
+
+					$scope.demoCtrl.columns = [];
+					$scope.demoCtrl.data = [];
+
+					for (var i = 0; i < 50; i++) {
+						var col = {
+							field: 'custom_200000' + i,
+							title: 'Custom 200000' + i,
+							type: 'text',
+							options: []
+						}
+
+						$scope.demoCtrl.columns.push(col);
 					}
 
-					this.columns.push(col);
+					for (var i = 0; i < 25; i++) {
+						var row = {
+							id: i
+						}
+
+						for (var j = 0; j < 50;  j++) {
+							row['custom_200000'+j] = Math.ceil(Math.random () * 100);
+						}
+
+						$scope.demoCtrl.data.push(row);
+					}
 				}
 
-				for (var i = 0; i < 25; i++) {
-					var row = {
-						id: i
-					}
+				$scope.$on('owlNextPage', function () {
+					$timeout(function () {
+						$scope.refreshData();
+					}, 200);
+				});
 
-					for (var j = 0; j < 50;  j++) {
-						row['custom_200000'+j] = Math.ceil(Math.random () * 100);
-					}
+				$scope.$on('owlPrevPage', function () {
+					$scope.refreshData();
+				});
 
-					this.data.push(row);
-				}
+				$scope.refreshData();
 			});
 
 	</script>

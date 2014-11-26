@@ -6,6 +6,7 @@ function owlTableDirective (owlTableService) {
 			columns: '='
 		},
 		templateUrl: 'partials/table.html',
+		controllerAs: 'owlCtrl',
 		compile: function (tElem, tAttrs) {
 			owlTableService.registerTable(tElem[0].id);
 
@@ -31,6 +32,19 @@ function owlTableDirective (owlTableService) {
 					}
 				});
 			};
+		},
+		controller: function ($scope) {
+			this.owlTable = owlTableService;
+
+			this.nextPage = function () {
+				owlTableService.nextPage();
+				$scope.$emit('owlNextPage');
+			};
+
+			this.prevPage = function () {
+				owlTableService.prevPage();
+				$scope.$emit('owlPrevPage');
+			};
 		}
 	};
 }
@@ -38,9 +52,12 @@ function owlTableDirective (owlTableService) {
 function owlPagination (owlTableService) {
 	return {
 		restrict: 'EA',
+		require: '^owlTable',
 		templateUrl: 'partials/pagination.html',
 		compile: function (tElem, tAttrs) {
-			return function link (scope, elem, attrs) {};
+			return function link (scope, elem, attrs) {
+
+			};
 		}
 	};
 }
@@ -48,6 +65,7 @@ function owlPagination (owlTableService) {
 function owlFilterControls (owlTableService) {
 	return {
 		restrict: 'EA',
+		require: '^owlTable',
 		templateUrl: 'partials/filter.html',
 		compile: function (tElem, tAttrs) {
 			return function link (scope, elem, attrs) {};
@@ -58,6 +76,7 @@ function owlFilterControls (owlTableService) {
 function owlExportControls (owlTableService) {
 	return {
 		restrict: 'EA',
+		require: '^owlTable',
 		templateUrl: 'partials/export.html',
 		compile: function (tElem, tAttrs) {
 			return function link (scope, elem, attrs) {};
