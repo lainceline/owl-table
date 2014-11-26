@@ -10,9 +10,7 @@ var OwlRow = React.createClass({
 
 		var cells = props.columns.map(function (column, index) {
 			return (
-				<td key={index} data-field={column.field}>
-					{props.data[column.field] || '---'}
-				</td>
+				<OwlCell column={column} value={props.data[column.field]} />
 			);
 		});
 
