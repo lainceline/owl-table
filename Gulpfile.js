@@ -23,7 +23,7 @@ var clean		= require('gulp-clean');
 // Build tasks
 
 gulp.task('jsx', function () {
-	return gulp.src(['./react_components/*.js', './react_components/**/*.js'])
+	return gulp.src(['./react_components/input.js', './react_components/cell.js', './react_components/row.js', './react_components/table.js'])
 			.pipe(react())
 			.pipe(concat('compiled-react-components.js'))
 			.pipe(gulp.dest('./build'));
