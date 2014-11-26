@@ -84,7 +84,7 @@ gulp.task('vendor', function () {
 	return gulp.src([
 
 		'./bower_components/jquery/dist/jquery.js',
-		'./bower_components/react/react-with-addons.min.js',
+		'./bower_components/react/react-with-addons.js',
 
 		'./bower_components/angular/angular.js',
 		'./bower_components/ladda/dist/spin.min.js',
