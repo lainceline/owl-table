@@ -1,4 +1,4 @@
-function owlTableService (owlConstants) {
+function owlTableService ($rootScope, owlConstants) {
 	var service = {};
 
 	service.tables = [];
@@ -21,7 +21,8 @@ function owlTableService (owlConstants) {
 	};
 
 	service.setCount = function (count) {
-		console.log('update page count here');
+		this.count = count;
+		$rootScope.$broadcast('owlCountChanged');
 	};
 
 	service.nextPage = function () {
@@ -39,4 +40,4 @@ function owlTableService (owlConstants) {
 	return service;
 }
 
-angular.module('owlTable').service('owlTableService', ['owlConstants', owlTableService]);
+angular.module('owlTable').service('owlTableService', ['$rootScope', 'owlConstants', owlTableService]);
