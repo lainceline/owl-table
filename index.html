@@ -51,11 +51,11 @@
 					<div class="form-group">
 						<span class="demo-navbar-label">Page count</span>
 						<div class="input-group btn-group btn-group-sm">
-						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(10)">10</button>
-						<button class="active btn btn-default" ng-click="demoCtrl.owlTable.setCount(25)">25</button>
-						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(50)">50</button>
-						<button class="btn btn-default" ng-click="demoCtrl.owlTable.setCount(100)">100</button>
-					</div>
+						<button class="btn btn-default" ng-class="{'active': demoCtrl.owlTable.count === 10}" ng-click="demoCtrl.owlTable.setCount(10)">10</button>
+						<button class="btn btn-default" ng-class="{'active': demoCtrl.owlTable.count === 25}" ng-click="demoCtrl.owlTable.setCount(25)">25</button>
+						<button class="btn btn-default" ng-class="{'active': demoCtrl.owlTable.count === 50}" ng-click="demoCtrl.owlTable.setCount(50)">50</button>
+						<button class="btn btn-default" ng-class="{'active': demoCtrl.owlTable.count === 100}" ng-click="demoCtrl.owlTable.setCount(100)">100</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -72,32 +72,56 @@
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function () {
+			.controller('demoController', function ($scope, $timeout, owlTableService) {
 				this.columns = [];
 				this.data = [];
 
-				for (var i = 0; i < 50; i++) {
-					var col = {
-						field: 'custom_200000' + i,
-						title: 'Custom 200000' + i,
-						type: 'text',
-						options: []
+				this.owlTable = owlTableService;
+
+				$scope.refreshData = function () {
+
+					$scope.demoCtrl.columns = [];
+					$scope.demoCtrl.data = [];
+
+					for (var i = 0; i < 50; i++) {
+						var col = {
+							field: 'custom_200000' + i,
+							title: 'Custom 200000' + i,
+							type: 'text',
+							options: []
+						}
+
+						$scope.demoCtrl.columns.push(col);
 					}
 
-					this.columns.push(col);
+					for (var i = 0; i < owlTableService.count; i++) {
+						var row = {
+							id: i
+						}
+
+						for (var j = 0; j < 50;  j++) {
+							row['custom_200000'+j] = Math.ceil(Math.random () * 100);
+						}
+
+						$scope.demoCtrl.data.push(row);
+					}
 				}
 
-				for (var i = 0; i < 25; i++) {
-					var row = {
-						id: i
-					}
+				$scope.$on('owlNextPage', function () {
+					$timeout(function () {
+						$scope.refreshData();
+					}, 200);
+				});
 
-					for (var j = 0; j < 50;  j++) {
-						row['custom_200000'+j] = Math.ceil(Math.random () * 100);
-					}
+				$scope.$on('owlPrevPage', function () {
+					$scope.refreshData();
+				});
 
-					this.data.push(row);
-				}
+				$scope.$on('owlCountChanged', function () {
+					$scope.refreshData();
+				});
+
+				$scope.refreshData();
 			});
 
 	</script>

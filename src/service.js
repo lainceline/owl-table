@@ -1,7 +1,12 @@
-function owlTableService () {
+function owlTableService ($rootScope, owlConstants) {
 	var service = {};
 
 	service.tables = [];
+
+	service.page = 1;
+	service.pages = 20;
+	service.total = 0;
+	service.count = owlConstants.defaults.PER_PAGE;
 
 	service.registerTable = function (id) {
 		this.tables.push({ id: id });
@@ -16,10 +21,23 @@ function owlTableService () {
 	};
 
 	service.setCount = function (count) {
-		console.log('update page count here');
-	}
+		this.count = count;
+		$rootScope.$broadcast('owlCountChanged');
+	};
+
+	service.nextPage = function () {
+		if (this.page < this.pages) {
+			this.page += 1;
+		}
+	};
+
+	service.prevPage = function () {
+		if (this.page > 1) {
+			this.page -= 1;
+		}
+	};
 
 	return service;
 }
 
-angular.module('owlTable').service('owlTableService', owlTableService);
+angular.module('owlTable').service('owlTableService', ['$rootScope', 'owlConstants', owlTableService]);

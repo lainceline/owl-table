@@ -1,11 +1,11 @@
 .owl-pagination-buttons.active
-	button.owl-pagination-button.owl-previous-page
+	button.owl-pagination-button.owl-previous-page(ng-click="owlCtrl.prevPage()")
 		| &lt; Prev
 	
 	.owl-page-count
 		| Page 
-		input(type="text", size="3")
-		| &nbsp;&nbsp;of 1
+		input(type="text", size="3", ng-model="owlCtrl.owlTable.page")
+		| &nbsp;&nbsp;of {{owlCtrl.owlTable.pages}}
 	
-	button.owl-pagination-button.owl-next-page
+	button.owl-pagination-button.owl-next-page(ng-click="owlCtrl.nextPage()")
 		| Next &gt;
