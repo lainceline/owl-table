@@ -72,59 +72,37 @@
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function ($scope, $timeout, owlTableService) {
+			.controller('demoController', function ($scope, $http, $timeout, owlTableService) {
 				this.columns = [];
 				this.data = [];
 
 				this.owlTable = owlTableService;
 
-				$scope.refreshData = function () {
-
-					$scope.demoCtrl.columns = [];
-					$scope.demoCtrl.data = [];
-
-					for (var i = 0; i < 50; i++) {
-						var col = {
-							field: 'custom_200000' + i,
-							title: 'Custom 200000' + i,
-							type: 'text',
-							options: [{
-								value: '32432',
-								text: 'Test Value'
-							}]
-						}
-
-						$scope.demoCtrl.columns.push(col);
+				for (var i = 0; i < 50; i++) {
+					var col = {
+						field: 'custom_200000' + i,
+						title: 'Custom 200000' + i,
+						type: 'text',
+						options: [{
+							value: '32432',
+							text: 'Test Value'
+						}]
 					}
 
-					for (var i = 0; i < owlTableService.count; i++) {
-						var row = {
-							id: i
-						}
-
-						for (var j = 0; j < 50;  j++) {
-							row['custom_200000'+j] = Math.ceil(Math.random () * 100);
-						}
-
-						$scope.demoCtrl.data.push(row);
-					}
+					$scope.demoCtrl.columns.push(col);
 				}
 
-				$scope.$on('owlNextPage', function () {
-					$timeout(function () {
-						$scope.refreshData();
-					}, 200);
-				});
-
-				$scope.$on('owlPrevPage', function () {
-					$scope.refreshData();
-				});
-
-				$scope.$on('owlCountChanged', function () {
-					$scope.refreshData();
-				});
-
-				$scope.refreshData();
+				$http.get('https://young-oasis-9005.herokuapp.com/api/students')
+					.success(function (data) {
+						$scope.demoCtrl.data = [];
+						
+						angular.forEach(data.data, function (datum, index) {
+							$scope.demoCtrl.data.push(datum);
+						});
+					})
+					.error(function (data) {
+						console.log('ajax error while loading');
+					});
 			});
 
 	</script>
