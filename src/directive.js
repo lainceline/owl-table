@@ -32,6 +32,15 @@ function owlTableDirective (owlTableService) {
 					}
 				});
 
+				elem.on('owlTableUpdated', function (event) {
+					var updatedRow = event.result;
+
+					// Could ajax the saved row to the server here.
+
+					// Put it into the scope.data array. Is this ugly? Yes.
+					$.grep(scope.data, function (e) { return e.id === updatedRow.id; })[0] = updatedRow;
+				});
+
 				scope.saveButtonClicked = function (event) {
 					console.log('Heres where you would send the following data to the server:');
 					console.log(rendered.state.changedData);

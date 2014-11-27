@@ -23,7 +23,7 @@ var OwlTableReact = React.createClass({
 				changedData: newChangedData
 			});
 
-			event.stopPropagation();
+			return row;
 		});
 	},
 	render: function () {

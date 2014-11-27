@@ -7,7 +7,10 @@
 			row: React.PropTypes.object
 		},
 		inputDidChange: function (event) {
-			$(this.getDOMNode()).trigger('owlTableUpdated', [this.props.column, this.props.row, event.target.value]);
+			var node = $(this.getDOMNode());
+			var props = this.props;
+
+			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
 		},
 		render: function () {
 			var props = this.props;
@@ -20,7 +23,7 @@
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
-					input = <input type={props.column.type} defaultValue={props.value} onChange={self.inputDidChange}/>;
+					input = <input type={props.column.type} defaultValue={props.value} onChange={_.debounce(self.inputDidChange, 500)}/>;
 					break;
 				case 'select':
 				case 'select_multiple':

@@ -2,8 +2,7 @@ var OwlRow = React.createClass({
 	displayName: 'OwlRow',
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
-		columns: React.PropTypes.array.isRequired,
-		key: React.PropTypes.number.isRequired
+		columns: React.PropTypes.array.isRequired
 	},
 	getInitialState: function () {
 		return {
