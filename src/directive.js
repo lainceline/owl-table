@@ -23,14 +23,34 @@ function owlTableDirective (owlTableService) {
 				rendered = React.render(table, container);
 
 				scope.$watchCollection('data', function (newValue, oldValue) {
-					console.log('owl table watch on data was called');
 					if (newValue !== oldValue) {
-						console.log('and a change was detected');
 						rendered.setProps({
 							data: newValue
 						});
 					}
 				});
+
+				elem.on('owlTableUpdated', function (event) {
+					var updatedRow = event.result;
+
+					// Could ajax the saved row to the server here.
+
+					// Put it into the scope.data array. Is this ugly? Yes.
+					$.grep(scope.data, function (e) { return e.id === updatedRow.id; })[0] = updatedRow;
+
+					event.stopPropagation();
+				});
+
+				scope.saveButtonClicked = function (event) {
+					console.log('Heres where you would send the following data to the server:');
+					console.log(rendered.state.changedData);
+					console.log('After saving, we empty out the changedData array in the React table state');
+					console.log('In the future, if we have an undo stack, we will need to change that of course.');
+					
+					rendered.setState({
+						changedData: {}
+					});
+				};
 			};
 		},
 		controller: function ($scope) {
