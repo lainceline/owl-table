@@ -28,7 +28,7 @@ function owlTableDirective ($http, owlTableService) {
 					if (newValue !== oldValue) {
 						console.log('and we are updating table');
 						rendered.setProps({
-							data: newValue
+							data: scope.owlCtrl.dataForPage(owlTableService.page)
 						});
 					}
 				});
@@ -63,19 +63,31 @@ function owlTableDirective ($http, owlTableService) {
 						changedData: {}
 					});
 				};
+
+				scope.owlCtrl.nextPage = function () {
+					owlTableService.nextPage();
+					// set the table state to the data for the new page.
+					rendered.setProps({
+						data: scope.owlCtrl.dataForPage(owlTableService.page)
+					});
+				};
 			};
 		},
 		controller: function ($scope) {
 			this.owlTable = owlTableService;
 
-			this.nextPage = function () {
-				owlTableService.nextPage();
-				$scope.$emit('owlNextPage');
-			};
-
 			this.prevPage = function () {
 				owlTableService.prevPage();
-				$scope.$emit('owlPrevPage');
+				$scope.data = this.dataForPage(owlTableService.page);
+			};
+
+			this.dataForPage = function (page) {
+				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
+				//end: the page number times the count -1 ex. 49 for page 2 with default count
+				console.log(page);
+				var data = $scope.data.slice(((page - 1) * 25), ((page * 25) - 1));
+				console.log($scope.data);
+				return data;
 			};
 		}
 	};

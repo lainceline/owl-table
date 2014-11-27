@@ -92,12 +92,17 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
-				$http.get('https://young-oasis-9005.herokuapp.com/api/students')
+				$http.get('http://homestead.app/api/students?nopage=true')
 					.success(function (data) {
 						$scope.demoCtrl.data = [];
-						
+
 						angular.forEach(data.data, function (datum, index) {
 							$scope.demoCtrl.data.push(datum);
+						});
+
+						owlTableService.paginate({
+							total: 1000, // necessary
+							count: 25, // dont have to specify this
 						});
 					})
 					.error(function (data) {

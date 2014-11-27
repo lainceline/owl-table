@@ -4,7 +4,7 @@ function owlTableService ($rootScope, owlConstants) {
 	service.tables = [];
 
 	service.page = 1;
-	service.pages = 20;
+	service.pages = 1;
 	service.total = 0;
 	service.count = owlConstants.defaults.PER_PAGE;
 
@@ -35,6 +35,17 @@ function owlTableService ($rootScope, owlConstants) {
 		if (this.page > 1) {
 			this.page -= 1;
 		}
+	};
+
+	// enables client-side pagination.
+	service.paginate = function (settings) {
+
+		if (typeof(settings.count) !== 'undefined') {
+			this.count = settings.count;
+		}
+
+		this.pages = Math.ceil(settings.total / this.count);
+		this.total = settings.total;
 	};
 
 	return service;
