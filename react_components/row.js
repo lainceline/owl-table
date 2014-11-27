@@ -21,7 +21,7 @@ var OwlRow = React.createClass({
 
 		var cells = props.columns.map(function (column, index) {
 			return (
-				<OwlCell column={column} value={props.data[column.field]} open={state.open}/>
+				<OwlCell column={column} row={props.data} open={state.open} key={index} tableDidChange={props.tableDidChange}/>
 			);
 		});
 

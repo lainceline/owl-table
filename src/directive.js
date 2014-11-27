@@ -31,6 +31,11 @@ function owlTableDirective (owlTableService) {
 						});
 					}
 				});
+
+				scope.saveButtonClicked = function (event) {
+					console.log('Heres where you would send the following data to the server:');
+					console.log(rendered.state.changedData);
+				};
 			};
 		},
 		controller: function ($scope) {

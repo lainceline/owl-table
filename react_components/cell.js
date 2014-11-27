@@ -2,34 +2,29 @@ var OwlCell = React.createClass({
 	displayName: 'OwlCell',
 	propTypes: {
 		column: React.PropTypes.object.isRequired,
-		value: React.PropTypes.node,
+		row: React.PropTypes.object,
 		open: React.PropTypes.bool,
 		editable: React.PropTypes.bool
 	},
 	getDefaultProps: function () {
 		return {
-			value: '',
 			open: false,
 			editable: true
 		};
 	},
-	changeHandler: function (event) {
-	//	console.log(event.target);
-	//	console.log(this.props.value);
-	},
 	render: function () {
 		var props = this.props;
-		var content = <span className="owl-cell-value-label">{props.value}</span>;
+		var content = <span className="owl-cell-value-label">{props.row[props.column.field]}</span>;
 
 		props.editable = props.column.editable || true;
 
 		if (props.open === true) {
-			content = <OwlInput column={props.column} value={props.value} />;
+			content = <OwlInput column={props.column} value={props.row[props.column.field]} row={props.row} tableDidChange={props.tableDidChange}/>;
 		}
 
 		return (
 			<td data-field={props.column.field}>
-				{props.editable === true ? content : (props.value || '---')}
+				{props.editable === true ? content : (props.row[props.column.field] || '---')}
 			</td>
 		);
 	}
