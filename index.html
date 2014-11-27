@@ -61,7 +61,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data" save="http://homestead.app/api/students/save"></owl-table>
+		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
 
 	</div>
 
@@ -92,7 +92,7 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
-				$http.get('http://homestead.app/api/students?nopage=true')
+				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
 						$scope.demoCtrl.data = [];
 
@@ -101,7 +101,7 @@
 						});
 
 						owlTableService.paginate({
-							total: 1000, // necessary
+							total: data.data.length+1, // necessary
 							count: 25, // dont have to specify this
 						});
 					})
