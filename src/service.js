@@ -1,10 +1,10 @@
-function owlTableService ($rootScope, owlConstants) {
+function owlTableService ($http, owlConstants) {
 	var service = {};
 
 	service.tables = [];
 
 	service.page = 1;
-	service.pages = 20;
+	service.pages = 1;
 	service.total = 0;
 	service.count = owlConstants.defaults.PER_PAGE;
 
@@ -22,7 +22,6 @@ function owlTableService ($rootScope, owlConstants) {
 
 	service.setCount = function (count) {
 		this.count = count;
-		$rootScope.$broadcast('owlCountChanged');
 	};
 
 	service.nextPage = function () {
@@ -37,7 +36,32 @@ function owlTableService ($rootScope, owlConstants) {
 		}
 	};
 
+	// enables client-side pagination.
+	service.paginate = function (settings) {
+
+		if (typeof(settings.count) !== 'undefined') {
+			this.count = settings.count;
+		}
+
+		this.pages = Math.ceil(settings.total / this.count);
+		this.total = settings.total;
+	};
+
+	service.save = function (settings) {
+		if (typeof(settings.where) === 'undefined') {
+			throw 'OwlException: No save route provided to table!';
+		}
+
+		return $http({
+			method: 'post',
+			url: settings.where,
+			data: {
+				data: settings.changedData
+			}
+		});
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTableService', ['$rootScope', 'owlConstants', owlTableService]);
+angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService]);

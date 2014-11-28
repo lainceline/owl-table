@@ -1,4 +1,4 @@
-function owlTableDirective ($http, owlTableService) {
+function owlTableDirective ($http, owlTable) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -9,7 +9,7 @@ function owlTableDirective ($http, owlTableService) {
 		templateUrl: 'partials/table.html',
 		controllerAs: 'owlCtrl',
 		compile: function (tElem, tAttrs) {
-			owlTableService.registerTable(tElem[0].id);
+			owlTable.registerTable(tElem[0].id);
 
 			return function link (scope, elem, attrs) {
 				var table;
@@ -24,9 +24,11 @@ function owlTableDirective ($http, owlTableService) {
 				rendered = React.render(table, container);
 
 				scope.$watchCollection('data', function (newValue, oldValue) {
+					console.log('watch called');
 					if (newValue !== oldValue) {
+						console.log('and we are updating table');
 						rendered.setProps({
-							data: newValue
+							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
 					}
 				});
@@ -45,41 +47,49 @@ function owlTableDirective ($http, owlTableService) {
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
 
-					// Should abstract this into a service or delegate it to user provided thing
-					$http({
-						method: 'post',
-						url: scope.save,
-						data: {
-							data: rendered.state.changedData
-						}
+					owlTable.save({
+						changedRows: rendered.state.changedData,
+						where: scope.save
 					}).then(function (response) {
 						scope.saving = false;
 						console.log('save successful');
-					});
 
-					rendered.setState({
-						changedData: {}
+						rendered.setState({
+							changedData: {}
+						});
+					});
+				};
+
+				scope.owlCtrl.nextPage = function () {
+					owlTable.nextPage();
+					// set the table state to the data for the new page.
+					rendered.setProps({
+						data: scope.owlCtrl.dataForPage(owlTable.page)
 					});
 				};
 			};
 		},
 		controller: function ($scope) {
-			this.owlTable = owlTableService;
-
-			this.nextPage = function () {
-				owlTableService.nextPage();
-				$scope.$emit('owlNextPage');
-			};
+			this.owlTable = owlTable;
 
 			this.prevPage = function () {
-				owlTableService.prevPage();
-				$scope.$emit('owlPrevPage');
+				owlTable.prevPage();
+				$scope.data = this.dataForPage(owlTable.page);
+			};
+
+			this.dataForPage = function (page) {
+				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
+				//end: the page number times the count -1 ex. 49 for page 2 with default count
+				console.log(page);
+				var data = $scope.data.slice(((page - 1) * 25), ((page * 25) - 1));
+				console.log($scope.data);
+				return data;
 			};
 		}
 	};
 }
 
-function owlPagination (owlTableService) {
+function owlPagination (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -92,7 +102,7 @@ function owlPagination (owlTableService) {
 	};
 }
 
-function owlFilterControls (owlTableService) {
+function owlFilterControls (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -103,7 +113,7 @@ function owlFilterControls (owlTableService) {
 	};
 }
 
-function owlExportControls (owlTableService) {
+function owlExportControls (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -115,7 +125,7 @@ function owlExportControls (owlTableService) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', 'owlTableService', owlTableDirective])
-	.directive('owlPagination', ['owlTableService', owlPagination])
-	.directive('owlFilterControls', ['owlTableService', owlFilterControls])
-	.directive('owlExportControls', ['owlTableService', owlExportControls]);
+	.directive('owlTable', ['$http', 'owlTable', owlTableDirective])
+	.directive('owlPagination', ['owlTable', owlPagination])
+	.directive('owlFilterControls', ['owlTable', owlFilterControls])
+	.directive('owlExportControls', ['owlTable', owlExportControls]);
