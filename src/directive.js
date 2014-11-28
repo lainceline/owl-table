@@ -17,7 +17,10 @@ function owlTableDirective ($http, $timeout, owlTable) {
 				var container = elem.find('.owl-react-container')[0];
 
 				scope.loading = true;
-				console.log(scope.loading);
+				scope.takingAWhile = false;
+				$timeout(function () {
+					scope.takingAWhile = true;
+				}, 5000);
 
 				table = React.createElement(OwlTableReact, {
 					data: scope.data,
@@ -34,7 +37,6 @@ function owlTableDirective ($http, $timeout, owlTable) {
 							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
 						scope.loading = false;
-						console.log(scope.loading);
 					}
 				});
 
@@ -67,7 +69,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 
 				scope.owlCtrl.nextPage = function () {
 					owlTable.nextPage();
-					// set the table state to the data for the new page.
+					// set the table props to the data for the new page.
 					rendered.setProps({
 						data: scope.owlCtrl.dataForPage(owlTable.page)
 					});
