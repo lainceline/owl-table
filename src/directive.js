@@ -1,4 +1,4 @@
-function owlTableDirective ($http, owlTable) {
+function owlTableDirective ($http, $timeout, owlTable) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -16,6 +16,9 @@ function owlTableDirective ($http, owlTable) {
 				var rendered;
 				var container = elem.find('.owl-react-container')[0];
 
+				scope.loading = true;
+				console.log(scope.loading);
+
 				table = React.createElement(OwlTableReact, {
 					data: scope.data,
 					columns: scope.columns
@@ -30,6 +33,8 @@ function owlTableDirective ($http, owlTable) {
 						rendered.setProps({
 							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
+						scope.loading = false;
+						console.log(scope.loading);
 					}
 				});
 
@@ -80,9 +85,9 @@ function owlTableDirective ($http, owlTable) {
 			this.dataForPage = function (page) {
 				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
 				//end: the page number times the count -1 ex. 49 for page 2 with default count
-				console.log(page);
+
 				var data = $scope.data.slice(((page - 1) * 25), ((page * 25) - 1));
-				console.log($scope.data);
+
 				return data;
 			};
 		}
@@ -125,7 +130,7 @@ function owlExportControls (owlTable) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', 'owlTable', owlTableDirective])
+	.directive('owlTable', ['$http', '$timeout', 'owlTable', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls]);
