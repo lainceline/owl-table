@@ -11,9 +11,9 @@
 	.owl-table-wrapper.table-responsive
 		.owl-table-inner-wrapper
 			
-			.owl-react-container(ng-class="{'owl-hidden': loading === true}")
+			.owl-react-container(ng-hide="loading === true")
 				
-			.owl-ajax-loading
+			.owl-ajax-loading(ng-if="loading === true")
 				.owl-ajax-loading-interior
 					| Loading...
 				

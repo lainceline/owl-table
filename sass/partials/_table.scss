@@ -18,13 +18,14 @@
 .owl-ajax-loading {
 	background-color: gray;
 	opacity: 0.3;
+	padding: 30px;
+	height: 100%;
 
 	.owl-ajax-loading-interior {
-		margin: 0 auto;
 		position: relative;
-		color: white;
-		width: auto;
-		display: inline-block;
+		top: 50%;
+		transform: translateY(-50%);
+		text-align: center;
 	}
 }
 
