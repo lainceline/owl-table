@@ -13,8 +13,7 @@
 			
 			.owl-react-container(ng-hide="loading === true")
 				
-			.owl-ajax-loading(ng-if="loading === true")
-				.owl-ajax-loading-interior
-					| Loading...
+			.owl-ajax-loading(ng-show="loading === true")
+				.owl-ajax-loading-interior#owl-spin
 				
 	owl-pagination
