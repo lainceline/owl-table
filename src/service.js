@@ -1,4 +1,4 @@
-function owlTableService ($rootScope, owlConstants) {
+function owlTableService ($http, owlConstants) {
 	var service = {};
 
 	service.tables = [];
@@ -22,7 +22,6 @@ function owlTableService ($rootScope, owlConstants) {
 
 	service.setCount = function (count) {
 		this.count = count;
-		$rootScope.$broadcast('owlCountChanged');
 	};
 
 	service.nextPage = function () {
@@ -48,7 +47,21 @@ function owlTableService ($rootScope, owlConstants) {
 		this.total = settings.total;
 	};
 
+	service.save = function (settings) {
+		if (typeof(settings.where) === 'undefined') {
+			throw 'OwlException: No save route provided to table!';
+		}
+
+		return $http({
+			method: 'post',
+			url: settings.where,
+			data: {
+				data: settings.changedData
+			}
+		});
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTableService', ['$rootScope', 'owlConstants', owlTableService]);
+angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService]);

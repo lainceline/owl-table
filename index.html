@@ -72,11 +72,11 @@
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function ($scope, $http, $timeout, owlTableService) {
+			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
 				this.columns = [];
 				this.data = [];
 
-				this.owlTable = owlTableService;
+				this.owlTable = owlTable;
 
 				for (var i = 0; i < 50; i++) {
 					var col = {
@@ -100,7 +100,7 @@
 							$scope.demoCtrl.data.push(datum);
 						});
 
-						owlTableService.paginate({
+						owlTable.paginate({
 							total: data.data.length+1, // necessary
 							count: 25, // dont have to specify this
 						});

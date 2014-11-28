@@ -1,4 +1,4 @@
-function owlTableDirective ($http, owlTableService) {
+function owlTableDirective ($http, owlTable) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -9,7 +9,7 @@ function owlTableDirective ($http, owlTableService) {
 		templateUrl: 'partials/table.html',
 		controllerAs: 'owlCtrl',
 		compile: function (tElem, tAttrs) {
-			owlTableService.registerTable(tElem[0].id);
+			owlTable.registerTable(tElem[0].id);
 
 			return function link (scope, elem, attrs) {
 				var table;
@@ -28,7 +28,7 @@ function owlTableDirective ($http, owlTableService) {
 					if (newValue !== oldValue) {
 						console.log('and we are updating table');
 						rendered.setProps({
-							data: scope.owlCtrl.dataForPage(owlTableService.page)
+							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
 					}
 				});
@@ -47,38 +47,34 @@ function owlTableDirective ($http, owlTableService) {
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
 
-					// Should abstract this into a service or delegate it to user provided thing
-					$http({
-						method: 'post',
-						url: scope.save,
-						data: {
-							data: rendered.state.changedData
-						}
+					owlTable.save({
+						changedRows: rendered.state.changedData,
+						where: scope.save
 					}).then(function (response) {
 						scope.saving = false;
 						console.log('save successful');
-					});
 
-					rendered.setState({
-						changedData: {}
+						rendered.setState({
+							changedData: {}
+						});
 					});
 				};
 
 				scope.owlCtrl.nextPage = function () {
-					owlTableService.nextPage();
+					owlTable.nextPage();
 					// set the table state to the data for the new page.
 					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTableService.page)
+						data: scope.owlCtrl.dataForPage(owlTable.page)
 					});
 				};
 			};
 		},
 		controller: function ($scope) {
-			this.owlTable = owlTableService;
+			this.owlTable = owlTable;
 
 			this.prevPage = function () {
-				owlTableService.prevPage();
-				$scope.data = this.dataForPage(owlTableService.page);
+				owlTable.prevPage();
+				$scope.data = this.dataForPage(owlTable.page);
 			};
 
 			this.dataForPage = function (page) {
@@ -93,7 +89,7 @@ function owlTableDirective ($http, owlTableService) {
 	};
 }
 
-function owlPagination (owlTableService) {
+function owlPagination (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -106,7 +102,7 @@ function owlPagination (owlTableService) {
 	};
 }
 
-function owlFilterControls (owlTableService) {
+function owlFilterControls (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -117,7 +113,7 @@ function owlFilterControls (owlTableService) {
 	};
 }
 
-function owlExportControls (owlTableService) {
+function owlExportControls (owlTable) {
 	return {
 		restrict: 'EA',
 		require: '^owlTable',
@@ -129,7 +125,7 @@ function owlExportControls (owlTableService) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', 'owlTableService', owlTableDirective])
-	.directive('owlPagination', ['owlTableService', owlPagination])
-	.directive('owlFilterControls', ['owlTableService', owlFilterControls])
-	.directive('owlExportControls', ['owlTableService', owlExportControls]);
+	.directive('owlTable', ['$http', 'owlTable', owlTableDirective])
+	.directive('owlPagination', ['owlTable', owlPagination])
+	.directive('owlFilterControls', ['owlTable', owlFilterControls])
+	.directive('owlExportControls', ['owlTable', owlExportControls]);
