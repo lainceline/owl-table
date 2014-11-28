@@ -1,4 +1,4 @@
-function owlTableDirective ($http, owlTable) {
+function owlTableDirective ($http, $timeout, owlTable) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -16,6 +16,12 @@ function owlTableDirective ($http, owlTable) {
 				var rendered;
 				var container = elem.find('.owl-react-container')[0];
 
+				scope.loading = true;
+				scope.takingAWhile = false;
+				$timeout(function () {
+					scope.takingAWhile = true;
+				}, 5000);
+
 				table = React.createElement(OwlTableReact, {
 					data: scope.data,
 					columns: scope.columns
@@ -30,6 +36,7 @@ function owlTableDirective ($http, owlTable) {
 						rendered.setProps({
 							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
+						scope.loading = false;
 					}
 				});
 
@@ -62,11 +69,32 @@ function owlTableDirective ($http, owlTable) {
 
 				scope.owlCtrl.nextPage = function () {
 					owlTable.nextPage();
-					// set the table state to the data for the new page.
+					// set the table props to the data for the new page.
 					rendered.setProps({
 						data: scope.owlCtrl.dataForPage(owlTable.page)
 					});
 				};
+
+				var opts = {
+					lines: 13, // The number of lines to draw
+					length: 20, // The length of each line
+					width: 10, // The line thickness
+					radius: 30, // The radius of the inner circle
+					corners: 1, // Corner roundness (0..1)
+					rotate: 0, // The rotation offset
+					direction: 1, // 1: clockwise, -1: counterclockwise
+					color: '#000', // #rgb or #rrggbb or array of colors
+					speed: 1, // Rounds per second
+					trail: 60, // Afterglow percentage
+					shadow: true, // Whether to render a shadow
+					hwaccel: false, // Whether to use hardware acceleration
+					className: 'spinner', // The CSS class to assign to the spinner
+					zIndex: 2e9, // The z-index (defaults to 2000000000)
+					top: '50%', // Top position relative to parent
+					left: '50%' // Left position relative to parent
+				};
+				var target = document.getElementById('owl-spin');
+				var spinner = new Spinner(opts).spin(target);
 			};
 		},
 		controller: function ($scope) {
@@ -80,9 +108,9 @@ function owlTableDirective ($http, owlTable) {
 			this.dataForPage = function (page) {
 				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
 				//end: the page number times the count -1 ex. 49 for page 2 with default count
-				console.log(page);
+
 				var data = $scope.data.slice(((page - 1) * 25), ((page * 25) - 1));
-				console.log($scope.data);
+
 				return data;
 			};
 		}
@@ -125,7 +153,7 @@ function owlExportControls (owlTable) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', 'owlTable', owlTableDirective])
+	.directive('owlTable', ['$http', '$timeout', 'owlTable', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls]);

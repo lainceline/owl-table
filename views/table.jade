@@ -11,7 +11,12 @@
 	.owl-table-wrapper.table-responsive
 		.owl-table-inner-wrapper
 			
-			.owl-react-container
+			.owl-react-container(ng-hide="loading === true")
+				
+			.owl-ajax-loading(ng-show="loading === true")
+				.owl-ajax-loading-interior
+					#owl-spin
+					p(ng-show="takingAWhile !== true") Loading data...
+					p(ng-show="takingAWhile === true") Sorry, things are taking a little longer than normal...
 				
 	owl-pagination
-	

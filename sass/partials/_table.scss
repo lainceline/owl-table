@@ -1,6 +1,6 @@
   // Styles for the table itself
 
-.owl-wrapper, .owl-table-wrapper, .owl-table-inner-wrapper, .owl-react-container {
+.owl-wrapper, .owl-table-wrapper, .owl-table-inner-wrapper, .owl-react-container, .owl-ajax-loading {
 	height: 100%;
 }
 
@@ -15,8 +15,31 @@
 	}
 }
 
+.owl-ajax-loading {
+	background-color: gray;
+	opacity: 0.3;
+	padding: 30px;
+	height: 100%;
+
+	.owl-ajax-loading-interior {
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		text-align: center;
+	}
+
+	p {
+		color: white;
+		transform: translateY(450%);
+	}
+}
+
 .owl-table-wrapper {
 	border: 1px solid #aaaaaa;
+}
+
+.owl-hidden {
+	display: none;
 }
 
 .owl-table {

@@ -8,6 +8,7 @@ var jade		= require('gulp-jade');
 var react 		= require('gulp-react');
 var ngHtml2Js 	= require('gulp-ng-html2js');
 
+var autoprefix  = require('gulp-autoprefixer');
 var minifyCSS 	= require('gulp-minify-css');
 var minifyHtml 	= require('gulp-minify-html');
 var uglify 		= require('gulp-uglify');
@@ -32,6 +33,9 @@ gulp.task('jsx', function () {
 gulp.task('sass', function () {
 	return gulp.src('./sass/*.scss')
 			.pipe(sass())
+			.pipe(autoprefix({
+				browsers: ['last 2 versions']
+			}))
 			.pipe(minifyCSS())
 			.pipe(rename({
 				extname: '.min.css'
