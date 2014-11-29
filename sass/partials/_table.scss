@@ -15,6 +15,14 @@
 	}
 }
 
+.owl-table-wrapper {
+	border: 1px solid #aaaaaa;
+}
+
+.owl-hidden {
+	display: none;
+}
+
 .owl-ajax-loading {
 	background-color: gray;
 	opacity: 0.3;
@@ -32,14 +40,6 @@
 		color: white;
 		transform: translateY(450%);
 	}
-}
-
-.owl-table-wrapper {
-	border: 1px solid #aaaaaa;
-}
-
-.owl-hidden {
-	display: none;
 }
 
 .owl-table {

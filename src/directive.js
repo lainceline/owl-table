@@ -45,9 +45,6 @@ function owlTableDirective ($http, $timeout, owlTable) {
 
 					// Could ajax the saved row to the server here.
 
-					// Put it into the scope.data array. Is this ugly? Yes.
-					$.grep(scope.data, function (e) { return e.id === updatedRow.id; })[0] = updatedRow;
-
 					event.stopPropagation();
 				});
 
@@ -93,6 +90,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 					top: '50%', // Top position relative to parent
 					left: '50%' // Left position relative to parent
 				};
+				
 				var target = document.getElementById('owl-spin');
 				var spinner = new Spinner(opts).spin(target);
 			};
@@ -109,7 +107,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
 				//end: the page number times the count -1 ex. 49 for page 2 with default count
 
-				var data = $scope.data.slice(((page - 1) * 25), ((page * 25) - 1));
+				var data = $scope.data.slice(((page - 1) * this.owlTable.count), ((page * this.owlTable.count) - 1));
 
 				return data;
 			};

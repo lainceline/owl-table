@@ -10,10 +10,20 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<!--[if IE]>
+	<script src="bower_components/console-polyfill/index.js"></script>
+	<![endif]-->
+
+	<!--[if lt IE 9]>
+	<script src="bower_components/html5shiv/dist/html5shiv-printshiv.js"></script>
+	<script src="bower_components/es5-shim/es5-shim.js"></script>
+	<script src="bower_components/es5-shim/es5-sham.js"></script>
+	<![endif]-->
+
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
 	<script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
-
+	
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 
 	<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css">
@@ -67,6 +77,10 @@
 
 	<script src="dist/vendor.min.js"></script>
 
+	<!--[if IE]>
+	<script src="bower_components/angular-ui-utils/ui-utils-ieshiv.js"></script>
+	<![endif]-->
+
 	<script src="dist/owl-table.min.js"></script>
 
 	<script>
@@ -101,7 +115,7 @@
 						});
 
 						owlTable.paginate({
-							total: data.data.length+1, // necessary
+							total: data.data.length, // necessary
 							count: 25, // dont have to specify this
 						});
 					})
