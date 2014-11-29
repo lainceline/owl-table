@@ -47,6 +47,7 @@
 	font-size: 12px;
 	vertical-align: top;
 	height: auto;
+	border-collapse: inherit;
 	border-spacing: 0;
 
 	text-align: left;
@@ -65,6 +66,10 @@
 		border: 1px solid #cccccc;
 		border-width: 0 0 0 1px;
 		border-top: none;
+	}
+
+	th {
+		border-bottom: 1px solid #aaa;
 	}
 
 	thead, tfoot {
@@ -100,4 +105,14 @@
 		height: 25px;
 		font-size: 1em;
 	}
+}
+
+.owl-table .tacky-top:not(.tacky-top-origin) {
+	box-shadow: 1px 1px 0 0 #AAA,
+	0 4px 3px -1px rgba(0, 0, 0, .2);
+}
+
+.owl-table .tacky-left:not(.tacky-left-origin) {
+	box-shadow: 1px 1px 0 0 #AAA,
+	4px 0px 3px -1px rgba(0, 0, 0, .2);
 }

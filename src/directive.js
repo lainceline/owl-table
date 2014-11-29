@@ -4,7 +4,8 @@ function owlTableDirective ($http, $timeout, owlTable) {
 		scope: {
 			data: '=',
 			columns: '=',
-			save: '@'
+			save: '@',
+			tacky: '=owlTacky'
 		},
 		templateUrl: 'partials/table.html',
 		controllerAs: 'owlCtrl',
@@ -24,7 +25,8 @@ function owlTableDirective ($http, $timeout, owlTable) {
 
 				table = React.createElement(OwlTableReact, {
 					data: scope.data,
-					columns: scope.columns
+					columns: scope.columns,
+					tacky: scope.tacky
 				});
 
 				rendered = React.render(table, container);
@@ -38,6 +40,12 @@ function owlTableDirective ($http, $timeout, owlTable) {
 						});
 						scope.loading = false;
 					}
+				});
+
+				scope.$watchCollection('tacky', function (newValue) {
+					rendered.setProps({
+						tacky: newValue
+					});
 				});
 
 				elem.on('owlTableUpdated', function (event) {
@@ -90,7 +98,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 					top: '50%', // Top position relative to parent
 					left: '50%' // Left position relative to parent
 				};
-				
+
 				var target = document.getElementById('owl-spin');
 				var spinner = new Spinner(opts).spin(target);
 			};
@@ -150,8 +158,21 @@ function owlExportControls (owlTable) {
 	};
 }
 
+function ngTacky () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attrs) {
+			console.log(elem.find('table'));
+			elem.find('table').addClass('tacky');
+			elem.find('thead').find('th').addClass('tacky-top');
+			//$(elem).tacky();
+		}
+	};
+}
+
 angular.module('owlTable')
 	.directive('owlTable', ['$http', '$timeout', 'owlTable', owlTableDirective])
+	.directive('owlTacky', [ngTacky])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls]);

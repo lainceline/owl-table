@@ -2,7 +2,8 @@ var OwlTableReact = React.createClass({
 	displayName: 'OwlTable',
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
-		columns: React.PropTypes.array.isRequired
+		columns: React.PropTypes.array.isRequired,
+		tacky: React.PropTypes.object
 	},
 	getInitialState: function () {
 		return {
@@ -28,12 +29,29 @@ var OwlTableReact = React.createClass({
 			return row;
 		});
 	},
+	componentDidUpdate: function () {
+		if (this.props.tacky) {
+			$('.tacky').tacky();
+		}
+	},
 	render: function () {
 		var props = this.props;
+		var tackyTop = false;
+		var tackyLeft = false;
+
+		if (props.tacky) {
+			if (props.tacky.top) {
+				tackyTop = true;
+			}
+
+			if (props.tacky.left) {
+				tackyLeft = props.tacky.left;
+			}
+		}
 
 		var headers = props.columns.map(function (column, index) {
 			return (
-				<th key={index} data-field={column.field}>
+				<th className={tackyTop ? 'tacky-top' : ''} key={index} data-field={column.field}>
 					{column.title || 'None'}
 				</th>
 			);

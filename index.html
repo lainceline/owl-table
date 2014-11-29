@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
 	<script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
-	
+
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 
 	<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css">
@@ -57,6 +57,11 @@
 				<div class="navbar-header">
 					<a class="navbar-brand" href="#">Owl Table Demo</a>
 				</div>
+				<ul class="nav navbar-nav navbar-form">
+					<li>
+						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.tacky.top = !demoCtrl.tacky.top">Tacky Top</button>
+					</li>
+				</ul>
 				<div class="navbar-right navbar-form">
 					<div class="form-group">
 						<span class="demo-navbar-label">Page count</span>
@@ -71,7 +76,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
+		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data" owl-tacky="demoCtrl.tacky" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
 
 	</div>
 
@@ -91,6 +96,10 @@
 				this.data = [];
 
 				this.owlTable = owlTable;
+
+				this.tacky = {
+					top: true
+				};
 
 				for (var i = 0; i < 50; i++) {
 					var col = {
