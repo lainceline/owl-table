@@ -16,6 +16,9 @@
 
 			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
 		}, 500),
+		keydown: function (event) {
+			event.preventDefault();
+		},
 		render: function () {
 			var props = this.props;
 
@@ -27,7 +30,7 @@
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
-					input = <input type={props.column.type} defaultValue={props.value} onChange={self.inputDidChange}/>;
+					input = <input type={props.column.type} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
 					break;
 				case 'select':
 				case 'select_multiple':

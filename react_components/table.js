@@ -66,10 +66,13 @@ var OwlTableReact = React.createClass({
 		});
 
 		self.keyup = function (event) {
-			console.log(event);
+			console.log(event.nativeEvent);
 			switch (event.which) {
 				case 39:
 					console.log('move to right');
+					console.log($(event.nativeEvent.target));
+					console.log($(event.target).parent().next());
+					$(event.target).parent().next().children().focus();
 					break;
 				case 40:
 					console.log('down');
@@ -77,6 +80,7 @@ var OwlTableReact = React.createClass({
 				default:
 					break;
 			}
+			event.stopPropagation();
 		};
 
 		return (
