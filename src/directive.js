@@ -79,7 +79,18 @@ function owlTableDirective ($http, $timeout, owlTable) {
 						data: scope.owlCtrl.dataForPage(owlTable.page)
 					});
 				};
+/*
+				// lets make the input bindings
+				elem.on('keyup', 'input', function (event) {
+					switch (event.which) {
+						case 39:
+							console.log(event);
+							break;
+					}
 
+					event.stopPropagation();
+				});
+*/
 				var opts = {
 					lines: 13, // The number of lines to draw
 					length: 20, // The length of each line

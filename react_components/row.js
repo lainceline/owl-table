@@ -6,11 +6,26 @@ var OwlRow = React.createClass({
 	},
 	getInitialState: function () {
 		return {
-			open: false
+			open: false,
+			focusedCell: false
 		};
 	},
 	clickHandler: function (event) {
-		this.setState({open: true});
+		console.log(event.target);
+		var cell = $(event.target);
+		// need to focus the input that was clicked
+		console.log(event.target.nodeName);
+		if (event.target.nodeName !== 'TD') {
+			cell = cell.closest('td');
+		}
+		console.log(cell);
+		console.log(cell.children());
+		//cell.find('input').focus();
+
+		this.setState({
+			open: true,
+			focusedCell: cell
+		});
 	},
 	render: function () {
 		var props = this.props;
@@ -20,7 +35,7 @@ var OwlRow = React.createClass({
 
 		var cells = props.columns.map(function (column, index) {
 			return (
-				<OwlCell column={column} row={props.data} open={state.open} key={index} tableDidChange={props.tableDidChange}/>
+				<OwlCell column={column} row={props.data} focusedCell={state.focusedCell} open={state.open} key={index} tableDidChange={props.tableDidChange}/>
 			);
 		});
 

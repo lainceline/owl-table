@@ -19,7 +19,12 @@ var OwlCell = React.createClass({
 		props.editable = props.column.editable || true;
 
 		if (props.open === true) {
-			content = <OwlInput column={props.column} value={props.row[props.column.field]} row={props.row} tableDidChange={props.tableDidChange}/>;
+			content = <OwlInput
+						column={props.column}
+						value={props.row[props.column.field]}
+						row={props.row}
+						tableDidChange={props.tableDidChange}
+					/>;
 		}
 
 		return (
@@ -27,5 +32,8 @@ var OwlCell = React.createClass({
 				{props.editable === true ? content : (props.row[props.column.field] || '---')}
 			</td>
 		);
+	},
+	componentDidUpdate: function () {
+		this.props.focusedCell.find('input').focus();
 	}
 });

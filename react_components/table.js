@@ -65,8 +65,22 @@ var OwlTableReact = React.createClass({
 			);
 		});
 
+		self.keyup = function (event) {
+			console.log(event);
+			switch (event.which) {
+				case 39:
+					console.log('move to right');
+					break;
+				case 40:
+					console.log('down');
+					break;
+				default:
+					break;
+			}
+		};
+
 		return (
-			<table className="owl-table">
+			<table onKeyUp={self.keyup} className="owl-table">
 				<thead>
 					{headers}
 				</thead>
