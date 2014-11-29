@@ -17,7 +17,14 @@
 			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
 		}, 500),
 		keydown: function (event) {
-			event.preventDefault();
+			switch (event.which) {
+				case 39:
+				case 40:
+					event.preventDefault();
+					break;
+				default:
+					break;
+			}
 		},
 		render: function () {
 			var props = this.props;

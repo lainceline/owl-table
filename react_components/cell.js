@@ -34,6 +34,9 @@ var OwlCell = React.createClass({
 		);
 	},
 	componentDidUpdate: function () {
+		console.log(this.props.focusedCell);
+		if (this.props.focusedCell) {
 		this.props.focusedCell.find('input').focus();
+	}
 	}
 });
