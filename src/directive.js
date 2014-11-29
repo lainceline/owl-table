@@ -45,10 +45,6 @@ function owlTableDirective ($http, $timeout, owlTable) {
 
 					// Could ajax the saved row to the server here.
 
-					// Removed jquery grep because it looks like the changes to the data
-					// made in React are automatically propagating to the scope data
-					// thanks to wonderful pass by reference
-					
 					event.stopPropagation();
 				});
 
@@ -94,6 +90,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 					top: '50%', // Top position relative to parent
 					left: '50%' // Left position relative to parent
 				};
+				
 				var target = document.getElementById('owl-spin');
 				var spinner = new Spinner(opts).spin(target);
 			};
