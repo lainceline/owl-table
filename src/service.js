@@ -1,3 +1,40 @@
+function owlResource ($http, owlConstants) {
+
+	return function (options) {
+
+		var saveUrl = '';
+
+		if (typeof(options.saveUrl) !== 'undefined') {
+			saveUrl = options.saveUrl;
+		}
+
+		var id = options.id;
+		var column = options.column;
+		var value = options.value;
+
+		var data = [{
+			id: options.id
+		}];
+
+		data[0][column] = value;
+
+		return {
+			id: options.id,
+			column: options.column,
+			value: options.value,
+			save: function () {
+				return $http({
+					method: 'post',
+					url: saveUrl,
+					data: {
+						data: data
+					}
+				});
+			}
+		};
+	};
+}
+
 function owlTableService ($http, owlConstants) {
 	var service = {};
 
@@ -64,4 +101,5 @@ function owlTableService ($http, owlConstants) {
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService]);
+angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService])
+	.service('owlResource', ['$http', 'owlConstants', owlResource]);

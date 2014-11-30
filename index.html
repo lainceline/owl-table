@@ -76,7 +76,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" columns="demoCtrl.columns" data="demoCtrl.data" owl-tacky="demoCtrl.tacky" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" owl-tacky="demoCtrl.tacky" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
 
 	</div>
 
@@ -99,6 +99,10 @@
 
 				this.tacky = {
 					top: true
+				};
+
+				this.options = {
+					saveIndividualRows: false
 				};
 
 				for (var i = 0; i < 50; i++) {

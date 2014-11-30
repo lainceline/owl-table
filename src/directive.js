@@ -1,11 +1,12 @@
-function owlTableDirective ($http, $timeout, owlTable) {
+function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 	return {
 		restrict: 'EA',
 		scope: {
 			data: '=',
 			columns: '=',
 			save: '@',
-			tacky: '=owlTacky'
+			tacky: '=owlTacky',
+			options: '='
 		},
 		templateUrl: 'partials/table.html',
 		controllerAs: 'owlCtrl',
@@ -19,6 +20,8 @@ function owlTableDirective ($http, $timeout, owlTable) {
 
 				scope.loading = true;
 				scope.takingAWhile = false;
+				scope.saved = false;
+
 				$timeout(function () {
 					scope.takingAWhile = true;
 				}, 5000);
@@ -48,11 +51,25 @@ function owlTableDirective ($http, $timeout, owlTable) {
 					});
 				});
 
-				elem.on('owlTableUpdated', function (event, column, row, value) {
-					// Could ajax the saved row to the server here.
+				//console.log(scope.options);
 
-					event.stopPropagation();
-				});
+				if (scope.options.saveIndividualRows) {
+					elem.on('owlTableUpdated', function (event, column, row, value) {
+						// Could ajax the saved row to the server here.
+						owlResource({
+							id: row.id,
+							column: column.field,
+							value: value,
+							saveUrl: scope.save
+						}).save().then(function(response) {
+							scope.saved = true;
+							$timeout(function () {
+								scope.saved = false;
+							}, 2000);
+						});
+						event.stopPropagation();
+					});
+				}
 
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
@@ -157,7 +174,7 @@ function owlExportControls (owlTable) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', '$timeout', 'owlTable', owlTableDirective])
+	.directive('owlTable', ['$http', '$timeout', 'owlTable', 'owlResource', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls]);
