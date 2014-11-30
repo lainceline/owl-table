@@ -1,0 +1,25 @@
+.container-fluid.owl-wrapper
+	
+	.owl-top-controls
+		owl-pagination
+		owl-export-controls
+		owl-filter-controls
+			
+		.owl-top-control-save
+			div(ng-hide="saved !== true") Saved
+	
+			button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()")
+				| Save
+	
+	.owl-table-wrapper.table-responsive.tacky
+		.owl-table-inner-wrapper
+			
+			.owl-react-container(ng-hide="loading === true")
+				
+			.owl-ajax-loading(ng-show="loading === true")
+				.owl-ajax-loading-interior
+					#owl-spin
+					p(ng-show="takingAWhile !== true") Loading data...
+					p(ng-show="takingAWhile === true") Sorry, things are taking a little longer than normal...
+				
+	owl-pagination

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="owlTableDemo">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<title>Owl Table Example</title>
+
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!--[if IE]>
+	<script src="bower_components/console-polyfill/index.js"></script>
+	<![endif]-->
+
+	<!--[if lt IE 9]>
+	<script src="bower_components/html5shiv/dist/html5shiv-printshiv.js"></script>
+	<script src="bower_components/es5-shim/es5-shim.js"></script>
+	<script src="bower_components/es5-shim/es5-sham.js"></script>
+	<![endif]-->
+
+	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
+	<link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+	<script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
+
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css">
+
+	<link rel="stylesheet" href="dist/owl-table.min.css">
+
+	<style>
+
+		html, body {
+			height: 100%;
+		}
+
+		.content {
+			height: 300px;
+		}
+
+		.demo-navbar-label {
+			margin-right: 0.5em;
+		}
+
+	</style>
+
+</head>
+
+<body ng-controller="demoController as demoCtrl">
+
+	<div class="container-fluid content">
+
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">Owl Table Demo</a>
+				</div>
+				<ul class="nav navbar-nav navbar-form">
+					<li>
+						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.tacky.top = !demoCtrl.tacky.top">Tacky Top</button>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" owl-tacky="demoCtrl.tacky" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
+
+	</div>
+
+	<script src="dist/vendor.min.js"></script>
+
+	<!--[if IE]>
+	<script src="bower_components/angular-ui-utils/ui-utils-ieshiv.js"></script>
+	<![endif]-->
+
+	<script src="dist/owl-table.min.js"></script>
+
+	<script>
+
+		angular.module('owlTableDemo', ['owlTable'])
+			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
+				this.columns = [];
+				this.data = [];
+
+				this.owlTable = owlTable;
+
+				this.tacky = {
+					top: true
+				};
+
+				this.options = {
+					saveIndividualRows: false
+				};
+
+				for (var i = 0; i < 50; i++) {
+					var col = {
+						field: 'custom_200000' + i,
+						title: 'Custom 200000' + i,
+						type: 'text',
+						options: [{
+							value: '32432',
+							text: 'Test Value'
+						}, {
+							value: '21323',
+							text: 'No'
+						}]
+					}
+
+					$scope.demoCtrl.columns.push(col);
+				}
+
+				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
+					.success(function (data) {
+						$scope.demoCtrl.data = [];
+
+						angular.forEach(data.data, function (datum, index) {
+							$scope.demoCtrl.data.push(datum);
+						});
+
+						owlTable.paginate({
+							total: data.data.length, // necessary
+							count: 25, // dont have to specify this
+						});
+					})
+					.error(function (data) {
+						console.log('ajax error while loading');
+					});
+			});
+
+	</script>
+</body>
+
+</html>

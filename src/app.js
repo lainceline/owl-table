@@ -1,0 +1,9 @@
+angular.module(
+	'owlTable',
+	[
+		'ngAnimate',
+		'ngSanitize',
+		'ngCsv',
+		'owlTablePartials'
+	]
+);
