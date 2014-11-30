@@ -32,14 +32,17 @@
 
 			var self = this;
 
+			var optionList;
+
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
 					input = <input type={props.column.type} onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
 					break;
-				case 'select':
+				case 'select': // fall through
+				case 'select_one': // fall through
 				case 'select_multiple':
-					var optionList = options.map(function (option, index) {
+					optionList = options.map(function (option, index) {
 						return (
 							<option value={option.value}>
 								{option.text}
@@ -49,6 +52,20 @@
 					input = <select value={props.value}>
 								{optionList}
 							</select>;
+					break;
+				case 'radio':
+					var radioName = props.column.field + '_' + props.row.id;
+					optionList = options.map(function (option, index) {
+
+						return (<div className="radio">
+							<label>
+								<input type="radio" value={option.value} name={radioName} />
+								{option.text}
+							</label></div>
+						);
+					});
+
+					input = <div>{optionList}</div>;
 					break;
 				default:
 					break;
