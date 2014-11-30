@@ -95,6 +95,13 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				};
 
+				scope.owlCtrl.prevPage = function () {
+					owlTable.prevPage();
+					rendered.setProps({
+						data: scope.owlCtrl.dataForPage(owlTable.page)
+					});
+				};
+
 				var opts = {
 					lines: 13, // The number of lines to draw
 					length: 20, // The length of each line
@@ -120,11 +127,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 		},
 		controller: function ($scope) {
 			this.owlTable = owlTable;
-
-			this.prevPage = function () {
-				owlTable.prevPage();
-				$scope.data = this.dataForPage(owlTable.page);
-			};
 
 			this.dataForPage = function (page) {
 				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
