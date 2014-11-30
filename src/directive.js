@@ -35,12 +35,11 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				rendered = React.render(table, container);
 
 				scope.$watchCollection('data', function (newValue, oldValue) {
-					console.log('watch called');
 					if (newValue !== oldValue) {
-						console.log('and we are updating table');
 						rendered.setProps({
 							data: scope.owlCtrl.dataForPage(owlTable.page)
 						});
+
 						scope.loading = false;
 					}
 				});
@@ -51,11 +50,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				});
 
-				//console.log(scope.options);
-
 				if (scope.options.saveIndividualRows) {
 					elem.on('owlTableUpdated', function (event, column, row, value) {
-						// Could ajax the saved row to the server here.
 						owlResource({
 							id: row.id,
 							column: column.field,
@@ -125,18 +121,15 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				var spinner = new Spinner(opts).spin(target);
 			};
 		},
-		controller: function ($scope) {
+		controller: ['$scope', function ($scope) {
 			this.owlTable = owlTable;
 
 			this.dataForPage = function (page) {
-				//beginning: the page number times the count - 1 ex. 25 for page 2 with default count
-				//end: the page number times the count -1 ex. 49 for page 2 with default count
-
 				var data = $scope.data.slice(((page - 1) * this.owlTable.count), ((page * this.owlTable.count) - 1));
 
 				return data;
 			};
-		}
+		}]
 	};
 }
 
