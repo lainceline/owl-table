@@ -16,10 +16,20 @@
 
 			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
 		}, 500),
+		componentDidUpdate: function () {
+		//	$(this.getDOMNode()).trigger('inputadded');
+		console.log(this.props);
+		if (this.props.shouldfocus) {
+			console.log('af');
+			$(this.getDOMNode()).focus();
+		}
+		},
 		keydown: function (event) {
 			switch (event.which) {
 				case 39:
 				case 40:
+				case 41:
+				case 42:
 					event.preventDefault();
 					break;
 				default:

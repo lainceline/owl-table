@@ -7,13 +7,12 @@ var OwlTableReact = React.createClass({
 	},
 	getInitialState: function () {
 		return {
-			changedData: {}
+			changedData: {},
+			openRows: {}
 		};
 	},
 	componentDidMount: function () {
-		var self = this;
 
-		
 	},
 	componentDidUpdate: function () {
 		if (this.props.tacky) {
@@ -44,24 +43,49 @@ var OwlTableReact = React.createClass({
 		});
 
 		var self = this;
-
+		console.log(self.state.openRows);
 		var rows = props.data.map(function (datum, index) {
 			return (
-				<OwlRow data={datum} columns={props.columns} key={index} tableDidChange={self.tableDidChange} />
+				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
 		});
 
 		self.keyup = function (event) {
-			console.log(event.nativeEvent);
+			var td = $(event.target).parent();
+			var newState;
+
 			switch (event.which) {
 				case 39:
-					console.log('move to right');
-					console.log($(event.nativeEvent.target));
-					console.log($(event.target).parent().next());
-					$(event.target).parent().next().children().focus();
+					td.next().children().focus();
 					break;
 				case 40:
-					console.log('down');
+					// Need to open the row and then focus the input with the same offset as this one
+					newState = React.addons.update(self.state, {
+						openRows: {
+							$apply: function (rows) {
+								console.log(td.parent());
+								rows[td.parent()[0].sectionRowIndex + 1] = true;
+								return rows;
+							}
+						}
+					});
+
+					self.setState(newState);
+
+					td.parent().on('inputadded',  function () {
+						console.log('ready');
+						console.log($(this));
+						var self = $(this);
+						console.log($(self.next().children('td')[td[0].cellIndex]).find('input'));
+						$(self.next().children('td')[td[0].cellIndex]).find('input').focus();
+						self.off('inputadded');
+					});
+					break;
+				case 41:
+					td.prev().children().focus();
+					break;
+				case 42:
+
 					break;
 				default:
 					break;
