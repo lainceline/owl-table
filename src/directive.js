@@ -125,7 +125,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				var spinner = new Spinner(opts).spin(target);
 			};
 		},
-		controller: function ($scope) {
+		controller: ['$scope', function ($scope) {
 			this.owlTable = owlTable;
 
 			this.dataForPage = function (page) {
@@ -136,7 +136,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				return data;
 			};
-		}
+		}]
 	};
 }
 

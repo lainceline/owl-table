@@ -52,7 +52,6 @@ gulp.task('coffee', function () {
 
 gulp.task('js', function () {
 	return gulp.src(['./src/app.js', './src/constants.js', './src/service.js', './src/directive.js'])
-		//.pipe(uglify())
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
@@ -79,9 +78,15 @@ gulp.task('compile', function (callback) {
 
 gulp.task('link', function () {
 	return gulp.src(['./build/compiled-react-components.js', './build/compiled-partials.js', './build/compiled-coffee.js', './build/compiled-js.js'])
-		//	.pipe(uglify())
 			.pipe(concat('owl-table.min.js'))
 			.pipe(gulp.dest('./dist'));
+});
+
+gulp.task('link-release', function () {
+	return gulp.src(['./build/compiled-react-components.js', './build/compiled-partials.js', './build/compiled-coffee.js', './build/compiled-js.js'])
+	.pipe(uglify())
+	.pipe(concat('owl-table.min.js'))
+	.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('vendor', function () {
@@ -127,6 +132,10 @@ gulp.task('clean', function (callback) {
 
 gulp.task('build', function (callback) {
 	runSequence('clean', 'compile', ['link', 'vendor'], 'clean-build', callback);
+});
+
+gulp.task('build-release', function (callback) {
+	runSequence('clean', 'compile', 'link', 'link-release', 'clean-build', callback);
 });
 
 // Watch tasks
