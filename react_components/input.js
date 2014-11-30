@@ -49,7 +49,7 @@
 							</option>
 						);
 					});
-					input = <select value={props.value}>
+					input = <select onChange={self.transmitSaveEvent} value={props.value}>
 								{optionList}
 							</select>;
 					break;
@@ -57,11 +57,13 @@
 					var radioName = props.column.field + '_' + props.row.id;
 					optionList = options.map(function (option, index) {
 
-						return (<div className="radio">
-							<label>
-								<input type="radio" value={option.value} name={radioName} />
-								{option.text}
-							</label></div>
+						return (
+							<div key={index} className="radio">
+								<label>
+									<input type="radio" onChange={self.transmitSaveEvent} value={option.value} name={radioName} />
+									{option.text}
+								</label>
+							</div>
 						);
 					});
 
