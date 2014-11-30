@@ -4,9 +4,12 @@
 		owl-pagination
 		owl-export-controls
 		owl-filter-controls
+			
+		.owl-top-control-save
+			div(ng-hide="saved !== true") Saved
 	
-		button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()")
-			| Save
+			button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()")
+				| Save
 	
 	.owl-table-wrapper.table-responsive.tacky
 		.owl-table-inner-wrapper

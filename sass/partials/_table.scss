@@ -13,6 +13,23 @@
 		float: right;
 		display: inline-block;
 	}
+
+	.owl-top-control-save {
+		float: right;
+		div {
+			float: left;
+			margin-top: 4px;
+			transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.0s;
+			opacity: 1;
+		}
+		div.ng-hide-remove {
+			opacity: 0;
+			display: block !important;
+		}
+		div.ng-hide-remove.ng-hide-remove-active {
+			opacity: 1;
+		}
+	}
 }
 
 .owl-table-wrapper {
