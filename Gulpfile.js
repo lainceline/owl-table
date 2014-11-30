@@ -93,6 +93,8 @@ gulp.task('vendor', function () {
 
 		'./bower_components/angular/angular.js',
 		'./bower_components/angular-animate/angular-animate.js',
+		'./bower_components/angular-sanitize/angular-sanitize.js',
+		'./bower_components/ng-csv/build/ng-csv.js',
 		'./bower_components/ladda/dist/spin.min.js',
 		'./bower_components/ladda/dist/ladda.min.js',
 		'./bower_components/ladda/dist/angular-ladda.min.js',

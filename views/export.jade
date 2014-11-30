@@ -2,5 +2,5 @@
 	span.owl-control-label
 		| Export:
 	span.owl-export-buttons
-		span.owl-export-button-csv
+		span.owl-export-button-csv(type="button", ng-csv="data", filename="focus.csv", csv-header="exportCtrl.csvHeader()")
 		span.owl-export-button-print

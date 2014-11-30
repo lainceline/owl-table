@@ -167,8 +167,19 @@ function owlExportControls (owlTable) {
 		restrict: 'EA',
 		require: '^owlTable',
 		templateUrl: 'partials/export.html',
+		controllerAs: 'exportCtrl',
 		compile: function (tElem, tAttrs) {
 			return function link (scope, elem, attrs) {};
+		},
+		controller: function ($scope) {
+			this.csvHeader = function () {
+				var header = [];
+				header = $scope.columns.map(function (column, index) {
+					return column.title;
+				});
+
+				return header;
+			};
 		}
 	};
 }
