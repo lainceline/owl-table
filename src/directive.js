@@ -51,10 +51,11 @@ function owlTableDirective ($http, $timeout, owlTable) {
 				elem.on('owlTableUpdated', function (event, column, row, value) {
 
 					// Could ajax the saved row to the server here.
+					console.log('ajax now');
 
 					event.stopPropagation();
 				});
-				
+
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
 
