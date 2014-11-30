@@ -5,17 +5,7 @@
 			column: React.PropTypes.object.isRequired,
 			value: React.PropTypes.node,
 			row: React.PropTypes.object
-		},/*
-		inputDidChange: function (event) {
-			event.persist();
-			this.debouncedInputChange(event);
 		},
-		debouncedInputChange: _.debounce(function (event) {
-			var node = $(this.getDOMNode());
-			var props = this.props;
-
-			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
-		}, 500),*/
 		keydown: function (event) {
 			// Handling the focus of the input myself with tab and shift-tab is
 			// automatically handling readjusting the scroll position of the table,
