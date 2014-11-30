@@ -2,15 +2,26 @@ var OwlRow = React.createClass({
 	displayName: 'OwlRow',
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
-		columns: React.PropTypes.array.isRequired
+		columns: React.PropTypes.array.isRequired,
+		open: React.PropTypes.bool.isRequired
 	},
 	getInitialState: function () {
 		return {
-			open: false
+			open: false,
+			focusedCell: false
 		};
 	},
 	clickHandler: function (event) {
-		this.setState({open: true});
+		var cell = $(event.target);
+		// need to focus the input that was clicked
+		if (event.target.nodeName !== 'TD') {
+			cell = cell.closest('td');
+		}
+
+		this.setState({
+			open: true,
+			focusedCell: cell
+		});
 	},
 	render: function () {
 		var props = this.props;
@@ -20,7 +31,7 @@ var OwlRow = React.createClass({
 
 		var cells = props.columns.map(function (column, index) {
 			return (
-				<OwlCell column={column} row={props.data} open={state.open} key={index} tableDidChange={props.tableDidChange}/>
+				<OwlCell column={column} row={props.data} focusedCell={state.focusedCell} open={props.open || state.open} key={index} tableDidChange={props.tableDidChange}/>
 			);
 		});
 

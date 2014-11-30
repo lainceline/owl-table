@@ -6,16 +6,24 @@
 			value: React.PropTypes.node,
 			row: React.PropTypes.object
 		},
-		inputDidChange: function (event) {
-			event.persist();
-			this.debouncedInputChange(event);
+		keydown: function (event) {
+			// Handling the focus of the input myself with tab and shift-tab is
+			// automatically handling readjusting the scroll position of the table,
+			// unlike the default behavior.  See handler in table react component
+			switch (event.which) {
+				case 9:
+					event.preventDefault();
+					break;
+				default:
+					break;
+			}
 		},
-		debouncedInputChange: _.debounce(function (event) {
+		transmitSaveEvent: function (event) {
 			var node = $(this.getDOMNode());
 			var props = this.props;
 
 			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
-		}, 500),
+		},
 		render: function () {
 			var props = this.props;
 
@@ -27,7 +35,7 @@
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
-					input = <input type={props.column.type} defaultValue={props.value} onChange={self.inputDidChange}/>;
+					input = <input type={props.column.type} onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
 					break;
 				case 'select':
 				case 'select_multiple':

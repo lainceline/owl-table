@@ -48,9 +48,7 @@ function owlTableDirective ($http, $timeout, owlTable) {
 					});
 				});
 
-				elem.on('owlTableUpdated', function (event) {
-					var updatedRow = event.result;
-
+				elem.on('owlTableUpdated', function (event, column, row, value) {
 					// Could ajax the saved row to the server here.
 
 					event.stopPropagation();
@@ -158,21 +156,8 @@ function owlExportControls (owlTable) {
 	};
 }
 
-function ngTacky () {
-	return {
-		restrict: 'A',
-		link: function (scope, elem, attrs) {
-			console.log(elem.find('table'));
-			elem.find('table').addClass('tacky');
-			elem.find('thead').find('th').addClass('tacky-top');
-			//$(elem).tacky();
-		}
-	};
-}
-
 angular.module('owlTable')
 	.directive('owlTable', ['$http', '$timeout', 'owlTable', owlTableDirective])
-	.directive('owlTacky', [ngTacky])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls]);
