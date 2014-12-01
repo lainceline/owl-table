@@ -34,6 +34,9 @@ var OwlCell = React.createClass({
 		);
 	},
 	componentDidUpdate: function () {
+
+		var self = this;
+
 		if (this.props.focusedCell !== false) {
 			this.props.focusedCell.find('input').focus();
 		}
@@ -42,6 +45,20 @@ var OwlCell = React.createClass({
 
 		if (swiftboxes.length > 0) {
 			swiftboxes.swiftbox();
+
+			swiftboxes.each(function (index, box) {
+
+				$(box).off('change');
+
+				$(box).on('change', function (event) {
+					var node = $(self.getDOMNode());
+					var props = self.props;
+
+					var val = node.find('.swift-box-hidden-input').val();
+
+					node.trigger('owlTableUpdated', [props.column, props.row, val]);
+				});
+			});
 		}
 	}
 });
