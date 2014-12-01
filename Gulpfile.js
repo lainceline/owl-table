@@ -50,6 +50,15 @@ gulp.task('coffee', function () {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('coffee-tests', function () {
+	return gulp.src(['./tests/e2e/*.coffee', './tests/e2e/**/*.coffee'])
+		.pipe(coffee())
+		.pipe(rename({
+			extname: '.js'
+		}))
+		.pipe(gulp.dest('./tests/e2e'));
+});
+
 gulp.task('js', function () {
 	return gulp.src(['./src/app.js', './src/constants.js', './src/service.js', './src/directive.js'])
 		.pipe(concat('compiled-js.js'))
@@ -126,6 +135,13 @@ gulp.task('clean-dist', function () {
 	);
 });
 
+gulp.task('clean-tests', function () {
+	return (
+		gulp.src(['./tests/e2e/*_spec.js', './tests/e2e/**/*_spec.js', './tests/unit/*_spec.js', './tests/unit/**/*_spec.js'])
+			.pipe(clean())
+	);
+});
+
 gulp.task('clean', function (callback) {
 	runSequence(['clean-build', 'clean-dist'], callback);
 });
@@ -142,4 +158,14 @@ gulp.task('build-release', function (callback) {
 
 gulp.task('watch', function (callback) {
 	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
+});
+
+// test tasks
+
+gulp.task('test', function (callback) {
+	runSequence('clean-tests', 'coffee-tests', 'protractor', 'clean-tests');
+});
+
+gulp.task('protractor', function () {
+
 });
