@@ -114,7 +114,9 @@ gulp.task('vendor', function () {
 		'./bower_components/ladda/dist/angular-ladda.min.js',
 		'./bower_components/angular-ui-utils/ui-utils.min.js',
 
-		'./lib/tacky.js'
+		'./lib/tacky.js',
+		'./lib/swift-box.js',
+		'./lib/swift-search.js'
 
 	])
 		.pipe(concat('vendor.min.js'))
