@@ -28,6 +28,7 @@ node_modules
 .lock-wscript
 
 # Third party dependencies
-bower_components
+# Bringing into repo for gh-pages branch
+# bower_components
 
 .idea
