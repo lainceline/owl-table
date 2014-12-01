@@ -37,5 +37,11 @@ var OwlCell = React.createClass({
 		if (this.props.focusedCell !== false) {
 			this.props.focusedCell.find('input').focus();
 		}
+
+		var swiftboxes = $(this.getDOMNode()).find('.swiftbox');
+
+		if (swiftboxes.length > 0) {
+			swiftboxes.swiftbox();
+		}
 	}
 });

@@ -49,7 +49,7 @@
 							</option>
 						);
 					});
-					input = <select onChange={self.transmitSaveEvent} defaultValue={props.value}>
+					input = <select className="swiftbox" onChange={self.transmitSaveEvent} defaultValue={props.value}>
 								{optionList}
 							</select>;
 					break;
