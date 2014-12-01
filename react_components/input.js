@@ -44,12 +44,12 @@
 				case 'select_multiple':
 					optionList = options.map(function (option, index) {
 						return (
-							<option value={option.value}>
+							<option key={index} value={option.value}>
 								{option.text}
 							</option>
 						);
 					});
-					input = <select onChange={self.transmitSaveEvent} value={props.value}>
+					input = <select onChange={self.transmitSaveEvent} defaultValue={props.value}>
 								{optionList}
 							</select>;
 					break;
@@ -60,7 +60,7 @@
 						return (
 							<div key={index} className="radio">
 								<label>
-									<input type="radio" onChange={self.transmitSaveEvent} value={option.value} name={radioName} />
+									<input type="radio" onChange={self.transmitSaveEvent} defaultValue={option.value} name={radioName} />
 									{option.text}
 								</label>
 							</div>
