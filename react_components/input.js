@@ -49,9 +49,16 @@
 							</option>
 						);
 					});
-					input = <select onChange={self.transmitSaveEvent} defaultValue={props.value}>
-								{optionList}
-							</select>;
+
+					if (props.column.type === 'select_multiple') {
+						input = <select className="swiftbox" multiple={true} defaultValue={props.value.split("||")}>
+									{optionList}
+								</select>;
+					} else {
+						input = <select className="swiftbox" defaultValue={props.value}>
+									{optionList}
+								</select>;
+					}
 					break;
 				case 'radio':
 					var radioName = props.column.field + '_' + props.row.id;
