@@ -114,6 +114,15 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
+				$timeout(function() {
+					$scope.demoCtrl.columns.push({
+						field: 'new_column',
+						title: 'New Column',
+						type: 'text',
+						options: []
+					});
+				}, 2000);
+
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
 						$scope.demoCtrl.data = [];

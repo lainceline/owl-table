@@ -44,6 +44,14 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					}
 				});
 
+				scope.$watchCollection('columns', function (newValue, oldValue) {
+					if (newValue !== oldValue) {
+						rendered.setProps({
+							columns: newValue
+						});
+					}
+				});
+
 				scope.$watchCollection('tacky', function (newValue) {
 					rendered.setProps({
 						tacky: newValue

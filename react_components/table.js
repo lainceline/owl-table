@@ -11,9 +11,6 @@ var OwlTableReact = React.createClass({
 			openRows: {}
 		};
 	},
-	componentDidMount: function () {
-
-	},
 	componentDidUpdate: function () {
 		if (this.props.tacky) {
 			$('.tacky').tacky();
@@ -44,7 +41,6 @@ var OwlTableReact = React.createClass({
 			);
 		});
 
-
 		var rows = props.data.map(function (datum, index) {
 			return (
 				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
@@ -72,11 +68,13 @@ var OwlTableReact = React.createClass({
 				event.stopPropagation();
 			}
 		};
-
+		console.log(headers);
 		return (
 			<table onKeyUp={self.keyup} className="owl-table">
 				<thead>
+					<tr>
 					{headers}
+					</tr>
 				</thead>
 				<tbody>
 					{rows}
