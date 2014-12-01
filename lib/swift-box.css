@@ -1,0 +1,303 @@
+/* =============================================================================
+/* Global
+/* ========================================================================== */
+
+.swift-box-hidden {
+	display: none !important;
+}
+
+.swift-box-shadow-root {
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+}
+
+.swift-box,
+.swift-box a,
+.swift-box div,
+.swift-box-options,
+.swift-box-options div,
+.swift-box-options input {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+/* =============================================================================
+/* Select
+/* ========================================================================== */
+
+swift-box {
+	display: inline-block;
+	vertical-align: middle;
+	min-width: 4em;
+	width: 120px;
+	height: 1.5em;
+	border-radius: 3px;
+	background-color: #FFF;
+	font-family: arial;
+	font-size: inherit;
+	font-weight: normal;
+	text-align: left;
+	cursor: pointer;
+}
+
+:host(swift-box) {
+	display: inline-block;
+	vertical-align: middle;
+	min-width: 4em;
+	width: 120px;
+	height: 1.5em;
+	border-radius: 3px;
+	background-color: #FFF;
+	font-family: arial;
+	font-size: inherit;
+	font-weight: normal;
+	text-align: left;
+	cursor: pointer;
+}
+
+swift-box[disabled] {
+	cursor: default;
+}
+
+:host(swift-box[disabled]) {
+	cursor: default;
+}
+
+.swift-box {
+	display: table;
+	table-layout: fixed;
+	border-spacing: 0;
+	border-radius: inherit;
+	empty-cells: show;
+	width: 100%;
+	height: 100%;
+	max-height: 100%;
+	line-height: 1;
+	outline: none;
+	white-space: nowrap;
+	text-decoration: none;
+	color: #000;
+	cursor: inherit;
+}
+
+.swift-box-focus {
+	outline: 1px solid #0AF;
+	outline-color: rgba(0, 0, 0, 0);
+	box-shadow: 0 0 0 1px #0AF;
+}
+
+.swift-box-text,
+.swift-box-button {
+	display: table-cell;
+	vertical-align: middle;
+	border: 1px solid #AAA;
+	font-size: inherit;
+	font-family: inherit;
+}
+
+.swift-box-text {
+	padding: 0 .2em;
+	border-right: 0;
+	border-top-left-radius: inherit;
+	border-bottom-left-radius: inherit;
+	background-color: transparent;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.swift-box-button {
+	width: 1.5em;
+	border-color: #37B;
+	border-top-right-radius: inherit;
+	border-bottom-right-radius: inherit;
+	background-color: #59D;
+	box-shadow: 0 0 1px 1px rgba(255, 255, 255, .3) inset;
+	text-align: center;
+	text-shadow: 1px 1px rgba(255, 255, 255, .1);
+	color: #048;
+}
+
+.swift-box:hover .swift-box-button {
+	background-color: #6AE;
+}
+
+swift-box[disabled] .swift-box-text {
+	background-color: #DDD;
+	color: #777;
+}
+
+:host(swift-box[disabled]) .swift-box-text {
+	background-color: #DDD;
+	color: #777;
+}
+
+swift-box[disabled] .swift-box-button,
+swift-box[disabled]:hover .swift-box-button {
+	border-color: #AAA;
+	background-color: #BBB;
+	color: #555;
+}
+
+:host(swift-box[disabled]) .swift-box-button,
+:host(swift-box[disabled]:hover) .swift-box-button {
+	border-color: #AAA;
+	background-color: #BBB;
+	color: #555;
+}
+
+/* =============================================================================
+/* Options
+/* ========================================================================== */
+
+swift-box-options {
+	position: fixed;
+	z-index: 2147483648;
+	display: block;
+	top: 0;
+	left: 0;
+	font-family: arial;
+	font-size: inherit;
+	color: #000;
+}
+
+:host(swift-box-options) {
+	position: fixed;
+	z-index: 2147483648;
+	display: block;
+	top: 0;
+	left: 0;
+	font-family: arial;
+	font-size: inherit;
+	color: #000;
+}
+
+.swift-box-options {
+	position: fixed;
+	margin-top: 1px;
+	outline: 1px solid #0AF;
+	outline: rgba(0, 0, 0, 0);
+	border: 1px solid #AAA;
+	background-color: #FFF;
+	box-shadow: 0 0 0 1px #0AF,
+				3px 3px 3px rgba(0, 0, 0, .2);
+}
+
+.swift-box-options-bottom {
+	margin-top: 0;
+	margin-bottom: 1px;
+}
+
+.swift-box-option-filter-container {
+	padding: 5px;
+	border-bottom: 1px solid #AAA;
+}
+
+.swift-box-options-bottom .swift-box-option-filter-container {
+	border-top: 1px solid #AAA;
+	border-bottom: 0;
+}
+
+.swift-box-option-filter-input {
+	width: 100%;
+	padding: 2px 3px;
+	border: 1px solid #AAA;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, .1) inset;
+}
+
+.swift-box-option-scroll {
+	position: relative;
+	overflow: auto;
+	min-width: 100%;
+}
+
+.swift-box-option-list {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
+.swift-box-option {
+	padding: 0 4px;
+	height: 1.4em;
+	line-height: 1.4em;
+	color: #000;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.swift-box-option-text {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.swift-box-option-text mark {
+	background-color: transparent;
+	color: inherit;
+	font-weight: bold;
+}
+
+.swift-box-option-none {
+	display: none;
+	padding: 4px;
+	line-height: 1.4em;
+	color: #444;
+	font-style: italic;
+	cursor: default;
+}
+
+.swift-box-option-empty .swift-box-option-none {
+	display: block;
+}
+
+.swift-box-option-highlight {
+	background-color: #18F;
+	color: #FFF;
+}
+
+/* =============================================================================
+/* Multiple Select
+/* ========================================================================== */
+
+.swift-box-option-helpers {
+	display: none;
+}
+
+.swift-box-option-multiple .swift-box-option-helpers {
+	display: block;
+}
+
+.swift-box-option-helper {
+	display: inline-block;
+	margin: .3em;
+	color: #00F;
+	font-size: .9em;
+	cursor: pointer;
+}
+
+.swift-box-option-helper:hover {
+	text-decoration: underline;
+}
+
+.swift-box-option-state {
+	display: none;
+	vertical-align: middle;
+	min-width: 8px;
+	width: .8em;
+	min-height: 8px;
+	height: .8em;
+	margin-right: 4px;
+	outline: 1px solid #000;
+	border: 2px solid #FFF;
+	background-color: #FFF;
+}
+
+.swift-box-option-multiple .swift-box-option-state {
+	display: inline-block;
+}
+
+.swift-box-option-selected .swift-box-option-state {
+	background-color: #18F;
+}
