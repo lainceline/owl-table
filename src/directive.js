@@ -11,12 +11,50 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 		templateUrl: 'partials/table.html',
 		controllerAs: 'owlCtrl',
 		compile: function (tElem, tAttrs) {
-			owlTable.registerTable(tElem[0].id);
 
 			return function link (scope, elem, attrs) {
 				var table;
 				var rendered;
 				var container = elem.find('.owl-react-container')[0];
+
+				owlTable.registerTable(elem[0].id, function handleTableEvent (event, data) {
+					var newLockedCells;
+
+					switch (event) {
+						case 'cellLocked':
+							newLockedCells = React.addons.update(rendered.props.lockedCells, {
+								$push: [data]
+							});
+
+							console.log(newLockedCells);
+
+							rendered.setProps({
+								lockedCells: newLockedCells
+							});
+							break;
+						case 'cellUnlocked':
+							newLockedCells = rendered.props.lockedCells.filter(function (cell, index) {
+
+								var cellField = cell[Object.keys(cell)[0]];
+								var dataField = data[Object.keys(data)[0]];
+								console.log(cellField);
+								console.log(dataField);
+								if (cellField !== dataField) {
+									return true;
+								}
+							});
+
+							console.log(newLockedCells);
+							console.log(newLockedCells.length);
+
+							rendered.setProps({
+								lockedCells: newLockedCells
+							});
+							break;
+						default:
+							throw 'OwlException: Unhandled event in table ' + tElem[0].id;
+					}
+				});
 
 				scope.loading = true;
 				scope.takingAWhile = false;
@@ -54,7 +92,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						});
 					}
 				});
-
+/*
 				scope.$on('cellLocked', function (event, data) {
 					// really need to check and make sure its not defined already
 					var newLockedCells = React.addons.update(rendered.props.lockedCells, {
@@ -65,7 +103,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						lockedCells: newLockedCells
 					});
 				});
-
+*/
 				scope.$watchCollection('tacky', function (newValue) {
 					rendered.setProps({
 						tacky: newValue

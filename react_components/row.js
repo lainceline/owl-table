@@ -4,7 +4,7 @@ var OwlRow = React.createClass({
 		data: React.PropTypes.object.isRequired,
 		columns: React.PropTypes.array.isRequired,
 		open: React.PropTypes.bool.isRequired,
-		lockedCells: React.PropTypes.object
+		lockedCells: React.PropTypes.array
 	},
 	getInitialState: function () {
 		return {

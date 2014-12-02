@@ -45,7 +45,8 @@ var OwlTableReact = React.createClass({
 		var rows = props.data.map(function (datum, index) {
 
 			var lockedForRow = _.find(props.lockedCells, function (value, index) {
-				if (parseInt(Object.keys(value)[0]) === datum.id) {
+
+				if (typeof value === 'object' && parseInt(Object.keys(value)[0]) === datum.id) {
 					return true;
 				}
 			});

@@ -47,8 +47,11 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.lockedCells = [];
 
-	service.registerTable = function (id) {
-		this.tables.push({ id: id });
+	service.registerTable = function (id, callback) {
+		this.tables.push({
+			id: id,
+			callbacks: $.Callbacks().add(callback)
+		});
 	};
 
 	service.tableWithId = function (id) {
@@ -107,8 +110,27 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		this.lockedCells[row] = column;
 		var cell = {};
 		cell[row] = column;
-		
-		$rootScope.$broadcast('cellLocked', cell);
+
+		this.tables.forEach(function (table, index) {
+			table.callbacks.fire('cellLocked', cell);
+		});
+	};
+
+	service.unlockCell = function (row, column) {
+		this.lockedCells = this.lockedCells.map(function (cell, key) {
+		//	console.log(cell);
+			//console.log(index);
+			if (column !== cell && row !== key) {
+				return cell;
+			}
+		});
+
+		var cell = {};
+		cell[row] = column;
+
+		this.tables.forEach(function (table, index) {
+			table.callbacks.fire('cellUnlocked', cell);
+		});
 	};
 
 	return service;
