@@ -20,20 +20,19 @@
 		
 				button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()") Save
 	
-	.owl-table-wrapper.table-responsive.tacky
-		.owl-table-inner-wrapper
-			//
-				.owl-mass-update-row(ng-show="owlCtrl.massUpdate === true")
-					table
-						thead
-							tr
-								th(ng-repeat="column in columns track by $index")
-									{{column.title}}
-						tbody
-							tr
-								td(ng-repeat="column in columns track by $index")
-									input(type="text")
-			
+	.owl-table-wrapper
+		.owl-mass-update-row(ng-show="owlCtrl.massUpdate === true")
+			table
+				thead
+					tr
+						th(ng-repeat="column in columns track by $index")
+							{{column.title}}
+				tbody
+					tr
+						td(ng-repeat="column in columns track by $index")
+							input(type="text")
+								
+		.owl-table-inner-wrapper.table-responsive.tacky
 			.owl-react-container(ng-hide="loading === true")
 				
 			.owl-ajax-loading(ng-show="loading === true")

@@ -139,6 +139,14 @@
 	}
 }
 
+.owl-mass-update-row > table {
+	overflow: auto;
+
+	tbody > tr {
+		background-color: red!important;
+	}
+}
+
 .owl-table .tacky-top:not(.tacky-top-origin) {
 	box-shadow: 1px 1px 0 0 #AAA,
 	0 4px 3px -1px rgba(0, 0, 0, .2);

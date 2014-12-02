@@ -96,11 +96,14 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				});
 
 				scope.$watch('owlCtrl.massUpdate', function (newValue) {
-					console.log(newValue);
 					rendered.setProps({
 						massUpdate: newValue
 					});
 				});
+
+				scope.massUpdate = function () {
+					console.log(rendered.props.data);
+				};
 
 				if (scope.options.saveIndividualRows) {
 					elem.on('owlTableUpdated', function (event, column, row, value) {
