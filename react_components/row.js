@@ -35,8 +35,10 @@ var OwlRow = React.createClass({
 		if (props.lockedCells) {
 			lockedCells = props.lockedCells[props.data.id];
 
-			if (lockedCells.constructor !== Array) {
+			if (lockedCells && lockedCells.constructor !== Array) {
 				lockedCells = [lockedCells];
+			} else {
+				lockedCells = [];
 			}
 		}
 
@@ -57,7 +59,7 @@ var OwlRow = React.createClass({
 		});
 
 		return(
-			<tr className="owl-row" key={props.key} onClick={this.clickHandler}>
+			<tr className={props.className + " owl-row"} key={props.key} onClick={this.clickHandler}>
 				{cells}
 			</tr>
 		);

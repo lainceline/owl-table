@@ -53,6 +53,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				scope.takingAWhile = false;
 				scope.saved = false;
 
+				scope.owlCtrl.massUpdate = false;
+
 				scope.lockedCells = owlTable.lockedCells;
 
 				$timeout(function () {
@@ -63,7 +65,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					data: scope.data,
 					columns: scope.columns,
 					tacky: scope.tacky,
-					lockedCells: []
+					lockedCells: [],
+					massUpdate: scope.owlCtrl.massUpdate
 				});
 
 				rendered = React.render(table, container);
@@ -85,21 +88,17 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						});
 					}
 				});
-/*
-				scope.$on('cellLocked', function (event, data) {
-					// really need to check and make sure its not defined already
-					var newLockedCells = React.addons.update(rendered.props.lockedCells, {
-						$push: [data]
-					});
 
-					rendered.setProps({
-						lockedCells: newLockedCells
-					});
-				});
-*/
 				scope.$watchCollection('tacky', function (newValue) {
 					rendered.setProps({
 						tacky: newValue
+					});
+				});
+
+				scope.$watch('owlCtrl.massUpdate', function (newValue) {
+					console.log(newValue);
+					rendered.setProps({
+						massUpdate: newValue
 					});
 				});
 
