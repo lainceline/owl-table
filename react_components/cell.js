@@ -16,8 +16,6 @@ var OwlCell = React.createClass({
 		var props = this.props;
 		var content = <span className="owl-cell-value-label">{props.row[props.column.field]}</span>;
 
-		props.editable = props.column.editable || true;
-
 		if (props.open === true) {
 			content = <OwlInput
 						column={props.column}

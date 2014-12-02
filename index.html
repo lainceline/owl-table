@@ -58,9 +58,19 @@
 				<div class="navbar-header">
 					<a class="navbar-brand" href="#">Owl Table Demo</a>
 				</div>
-				<ul class="nav navbar-nav navbar-form">
-					<li>
+				<ul class="nav navbar-nav">
+					<li class="navbar-form">
 						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.tacky.top = !demoCtrl.tacky.top">Tacky Top</button>
+					</li>
+					<li class="navbar-form">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Record ID" ng-model="cellToChange.row" />
+							<select class="form-control" ng-model="cellToChange.column" ng-options="column as column.title for column in demoCtrl.columns">
+								<option>Select column</option>
+							</select>
+							<button class="btn btn-sm btn-default" ng-click="demoCtrl.lockCell()">Lock</button>
+							<button class="btn btn-sm btn-default" ng-click="demoCtrl.unlockCell()">Unlock</button>
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -84,10 +94,17 @@
 
 		angular.module('owlTableDemo', ['owlTable'])
 			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
+				var self = this;
+
 				this.columns = [];
 				this.data = [];
 
 				this.owlTable = owlTable;
+
+				$scope.cellToChange = {
+					row: null,
+					column: null
+				};
 
 				this.tacky = {
 					top: true
@@ -96,6 +113,17 @@
 				this.options = {
 					saveIndividualRows: true
 				};
+
+				// You can call the owlTable.lockCell directly from ng-click etc,
+				// this is just to illustrate its use or if you need to do more before/after
+				// calling it.
+				this.lockCell = function () {
+					owlTable.lockCell($scope.cellToChange.row, $scope.cellToChange.column.field);
+				};
+
+				this.unlockCell = function () {
+					owlTable.unlockCell($scope.cellToChange.row, $scope.cellToChange.column.field);
+				}
 
 				for (var i = 0; i < 50; i++) {
 					var col = {

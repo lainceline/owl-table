@@ -35,7 +35,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, owlConstants) {
+function owlTableService ($http, $rootScope, owlConstants) {
 	var service = {};
 
 	service.tables = [];
@@ -45,8 +45,13 @@ function owlTableService ($http, owlConstants) {
 	service.total = 0;
 	service.count = owlConstants.defaults.PER_PAGE;
 
-	service.registerTable = function (id) {
-		this.tables.push({ id: id });
+	service.lockedCells = [];
+
+	service.registerTable = function (id, callback) {
+		this.tables.push({
+			id: id,
+			callbacks: $.Callbacks().add(callback)
+		});
 	};
 
 	service.tableWithId = function (id) {
@@ -98,8 +103,36 @@ function owlTableService ($http, owlConstants) {
 		});
 	};
 
+	service.lockCell = function (row, column) {
+		// row is id
+		// column is the field string ie 'first_name'
+
+		this.lockedCells[row] = column;
+		var cell = {};
+		cell[row] = column;
+
+		this.tables.forEach(function (table, index) {
+			table.callbacks.fire('cellLocked', cell);
+		});
+	};
+
+	service.unlockCell = function (row, column) {
+		this.lockedCells = this.lockedCells.map(function (cell, key) {
+			if (column !== cell && row !== key) {
+				return cell;
+			}
+		});
+
+		var cell = {};
+		cell[row] = column;
+
+		this.tables.forEach(function (table, index) {
+			table.callbacks.fire('cellUnlocked', cell);
+		});
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', owlTableService])
 	.service('owlResource', ['$http', 'owlConstants', owlResource]);
