@@ -54,6 +54,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				scope.saved = false;
 
 				scope.owlCtrl.massUpdate = false;
+				scope.massUpdateData = {};
 
 				scope.lockedCells = owlTable.lockedCells;
 
@@ -71,7 +72,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				rendered = React.render(table, container);
 
-				scope.$watchCollection('data', function (newValue, oldValue) {
+				scope.$watch('data', function (newValue, oldValue) {
 					if (newValue !== oldValue) {
 						rendered.setProps({
 							data: scope.owlCtrl.dataForPage(owlTable.page)
@@ -102,7 +103,14 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				});
 
 				scope.massUpdate = function () {
-					console.log(rendered.props.data);
+					scope.data = scope.data.map(function (datum, index) {
+						if (index < (owlTable.page * owlTable.count - 1)) {
+							angular.forEach(scope.massUpdateData, function (value, field) {
+								datum[field] = value;
+							});
+						}
+						return datum;
+					});
 				};
 
 				if (scope.options.saveIndividualRows) {
