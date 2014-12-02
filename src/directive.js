@@ -26,26 +26,19 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 								$push: [data]
 							});
 
-							console.log(newLockedCells);
-
 							rendered.setProps({
 								lockedCells: newLockedCells
 							});
 							break;
 						case 'cellUnlocked':
 							newLockedCells = rendered.props.lockedCells.filter(function (cell, index) {
-
 								var cellField = cell[Object.keys(cell)[0]];
 								var dataField = data[Object.keys(data)[0]];
-								console.log(cellField);
-								console.log(dataField);
+
 								if (cellField !== dataField) {
 									return true;
 								}
 							});
-
-							console.log(newLockedCells);
-							console.log(newLockedCells.length);
 
 							rendered.setProps({
 								lockedCells: newLockedCells

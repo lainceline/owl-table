@@ -105,7 +105,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.lockCell = function (row, column) {
 		// row is id
-		// column is the field string ie 'custom_983247289428934'
+		// column is the field string ie 'first_name'
 
 		this.lockedCells[row] = column;
 		var cell = {};
@@ -118,8 +118,6 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.unlockCell = function (row, column) {
 		this.lockedCells = this.lockedCells.map(function (cell, key) {
-		//	console.log(cell);
-			//console.log(index);
 			if (column !== cell && row !== key) {
 				return cell;
 			}
