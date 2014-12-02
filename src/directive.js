@@ -22,6 +22,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				scope.takingAWhile = false;
 				scope.saved = false;
 
+				scope.lockedCells = owlTable.lockedCells;
+
 				$timeout(function () {
 					scope.takingAWhile = true;
 				}, 5000);
@@ -29,7 +31,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				table = React.createElement(OwlTableReact, {
 					data: scope.data,
 					columns: scope.columns,
-					tacky: scope.tacky
+					tacky: scope.tacky,
+					lockedCells: []
 				});
 
 				rendered = React.render(table, container);
@@ -50,6 +53,17 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 							columns: newValue
 						});
 					}
+				});
+
+				scope.$on('cellLocked', function (event, data) {
+					// really need to check and make sure its not defined already
+					var newLockedCells = React.addons.update(rendered.props.lockedCells, {
+						$push: [data]
+					});
+
+					rendered.setProps({
+						lockedCells: newLockedCells
+					});
 				});
 
 				scope.$watchCollection('tacky', function (newValue) {

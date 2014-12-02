@@ -35,7 +35,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, owlConstants) {
+function owlTableService ($http, $rootScope, owlConstants) {
 	var service = {};
 
 	service.tables = [];
@@ -44,6 +44,8 @@ function owlTableService ($http, owlConstants) {
 	service.pages = 1;
 	service.total = 0;
 	service.count = owlConstants.defaults.PER_PAGE;
+
+	service.lockedCells = [];
 
 	service.registerTable = function (id) {
 		this.tables.push({ id: id });
@@ -98,8 +100,19 @@ function owlTableService ($http, owlConstants) {
 		});
 	};
 
+	service.lockCell = function (row, column) {
+		// row is id
+		// column is the field string ie 'custom_983247289428934'
+
+		this.lockedCells[row] = column;
+		var cell = {};
+		cell[row] = column;
+		
+		$rootScope.$broadcast('cellLocked', cell);
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', 'owlConstants', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', owlTableService])
 	.service('owlResource', ['$http', 'owlConstants', owlResource]);

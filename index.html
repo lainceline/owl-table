@@ -62,6 +62,12 @@
 					<li>
 						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.tacky.top = !demoCtrl.tacky.top">Tacky Top</button>
 					</li>
+					<li>
+						<input type="text" class="form-control" placeholder="Record ID" ng-model="cellToLock.row" />
+						<select class="form-control" ng-model="cellToLock.column" ng-options="column as column.title for column in demoCtrl.columns">
+						</select>
+						<button class="btn btn-sm btn-default" ng-click="demoCtrl.lockCell()">Lock</button>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -84,10 +90,17 @@
 
 		angular.module('owlTableDemo', ['owlTable'])
 			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
+				var self = this;
+
 				this.columns = [];
 				this.data = [];
 
 				this.owlTable = owlTable;
+
+				$scope.cellToLock = {
+					row: null,
+					column: null
+				};
 
 				this.tacky = {
 					top: true
@@ -95,6 +108,13 @@
 
 				this.options = {
 					saveIndividualRows: true
+				};
+
+				// You can call the owlTable.lockCell directly from ng-click etc,
+				// this is just to illustrate its use or if you need to do more before/after
+				// calling it.
+				this.lockCell = function () {
+					owlTable.lockCell($scope.cellToLock.row, $scope.cellToLock.column.field);
 				};
 
 				for (var i = 0; i < 50; i++) {
