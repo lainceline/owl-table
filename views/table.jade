@@ -5,15 +5,34 @@
 		owl-export-controls
 		owl-filter-controls
 			
-		.owl-top-control-save
-			div(ng-hide="saved !== true") Saved
+		span.owl-top-control-right-buttons
+			.form-inline.owl-top-control-right.owl-top-control-mass-update(ng-if="options.massUpdate === true")
+				.form-group
+					.checkbox
+						label
+							input(type="checkbox", id="massUpdateToggle", value="true", ng-model="owlCtrl.massUpdate")
+							| Mass Update
+				.form-group(ng-if="owlCtrl.massUpdate")
+					button.btn.btn-sm.btn-default#massUpdate(ng-click="massUpdate()") Run Mass Update
+					
+			.owl-top-control-right.owl-top-control-save(ng-if="options.saveIndividualRows !== true")
+				div(ng-hide="saved !== true") Saved
+		
+				button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()") Save
 	
-			button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()")
-				| Save
-	
-	.owl-table-wrapper.table-responsive.tacky
-		.owl-table-inner-wrapper
-			
+	.owl-table-wrapper
+		.owl-mass-update-row(ng-show="owlCtrl.massUpdate")
+			table
+				thead
+					tr
+						th(ng-repeat="column in columns track by $index")
+							{{column.title}}
+				tbody
+					tr
+						td(ng-repeat="column in columns track by $index")
+							input(type="text", ng-model="massUpdateData[column.field]")
+								
+		.owl-table-inner-wrapper.table-responsive.tacky
 			.owl-react-container(ng-hide="loading === true")
 				
 			.owl-ajax-loading(ng-show="loading === true")
