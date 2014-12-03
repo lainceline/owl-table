@@ -32,7 +32,6 @@ var OwlCell = React.createClass({
 		);
 	},
 	componentDidUpdate: function () {
-
 		var self = this;
 
 		if (this.props.focusedCell !== false) {

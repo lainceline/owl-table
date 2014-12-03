@@ -19,37 +19,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				var deepWatch = true;
 
-				owlTable.registerTable(elem[0].id, function handleTableEvent (event, data) {
-					var newLockedCells;
-
-					switch (event) {
-						case 'cellLocked':
-							newLockedCells = React.addons.update(rendered.props.lockedCells, {
-								$push: [data]
-							});
-
-							rendered.setProps({
-								lockedCells: newLockedCells
-							});
-							break;
-						case 'cellUnlocked':
-							newLockedCells = rendered.props.lockedCells.filter(function (cell, index) {
-								var cellField = cell[Object.keys(cell)[0]];
-								var dataField = data[Object.keys(data)[0]];
-
-								if (cellField !== dataField) {
-									return true;
-								}
-							});
-
-							rendered.setProps({
-								lockedCells: newLockedCells
-							});
-							break;
-						default:
-							throw 'OwlException: Unhandled event in table ' + tElem[0].id;
-					}
-				});
+				owlTable.registerTable(elem[0].id);
 
 				scope.loading = true;
 				scope.takingAWhile = false;
@@ -147,14 +117,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				};
 
-				scope.owlCtrl.nextPage = function () {
-					owlTable.nextPage();
-				};
-
-				scope.owlCtrl.prevPage = function () {
-					owlTable.prevPage();
-				};
-
 				var opts = {
 					lines: 13, // The number of lines to draw
 					length: 20, // The length of each line
@@ -180,6 +142,14 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 		},
 		controller: ['$scope', function ($scope) {
 			this.owlTable = owlTable;
+
+			this.nextPage = function () {
+				owlTable.nextPage();
+			};
+
+			this.prevPage = function () {
+				owlTable.prevPage();
+			};
 		}]
 	};
 }

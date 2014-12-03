@@ -173,11 +173,16 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		// column is the field string ie 'first_name'
 
 		this.lockedCells[row] = column;
+
 		var cell = {};
 		cell[row] = column;
 
-		this.tables.forEach(function (table, index) {
-			table.callbacks.fire('cellLocked', cell);
+		newLockedCells = React.addons.update(this.rendered.props.lockedCells, {
+			$push: [cell]
+		});
+
+		this.rendered.setProps({
+			lockedCells: newLockedCells
 		});
 	};
 
@@ -188,11 +193,20 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			}
 		});
 
-		var cell = {};
-		cell[row] = column;
+		var newCell = {};
+		newCell[row] = column;
 
-		this.tables.forEach(function (table, index) {
-			table.callbacks.fire('cellUnlocked', cell);
+		var newLockedCells = this.rendered.props.lockedCells.filter(function (cell, index) {
+			var cellField = cell[Object.keys(cell)[0]];
+			var newField = newCell[Object.keys(newCell)[0]];
+
+			if (cellField !== newField) {
+				return true;
+			}
+		});
+
+		this.rendered.setProps({
+			lockedCells: newLockedCells
 		});
 	};
 
