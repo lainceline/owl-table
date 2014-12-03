@@ -38,21 +38,56 @@ function owlResource ($http, owlConstants) {
 }
 
 function owlTableService ($http, $rootScope, owlConstants) {
-	var service = {};
+	var unrenderedTable;
 
-	service.tables = [];
-
-	service.page = 1;
-	service.pages = 1;
-	service.total = 0;
-	service.count = owlConstants.defaults.PER_PAGE;
+	var service = {
+		tables: [],
+		data: [],
+		pageData: [],
+		columns: [],
+		renderedTable: {},
+		page: 1,
+		pages: 1,
+		total: 0,
+		count: owlConstants.defaults.PER_PAGE
+	};
 
 	service.lockedCells = [];
+
+	service.initialize = function (settings) {
+		unrenderedTable = React.createElement(OwlTableReact, {
+			data: settings.data,
+			columns: settings.columns,
+			tacky: settings.options.tacky,
+			lockedCells: [],
+			massUpdate: settings.options.massUpdate
+		});
+
+		return this;
+	};
+
+	service.renderInto = function (container) {
+		this.rendered = React.render(unrenderedTable, container);
+
+		return this.rendered;
+	};
 
 	service.registerTable = function (id, callback) {
 		this.tables.push({
 			id: id,
 			callbacks: $.Callbacks().add(callback)
+		});
+	};
+
+	service.currentPageOfData = function () {
+		console.log(this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1)));
+		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
+	};
+
+	service.updateWith = function (newData) {
+		this.data = newData;
+		this.rendered.setProps({
+			data: this.currentPageOfData()
 		});
 	};
 

@@ -156,6 +156,10 @@
 						type: 'text',
 						options: []
 					});
+					console.log('timeout firing');
+					$scope.demoCtrl.data.push({
+						'custom_2000000': '132213123'
+					});
 				}, 2000);
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
