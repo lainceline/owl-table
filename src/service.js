@@ -96,12 +96,13 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			throw 'OwlException: No save route provided to table!';
 		}
 
+		var data = _.clone(settings.params.post);
+		data.data = settings.changedData;
+
 		return $http({
 			method: 'post',
 			url: settings.where,
-			data: {
-				data: settings.changedData
-			}
+			data: data
 		});
 	};
 
