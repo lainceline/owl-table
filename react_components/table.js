@@ -5,7 +5,8 @@ var OwlTableReact = React.createClass({
 		columns: React.PropTypes.array.isRequired,
 		tacky: React.PropTypes.object,
 		lockedCells: React.PropTypes.array,
-		massUpdate: React.PropTypes.bool
+		massUpdate: React.PropTypes.bool,
+		pageChanged: React.PropTypes.bool
 	},
 	getDefaultProps: function () {
 		return {
@@ -14,7 +15,8 @@ var OwlTableReact = React.createClass({
 				left: false
 			},
 			lockedCells: [],
-			massUpdate: false
+			massUpdate: false,
+			pageChanged: false
 		};
 	},
 	getInitialState: function () {
@@ -26,6 +28,13 @@ var OwlTableReact = React.createClass({
 	componentDidUpdate: function () {
 		if (this.props.tacky) {
 			$('.tacky').tacky();
+		}
+	},
+	componentWillReceiveProps: function (newProps) {
+		if (newProps.pageChanged === true) {
+			this.setState({
+				openRows: {}
+			});
 		}
 	},
 	render: function () {
@@ -66,13 +75,7 @@ var OwlTableReact = React.createClass({
 				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
 		});
-/*
-		if (props.massUpdate === true) {
-			rows.unshift(
-				<OwlRow className="owl-react-mass-update-row" data={{}} lockedCells={[]} columns={props.columns} key={9999} open={true} tableDidChange={self.tableDidChange} />
-			);
-		}
-*/
+
 		self.keyup = function (event) {
 			var td = $(event.target).parent();
 			var handled = false;

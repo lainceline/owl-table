@@ -150,16 +150,17 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				scope.owlCtrl.nextPage = function () {
 					owlTable.nextPage();
-					// set the table props to the data for the new page.
 					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTable.page)
+						data: scope.owlCtrl.dataForPage(owlTable.page),
+						pageChanged: true
 					});
 				};
 
 				scope.owlCtrl.prevPage = function () {
 					owlTable.prevPage();
 					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTable.page)
+						data: scope.owlCtrl.dataForPage(owlTable.page),
+						pageChanged: true
 					});
 				};
 

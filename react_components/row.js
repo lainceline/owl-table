@@ -12,6 +12,11 @@ var OwlRow = React.createClass({
 			focusedCell: false
 		};
 	},
+	componentWillReceiveProps: function (newProps) {
+		this.setState({
+			open: newProps.open
+		});
+	},
 	clickHandler: function (event) {
 		var cell = $(event.target);
 		// need to focus the input that was clicked
