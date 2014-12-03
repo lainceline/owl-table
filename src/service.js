@@ -38,22 +38,74 @@ function owlResource ($http, owlConstants) {
 }
 
 function owlTableService ($http, $rootScope, owlConstants) {
-	var service = {};
+	var unrenderedTable;
 
-	service.tables = [];
-
-	service.page = 1;
-	service.pages = 1;
-	service.total = 0;
-	service.count = owlConstants.defaults.PER_PAGE;
+	var service = {
+		tables: [],
+		data: [],
+		pageData: [],
+		columns: [],
+		options: {},
+		renderedTable: {},
+		page: 1,
+		pages: 1,
+		total: 0,
+		count: owlConstants.defaults.PER_PAGE
+	};
 
 	service.lockedCells = [];
+
+	service.initialize = function (settings) {
+		this.data = settings.data;
+		this.columns = settings.columns;
+		this.options = settings.options;
+
+		unrenderedTable = React.createElement(OwlTableReact, {
+			data: settings.data,
+			columns: settings.columns,
+			tacky: settings.options.tacky,
+			lockedCells: [],
+			massUpdate: settings.options.massUpdate
+		});
+
+		return this;
+	};
+
+	service.renderInto = function (container) {
+		this.rendered = React.render(unrenderedTable, container);
+
+		return this.rendered;
+	};
 
 	service.registerTable = function (id, callback) {
 		this.tables.push({
 			id: id,
 			callbacks: $.Callbacks().add(callback)
 		});
+	};
+
+	service.currentPageOfData = function () {
+		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
+	};
+
+	service.updateData = function (newData) {
+		if (typeof newData !== 'undefined') {
+			this.data = newData;
+			this.rendered.setProps({
+				data: this.currentPageOfData()
+			});
+		}
+	};
+
+	service.updateColumns = function (newColumns) {
+		this.columns = newColumns;
+		this.rendered.setProps({
+			columns: this.columns
+		});
+	};
+
+	service.updateTacky = function (newTacky) {
+		this.options.tacky = newTacky;
 	};
 
 	service.tableWithId = function (id) {
@@ -72,12 +124,22 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		if (this.page < this.pages) {
 			this.page += 1;
 		}
+
+		this.rendered.setProps({
+			data: this.currentPageOfData(),
+			pageChanged: true
+		});
 	};
 
 	service.prevPage = function () {
 		if (this.page > 1) {
 			this.page -= 1;
 		}
+
+		this.rendered.setProps({
+			data: this.currentPageOfData(),
+			pageChanged: true
+		});
 	};
 
 	// enables client-side pagination.
@@ -111,11 +173,16 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		// column is the field string ie 'first_name'
 
 		this.lockedCells[row] = column;
+
 		var cell = {};
 		cell[row] = column;
 
-		this.tables.forEach(function (table, index) {
-			table.callbacks.fire('cellLocked', cell);
+		newLockedCells = React.addons.update(this.rendered.props.lockedCells, {
+			$push: [cell]
+		});
+
+		this.rendered.setProps({
+			lockedCells: newLockedCells
 		});
 	};
 
@@ -126,11 +193,20 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			}
 		});
 
-		var cell = {};
-		cell[row] = column;
+		var newCell = {};
+		newCell[row] = column;
 
-		this.tables.forEach(function (table, index) {
-			table.callbacks.fire('cellUnlocked', cell);
+		var newLockedCells = this.rendered.props.lockedCells.filter(function (cell, index) {
+			var cellField = cell[Object.keys(cell)[0]];
+			var newField = newCell[Object.keys(newCell)[0]];
+
+			if (cellField !== newField) {
+				return true;
+			}
+		});
+
+		this.rendered.setProps({
+			lockedCells: newLockedCells
 		});
 	};
 

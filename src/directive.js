@@ -17,37 +17,9 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				var rendered;
 				var container = elem.find('.owl-react-container')[0];
 
-				owlTable.registerTable(elem[0].id, function handleTableEvent (event, data) {
-					var newLockedCells;
+				var deepWatch = true;
 
-					switch (event) {
-						case 'cellLocked':
-							newLockedCells = React.addons.update(rendered.props.lockedCells, {
-								$push: [data]
-							});
-
-							rendered.setProps({
-								lockedCells: newLockedCells
-							});
-							break;
-						case 'cellUnlocked':
-							newLockedCells = rendered.props.lockedCells.filter(function (cell, index) {
-								var cellField = cell[Object.keys(cell)[0]];
-								var dataField = data[Object.keys(data)[0]];
-
-								if (cellField !== dataField) {
-									return true;
-								}
-							});
-
-							rendered.setProps({
-								lockedCells: newLockedCells
-							});
-							break;
-						default:
-							throw 'OwlException: Unhandled event in table ' + tElem[0].id;
-					}
-				});
+				owlTable.registerTable(elem[0].id);
 
 				scope.loading = true;
 				scope.takingAWhile = false;
@@ -62,39 +34,33 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					scope.takingAWhile = true;
 				}, 5000);
 
-				table = React.createElement(OwlTableReact, {
+				rendered = owlTable.initialize({
 					data: scope.data,
 					columns: scope.columns,
-					tacky: scope.tacky,
-					lockedCells: [],
-					massUpdate: scope.owlCtrl.massUpdate
-				});
+					options: {
+						tacky: scope.tacky,
+						massUpdate: scope.owlCtrl.massUpdate
+					}
+				}).renderInto(container);
 
-				rendered = React.render(table, container);
-
-				scope.$watch('data', function (newValue, oldValue) {
-					if (newValue !== oldValue) {
-						rendered.setProps({
-							data: scope.owlCtrl.dataForPage(owlTable.page)
-						});
+				scope.$watch('data', function (newValue) {
+					// use forthcoming empty() to remove all rows
+					if (newValue.length > 0) {
+						owlTable.updateData(newValue);
 
 						scope.loading = false;
 					}
-				});
+				}, deepWatch);
 
 				scope.$watchCollection('columns', function (newValue, oldValue) {
 					if (newValue !== oldValue) {
-						rendered.setProps({
-							columns: newValue
-						});
+						owlTable.updateColumns(newValue);
 					}
 				});
 
-				scope.$watchCollection('tacky', function (newValue) {
-					rendered.setProps({
-						tacky: newValue
-					});
-				});
+				scope.$watch('tacky', function (newValue) {
+					owlTable.updateTacky(newValue);
+				}, deepWatch);
 
 				scope.$watch('owlCtrl.massUpdate', function (newValue) {
 					rendered.setProps({
@@ -102,6 +68,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				});
 
+				// Yeah, totaly gotta get this out of here.
 				scope.massUpdate = function () {
 					scope.data = scope.data.map(function (datum, index) {
 						if (index < (owlTable.page * owlTable.count - 1)) {
@@ -113,6 +80,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				};
 
+				// Maybe this can stay since its an event handler.
+				// But owlTable should be calling owlResource for sure.
 				if (scope.options.saveIndividualRows) {
 					elem.on('owlTableUpdated', function (event, column, row, value) {
 						owlResource({
@@ -148,22 +117,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				};
 
-				scope.owlCtrl.nextPage = function () {
-					owlTable.nextPage();
-					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTable.page),
-						pageChanged: true
-					});
-				};
-
-				scope.owlCtrl.prevPage = function () {
-					owlTable.prevPage();
-					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTable.page),
-						pageChanged: true
-					});
-				};
-
 				var opts = {
 					lines: 13, // The number of lines to draw
 					length: 20, // The length of each line
@@ -190,10 +143,12 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 		controller: ['$scope', function ($scope) {
 			this.owlTable = owlTable;
 
-			this.dataForPage = function (page) {
-				var data = $scope.data.slice(((page - 1) * this.owlTable.count), ((page * this.owlTable.count) - 1));
+			this.nextPage = function () {
+				owlTable.nextPage();
+			};
 
-				return data;
+			this.prevPage = function () {
+				owlTable.prevPage();
 			};
 		}]
 	};

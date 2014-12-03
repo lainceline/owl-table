@@ -32,6 +32,7 @@ var OwlTableReact = React.createClass({
 	},
 	componentWillReceiveProps: function (newProps) {
 		if (newProps.pageChanged === true) {
+			console.log('resetting page');
 			this.setState({
 				openRows: {}
 			});
@@ -65,12 +66,11 @@ var OwlTableReact = React.createClass({
 		var rows = props.data.map(function (datum, index) {
 
 			var lockedForRow = _.find(props.lockedCells, function (value, index) {
-
 				if (typeof value === 'object' && parseInt(Object.keys(value)[0]) === datum.id) {
 					return true;
 				}
 			});
-
+			console.log(lockedForRow);
 			return (
 				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
