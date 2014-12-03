@@ -45,6 +45,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		data: [],
 		pageData: [],
 		columns: [],
+		options: {},
 		renderedTable: {},
 		page: 1,
 		pages: 1,
@@ -55,6 +56,10 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	service.lockedCells = [];
 
 	service.initialize = function (settings) {
+		this.data = settings.data;
+		this.columns = settings.columns;
+		this.options = settings.options;
+
 		unrenderedTable = React.createElement(OwlTableReact, {
 			data: settings.data,
 			columns: settings.columns,
@@ -80,15 +85,27 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	};
 
 	service.currentPageOfData = function () {
-		console.log(this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1)));
 		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
 	};
 
-	service.updateWith = function (newData) {
-		this.data = newData;
+	service.updateData = function (newData) {
+		if (typeof newData !== 'undefined') {
+			this.data = newData;
+			this.rendered.setProps({
+				data: this.currentPageOfData()
+			});
+		}
+	};
+
+	service.updateColumns = function (newColumns) {
+		this.columns = newColumns;
 		this.rendered.setProps({
-			data: this.currentPageOfData()
+			columns: this.columns
 		});
+	};
+
+	service.updateTacky = function (newTacky) {
+		this.options.tacky = newTacky;
 	};
 
 	service.tableWithId = function (id) {
@@ -107,12 +124,22 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		if (this.page < this.pages) {
 			this.page += 1;
 		}
+
+		this.rendered.setProps({
+			data: this.currentPageOfData(),
+			pageChanged: true
+		});
 	};
 
 	service.prevPage = function () {
 		if (this.page > 1) {
 			this.page -= 1;
 		}
+
+		this.rendered.setProps({
+			data: this.currentPageOfData(),
+			pageChanged: true
+		});
 	};
 
 	// enables client-side pagination.

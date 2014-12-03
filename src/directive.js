@@ -73,9 +73,10 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					}
 				}).renderInto(container);
 
-				scope.$watch('data', function (newValue, oldValue) {
-					if (newValue !== oldValue) {
-						owlTable.updateWith(newValue);
+				scope.$watch('data', function (newValue) {
+					// use forthcoming empty() to remove all rows
+					if (newValue.length > 0) {
+						owlTable.updateData(newValue);
 
 						scope.loading = false;
 					}
@@ -83,17 +84,13 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				scope.$watchCollection('columns', function (newValue, oldValue) {
 					if (newValue !== oldValue) {
-						rendered.setProps({
-							columns: newValue
-						});
+						owlTable.updateColumns(newValue);
 					}
 				});
 
-				scope.$watchCollection('tacky', function (newValue) {
-					rendered.setProps({
-						tacky: newValue
-					});
-				});
+				scope.$watch('tacky', function (newValue) {
+					owlTable.updateTacky(newValue);
+				}, deepWatch);
 
 				scope.$watch('owlCtrl.massUpdate', function (newValue) {
 					rendered.setProps({
@@ -101,6 +98,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				});
 
+				// Yeah, totaly gotta get this out of here.
 				scope.massUpdate = function () {
 					scope.data = scope.data.map(function (datum, index) {
 						if (index < (owlTable.page * owlTable.count - 1)) {
@@ -112,6 +110,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					});
 				};
 
+				// Maybe this can stay since its an event handler.
+				// But owlTable should be calling owlResource for sure.
 				if (scope.options.saveIndividualRows) {
 					elem.on('owlTableUpdated', function (event, column, row, value) {
 						owlResource({
@@ -146,23 +146,15 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						});
 					});
 				};
-/*
+
 				scope.owlCtrl.nextPage = function () {
 					owlTable.nextPage();
-					rendered.setProps({
-						data: scope.owlCtrl.dataForPage(owlTable.page),
-						pageChanged: true
-					});
 				};
 
 				scope.owlCtrl.prevPage = function () {
 					owlTable.prevPage();
-					rendered.setProps({
-						data: owlTable.dataForPage(owlTable.page),
-						pageChanged: true
-					});
 				};
-*/
+
 				var opts = {
 					lines: 13, // The number of lines to draw
 					length: 20, // The length of each line
