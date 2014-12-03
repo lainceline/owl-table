@@ -48,7 +48,7 @@ var OwlRow = React.createClass({
 		}
 
 		var cells = props.columns.map(function (column, index) {
-			var editable = true;
+			var editable = true && column.editable;
 
 			if (lockedCells.length > 0) {
 				lockedCells.forEach(function (locked, index) {

@@ -136,7 +136,8 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'select',
+						type: 'text',
+						editable: false,
 						options: [{
 							value: '32432',
 							text: 'Test Value'
@@ -160,12 +161,8 @@
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
-						$scope.demoCtrl.data = [];
-
-						angular.forEach(data.data, function (datum, index) {
-							$scope.demoCtrl.data.push(datum);
-						});
-
+						$scope.demoCtrl.data = data.data;
+						$scope.demoCtrl.data[3]['custom_2000000'] ='<marquee><b>FOO</b></marquee>';
 						owlTable.paginate({
 							total: data.data.length, // necessary
 							count: 25, // dont have to specify this

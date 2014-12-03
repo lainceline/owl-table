@@ -70,7 +70,7 @@ var OwlTableReact = React.createClass({
 					return true;
 				}
 			});
-			console.log(lockedForRow);
+
 			return (
 				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
