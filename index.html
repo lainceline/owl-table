@@ -112,7 +112,13 @@
 
 				this.options = {
 					saveIndividualRows: true,
-					massUpdate: true
+					massUpdate: true,
+					ajaxParams: {
+						post: {
+							csrfToken: '5043292'
+						},
+						get: {}
+					}
 				};
 
 				// You can call the owlTable.lockCell directly from ng-click etc,

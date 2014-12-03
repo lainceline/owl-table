@@ -11,12 +11,16 @@ function owlResource ($http, owlConstants) {
 		var id = options.id;
 		var column = options.column;
 		var value = options.value;
+		var params = options.params;
 
-		var data = [{
+		var tableData = [{
 			id: options.id
 		}];
 
-		data[0][column] = value;
+		tableData[0][column] = value;
+
+		var data = _.clone(params);
+		data.data = tableData;
 
 		return {
 			id: options.id,
@@ -26,9 +30,7 @@ function owlResource ($http, owlConstants) {
 				return $http({
 					method: 'post',
 					url: saveUrl,
-					data: {
-						data: data
-					}
+					data: data
 				});
 			}
 		};

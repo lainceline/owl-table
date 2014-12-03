@@ -119,7 +119,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 							id: row.id,
 							column: column.field,
 							value: value,
-							saveUrl: scope.save
+							saveUrl: scope.save,
+							params: scope.options.ajaxParams.post
 						}).save().then(function(response) {
 							scope.saved = true;
 							$timeout(function () {
