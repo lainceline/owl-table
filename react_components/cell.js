@@ -59,6 +59,8 @@ var OwlCell = React.createClass({
 
 					var val = node.find('.swift-box-hidden-input').val();
 
+					props.tableDidChange(event, props.row, props.column);
+
 					node.trigger('owlTableUpdated', [props.column, props.row, val]);
 				});
 			});
