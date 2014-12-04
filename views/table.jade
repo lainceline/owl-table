@@ -20,7 +20,7 @@
 		
 				button.btn.btn-sm.btn-default#saveButton(ng-click="saveButtonClicked()") Save
 	
-	.owl-table-wrapper
+	.owl-table-wrapper(ng-class="{'owl-stretch': loading}")
 		.owl-mass-update-row(ng-show="owlCtrl.massUpdate")
 			table
 				thead
@@ -32,13 +32,12 @@
 						td(ng-repeat="column in columns track by $index")
 							input(type="text", ng-model="massUpdateData[column.field]")
 								
-		.owl-table-inner-wrapper.table-responsive.tacky
-			.owl-react-container(ng-hide="loading === true")
-				
-			.owl-ajax-loading(ng-show="loading === true")
-				.owl-ajax-loading-interior
-					#owl-spin
-					p.owl-ajax-loading-label(ng-show="takingAWhile !== true") Loading data...
-					p(ng-show="takingAWhile === true") Sorry, things are taking a little longer than normal...
-				
+		.owl-table-inner-wrapper.table-responsive.tacky(ng-hide="loading === true")
+			.owl-react-container
+		
+		.owl-ajax-loading(ng-show="loading === true")
+			.owl-ajax-loading-interior
+				#owl-spin
+				p.owl-ajax-loading-label(ng-show="takingAWhile !== true") Loading data...
+				p(ng-show="takingAWhile === true") Sorry, things are taking a little longer than normal...
 	owl-pagination

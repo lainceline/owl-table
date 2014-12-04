@@ -4,9 +4,11 @@
 	height: 100%;
 }
 
-.owl-top-controls {
-	display: inline-block;
+.owl-stretch {
+	display: block;
 	width: 100%;
+}
+.owl-top-controls {
 
 	.owl-top-control-right-buttons {
 		float: right;
@@ -42,6 +44,7 @@
 
 .owl-table-wrapper {
 	border: 1px solid #aaaaaa;
+	display: inline-block;
 }
 
 .owl-hidden {
@@ -69,6 +72,7 @@
 
 .owl-table, .owl-mass-update-row > table {
 	max-width: 100%;
+	width: 100%;
 	font-size: 12px;
 	vertical-align: top;
 	height: auto;
