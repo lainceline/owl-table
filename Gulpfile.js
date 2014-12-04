@@ -164,9 +164,13 @@ gulp.task('watch', function (callback) {
 // test tasks
 
 gulp.task('test', function (callback) {
-	runSequence('clean-tests', 'coffee-tests', 'protractor', 'clean-tests');
+	runSequence('clean-tests', 'coffee-tests', 'protractor');
 });
 
 gulp.task('protractor', function () {
-
+	gulp.src(['./tests/e2e/*.js'])
+	.pipe(protractor({
+		configFile: 'protractor.conf.js',
+		//args: ['--baseUrl', 'http://127.0.0.1:4444']
+	}));
 });

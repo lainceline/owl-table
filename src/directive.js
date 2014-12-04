@@ -99,10 +99,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						});
 					}
 
-					console.log(row);
-					console.log(column);
-					console.log(value);
-
 					owlTable.syncDataFromReact(row, column, value);
 					event.stopPropagation();
 				});
