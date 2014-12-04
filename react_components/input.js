@@ -34,6 +34,7 @@
 
 			var optionList;
 
+			// refactor this into factory that makes subcomponents
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
@@ -77,11 +78,15 @@
 					input = <div>{optionList}</div>;
 					break;
 				case 'date':
-					return (
-						<input onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />
-					);
-				default:
+					input =
+						<input onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />;
 					break;
+				case 'time':
+					input = <input type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
+					break;
+				default:
+					input = <span>{props.value}</span>;
+					console.error('Invalid field type "' + props.column.type + '" for field ' + props.column.field);
 			}
 
 			return input;
