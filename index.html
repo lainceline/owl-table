@@ -25,6 +25,7 @@
 	<script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
 
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap-datepicker/css/datepicker3.css">
 
 	<link rel="stylesheet" href="bower_components/ladda/dist/ladda-themeless.min.css">
 
@@ -136,8 +137,8 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'text',
-						editable: false,
+						type: 'time',
+						editable: true,  // defaults to true
 						options: [{
 							value: '32432',
 							text: 'Test Value'
@@ -146,7 +147,6 @@
 							text: 'No'
 						}]
 					}
-
 					$scope.demoCtrl.columns.push(col);
 				}
 

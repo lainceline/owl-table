@@ -82,8 +82,9 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				// Maybe this can stay since its an event handler.
 				// But owlTable should be calling owlResource for sure.
-				if (scope.options.saveIndividualRows) {
-					elem.on('owlTableUpdated', function (event, column, row, value) {
+
+				elem.on('owlTableUpdated', function (event, column, row, value) {
+					if (scope.options.saveIndividualRows) {
 						owlResource({
 							id: row.id,
 							column: column.field,
@@ -96,9 +97,15 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 								scope.saved = false;
 							}, 2000);
 						});
-						event.stopPropagation();
-					});
-				}
+					}
+
+					console.log(row);
+					console.log(column);
+					console.log(value);
+
+					owlTable.syncDataFromReact(row, column, value);
+					event.stopPropagation();
+				});
 
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
