@@ -8,6 +8,13 @@ var OwlTableReact = React.createClass({
 		massUpdate: React.PropTypes.bool,
 		pageChanged: React.PropTypes.bool
 	},
+	tableDidChange: function (event, row, column) {
+		if (typeof this.state.changedData[row.id] === 'undefined') {
+			this.state.changedData[row.id] = {};
+		}
+
+		this.state.changedData[row.id][column.field] = event.target.value;
+	},
 	getDefaultProps: function () {
 		return {
 			tacky: {
@@ -32,7 +39,6 @@ var OwlTableReact = React.createClass({
 	},
 	componentWillReceiveProps: function (newProps) {
 		if (newProps.pageChanged === true) {
-			console.log('resetting page');
 			this.setState({
 				openRows: {}
 			});

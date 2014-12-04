@@ -105,7 +105,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				scope.saveButtonClicked = function (event) {
 					scope.saving = true;
-
+					console.log(rendered.state.changedData);
 					owlTable.save({
 						changedRows: rendered.state.changedData,
 						where: scope.save,

@@ -4,7 +4,8 @@
 		propTypes: {
 			column: React.PropTypes.object.isRequired,
 			value: React.PropTypes.node,
-			row: React.PropTypes.object
+			row: React.PropTypes.object,
+			//tableDidChange: React.PropTypes.function
 		},
 		keydown: function (event) {
 			// Handling the focus of the input myself with tab and shift-tab is
@@ -18,6 +19,13 @@
 					break;
 			}
 		},
+		inputDidChange: function (event) {
+			event.persist();
+			this.debouncedInputDidChange(event);
+		},
+		debouncedInputDidChange: _.debounce(function (event) {
+			this.props.tableDidChange(event, this.props.row, this.props.column);
+		}, 200),
 		transmitSaveEvent: function (event) {
 			var node = $(this.getDOMNode());
 			var props = this.props;
