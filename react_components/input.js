@@ -76,6 +76,10 @@
 
 					input = <div>{optionList}</div>;
 					break;
+				case 'date':
+					return (
+						<input onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />
+					);
 				default:
 					break;
 			}

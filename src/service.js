@@ -88,6 +88,11 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
 	};
 
+	service.syncDataFromReact = function (row, column, value) {
+		var modelRow = _(this.data).where({id: row.id}).first();
+		modelRow[column.field] = value;
+	};
+
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
 			this.data = newData;
