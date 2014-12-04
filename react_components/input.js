@@ -35,6 +35,8 @@
 			var optionList;
 
 			// refactor this into factory that makes subcomponents
+			// That way we could swap factories out - the below field logic is tailored
+			// to legacy code.
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
@@ -61,6 +63,7 @@
 								</select>;
 					}
 					break;
+				case 'checkbox': // fall through until I find out what 'checkbox' actually corresponds to
 				case 'radio':
 					var radioName = props.column.field + '_' + props.row.id;
 					optionList = options.map(function (option, index) {
@@ -84,8 +87,17 @@
 				case 'time':
 					input = <input type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
 					break;
+				case 'file':
+					input = <span> File upload not supported yet </span>;
+					break;
+				case 'log':
+					input = <span> Log field not supported yet </span>;
+					break;
+				case 'placeholder':
+					input = <span> Placeholder </span>;
+					break;
 				default:
-					input = <span>{props.value}</span>;
+					input = <span> {props.value} </span>;
 					console.error('Invalid field type "' + props.column.type + '" for field ' + props.column.field);
 			}
 
