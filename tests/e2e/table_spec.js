@@ -10,7 +10,15 @@
     });
     return describe('owl-table', function() {
       return it('should initially display a loading indicator', function() {
-        return expect(element(By.css('.owl-ajax-loading')).element(By.tagName('p')).getText()).toBe('Loading data...');
+        var el;
+        el = $('.owl-ajax-loading-label');
+        el.getInnerHtml().then(function(html) {
+          return expect(html).toBe('Loading data...');
+        });
+        return el.isDisplayed().then(function(displayed) {
+          console.log(el);
+          return expect(displayed).toBe(true);
+        });
       });
     });
   });
