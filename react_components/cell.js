@@ -15,7 +15,7 @@ var OwlCell = React.createClass({
 	render: function () {
 		var props = this.props;
 		var td;
-		var content = <span className="owl-cell-value-label"> {props.row[props.column.field]} </span>;
+		var content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
 
 		if (props.open === true) {
 			content = <OwlInput
@@ -35,7 +35,7 @@ var OwlCell = React.createClass({
 			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></td>;
 		}
 
-			return td;
+		return td;
 	},
 	componentDidUpdate: function () {
 		var self = this;
