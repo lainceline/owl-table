@@ -4,7 +4,7 @@ describe 'E2E: owl-table with demo page as testbed', ->
 	By = null
 
 	beforeEach ->
-		browser.get('http://localhost:4444')
+		browser.get('http://localhost:9000')
 		ptor = protractor.getInstance()
 		By = protractor.By
 
