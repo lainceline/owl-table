@@ -133,11 +133,11 @@
 					owlTable.unlockCell($scope.cellToChange.row, $scope.cellToChange.column.field);
 				}
 
-				for (var i = 0; i < 3; i++) {
+				for (var i = 0; i < 50; i++) {
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'select',
+						type: 'text',
 						editable: true,  // defaults to true
 						options: [{
 							value: '32432',

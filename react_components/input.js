@@ -5,7 +5,6 @@
 			column: React.PropTypes.object.isRequired,
 			value: React.PropTypes.node,
 			row: React.PropTypes.object,
-			//tableDidChange: React.PropTypes.function
 		},
 		keydown: function (event) {
 			// Handling the focus of the input myself with tab and shift-tab is

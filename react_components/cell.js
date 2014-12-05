@@ -15,7 +15,22 @@ var OwlCell = React.createClass({
 	render: function () {
 		var props = this.props;
 		var td;
-		var content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
+		var content;
+		var optionText;
+
+		if (props.column.type.indexOf('select') > -1) {
+			var option = _(props.column.options).where({ 'value': props.row[props.column.field] }).first();
+
+			if (typeof option !== 'undefined') {
+				optionText = option.text;
+			} else {
+				optionText = props.row[props.column.field];
+			}
+
+			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: optionText}}></span>;
+		} else {
+			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
+		}
 
 		if (props.open === true) {
 			content = <OwlInput
@@ -27,10 +42,12 @@ var OwlCell = React.createClass({
 		}
 
 		if (props.editable === true) {
-			td =
-				<td data-field={props.column.field}>
-					{content}
-				</td>;
+			// refactor the cell and input class into each other in the future
+
+				td =
+					<td data-field={props.column.field}>
+						{content}
+					</td>;
 		} else {
 			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></td>;
 		}
