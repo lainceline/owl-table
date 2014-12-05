@@ -61,7 +61,7 @@
 					});
 
 					if (props.column.type === 'select_multiple') {
-						input = <select onChange={self.inputDidChange} className="swiftbox" multiple={true} defaultValue={props.value.split("||")}>
+						input = <select onChange={self.inputDidChange} className="swiftbox" multiple={true} defaultValue={ !props.value ? props.value : props.value.split("||")}>
 									{optionList}
 								</select>;
 					} else {
