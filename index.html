@@ -61,7 +61,7 @@
 				</div>
 				<ul class="nav navbar-nav">
 					<li class="navbar-form">
-						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.tacky.top = !demoCtrl.tacky.top">Tacky Top</button>
+						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.options.tacky.top = !demoCtrl.options.tacky.top">Tacky Top</button>
 					</li>
 					<li class="navbar-form">
 						<div class="form-group">
@@ -77,7 +77,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" owl-tacky="demoCtrl.tacky" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
 
 	</div>
 
@@ -107,10 +107,6 @@
 					column: null
 				};
 
-				this.tacky = {
-					top: true
-				};
-
 				this.options = {
 					saveIndividualRows: false,
 					massUpdate: true,
@@ -119,6 +115,9 @@
 							csrfToken: '5043292'
 						},
 						get: {}
+					},
+					tacky: {
+						top: true
 					}
 				};
 

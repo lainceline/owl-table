@@ -38,7 +38,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					data: scope.data,
 					columns: scope.columns,
 					options: {
-						tacky: scope.tacky,
+						tacky: scope.options.tacky,
 						massUpdate: scope.owlCtrl.massUpdate
 					}
 				}).renderInto(container);
@@ -58,8 +58,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					}
 				});
 
-				scope.$watch('tacky', function (newValue) {
-					owlTable.updateTacky(newValue);
+				scope.$watch('options', function (newValue, oldValue) {
+					owlTable.updateOptions(newValue, oldValue);
 				}, deepWatch);
 
 				scope.$watch('owlCtrl.massUpdate', function (newValue) {

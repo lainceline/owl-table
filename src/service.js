@@ -109,6 +109,13 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		});
 	};
 
+	service.updateOptions = function (newOptions) {
+		this.options = newOptions;
+		this.rendered.setProps({
+			tacky: this.options.tacky
+		});
+	};
+
 	service.updateTacky = function (newTacky) {
 		this.options.tacky = newTacky;
 	};
