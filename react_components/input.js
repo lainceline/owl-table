@@ -70,7 +70,14 @@
 								</select>;
 					}
 					break;
-				case 'checkbox': // fall through until I find out what 'checkbox' actually corresponds to
+				case 'checkbox':
+					input = <div className="form-inline">
+						<div className="checkbox">
+							<label>
+								<input type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
+							</label>
+						</div></div>;
+					break;
 				case 'radio':
 					var radioName = props.column.field + '_' + props.row.id;
 					optionList = options.map(function (option, index) {
