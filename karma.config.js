@@ -5,7 +5,7 @@ module.exports = function(config) {
 	config.set({
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '',
+		basePath: '.',
 
 
 		// frameworks to use
@@ -18,6 +18,9 @@ module.exports = function(config) {
 			'dist/vendor.min.js',
 			'bower_components/angular-mocks/angular-mocks.js',
 			'lib/*.js',
+			'react_components/**/*.js',
+			'views/**/*.jade',
+			'src/**/*.js',
 			'tests/unit/**/*.coffee'
 		],
 
@@ -30,7 +33,15 @@ module.exports = function(config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'**/*.coffee': ['coffee']
+			'**/*.coffee': ['coffee'],
+			'**/*.jade': ['ng-jade2js'],
+			'react_components/**/*.js': ['react-jsx']
+		},
+
+		ngJade2JsPreprocessor: {
+			moduleName: 'owlTablePartials',
+			stripPrefix: 'views/',
+			prependPrefix: 'partials/'
 		},
 
 		// test results reporter to use
