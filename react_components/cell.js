@@ -18,11 +18,31 @@ var OwlCell = React.createClass({
 		var content;
 		var optionText;
 
-		if (props.column.type.indexOf('select') > -1) {
-			var option = _(props.column.options).where({ 'value': props.row[props.column.field] }).first();
+		if (typeof props.row[props.column.field] === 'undefined') {
+			return (
+				<td></td>
+			);
+		}
 
-			if (typeof option !== 'undefined') {
-				optionText = option.text;
+		if (props.column.type.indexOf('select') > -1) {
+			var split = _.compact(props.row[props.column.field].split('||'));
+
+			var options;
+
+			if (split.length > 1) {
+				options =
+					_(props.column.options)
+					.filter(function (option) { if (_.contains(split, option.value)) { return true; } })
+					.pluck('text').value().join(', ');
+			} else {
+				options = _(props.column.options).where({ 'value': props.row[props.column.field] }).first();
+				if (typeof options !== 'undefined') {
+					options = options.text;
+				}
+			}
+			
+			if (typeof options !== 'undefined') {
+				optionText = options;
 			} else {
 				optionText = props.row[props.column.field];
 			}
@@ -43,11 +63,10 @@ var OwlCell = React.createClass({
 
 		if (props.editable === true) {
 			// refactor the cell and input class into each other in the future
-
-				td =
-					<td data-field={props.column.field}>
-						{content}
-					</td>;
+			td =
+				<td data-field={props.column.field}>
+					{content}
+				</td>;
 		} else {
 			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></td>;
 		}
