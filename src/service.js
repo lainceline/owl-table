@@ -171,9 +171,8 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.saveAllChanged = function () {
 		var data = {};
-
-		if (typeof(this.options.saveUrl) === 'undefined') {
-			throw 'OwlException: No save route provided to table!';
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
 		}
 
 		if (typeof this.options.ajaxParams !== 'undefined') {

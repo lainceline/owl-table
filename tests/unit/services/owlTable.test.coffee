@@ -138,12 +138,21 @@ describe 'owl table service', ->
 					changedData: []
 
 			saveHandler = $httpBackend.when('POST', '/save').respond({success: true})
-		it 'can save all the changed data at once', ->
+		describe 'saving all the changed data at once', ->
 			changedData = [
 				{foo: 'bar'},
 				{baz: 'bin'}
 			]
-			$httpBackend.expectPOST '/save', data: changedData
-			service.renderedTable.state.changedData = changedData
-			service.saveAllChanged()
-			$httpBackend.flush()
+			it 'can do it', ->
+				$httpBackend.expectPOST '/save', data: changedData
+				service.renderedTable.state.changedData = changedData
+				service.saveAllChanged()
+				$httpBackend.flush()
+			it 'throws an exception if there is no save url set', ->
+				service.options.saveUrl = undefined
+				service.renderedTable.state.changedData = changedData
+				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
+				service.options.saveUrl = ''
+				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
+				service.options.saveUrl = null
+				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
