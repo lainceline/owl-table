@@ -67,6 +67,50 @@ describe 'owl table service', ->
 			expect(service.currentPageOfData().length).toBe 1
 			expect(service.currentPageOfData()[0]).toEqual {foo: 'bar'}
 
+		it 'can update the item per page count', ->
+			service.setCount(50)
+			expect(service.count).toBe 50
+
+		describe 'changing to the next page', ->
+			beforeEach ->
+				service.renderedTable =
+					setProps: () ->
+				spyOn service.renderedTable, 'setProps'
+				service.pages = 5
+				service.page = 1
+				service.count = 1
+				service.data = [{foo: 'bar'}, {baz: 'bin'}]
+
+			it 'can do it', ->
+				service.nextPage()
+				expect(service.page).toBe 2
+			it 'updates the table view afterwards', ->
+				service.nextPage()
+				expectedProps =
+					data: [{baz: 'bin'}]
+					pageChanged: true
+				expect(service.renderedTable.setProps).toHaveBeenCalledWith expectedProps
+
+		describe 'changing to the previous page', ->
+			beforeEach ->
+				service.renderedTable =
+					setProps: () ->
+				spyOn service.renderedTable, 'setProps'
+				service.pages = 5
+				service.page = 2
+				service.count = 1
+				service.data = [{foo: 'bar'}, {baz: 'bin'}]
+
+			it 'can do it', ->
+				service.prevPage()
+				expect(service.page).toBe 1
+			it 'updates the table view afterwards', ->
+				service.prevPage()
+				expectedProps =
+					data: [{foo: 'bar'}]
+					pageChanged: true
+				expect(service.renderedTable.setProps).toHaveBeenCalledWith expectedProps
+
 		describe 'paginate()', ->
 			it 'calculates the pagination parameters correctly', ->
 				settings =
@@ -80,6 +124,7 @@ describe 'owl table service', ->
 					total: 50
 				service.paginate(settings)
 				expect(service.count).toBe defaults.defaults.PER_PAGE
+
 
 	describe 'its data', ->
 		it 'can sync the data that is passed to it (from the table view)', ->
@@ -168,3 +213,28 @@ describe 'owl table service', ->
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
 				service.options.saveUrl = null
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
+			it 'sends along any params if they are set', ->
+				service.options.ajaxParams =
+					post:
+						foo: 'bar'
+				service.renderedTable.state.changedData = changedData
+				$httpBackend.expectPOST '/save', {data: changedData, foo: 'bar'}
+				service.saveAllChanged()
+				$httpBackend.flush()
+
+	describe 'locking and unlocking cells', ->
+		beforeEach ->
+			spyOn(React.addons, 'update').and.callFake () ->
+				[{foo: 'bar'}]
+
+			service.renderedTable =
+				props: {lockedCells: []}
+				setProps: (props) -> service.renderedTable.props = props
+
+		describe 'locking a cell', ->
+			it 'adds the cell to the locked cell array', ->
+				service.lockCell 1, 'foo'
+
+		describe 'unlocking a cell', ->
+			it 'removes the cell from the locked cell array', ->
+				service.unlockCell 1, 'foo'

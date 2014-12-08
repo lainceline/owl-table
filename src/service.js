@@ -90,7 +90,8 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.currentPageOfData = function () {
 		var startIndex = (this.page - 1) * this.count;
-		var endIndex = (this.page * this.count) - 1;
+		var endIndex = this.page * this.count;
+
 		endIndex = endIndex > 0 ? endIndex : 1;
 
 		return this.data.slice(startIndex, endIndex);
@@ -204,11 +205,11 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		var cell = {};
 		cell[row] = column;
 
-		newLockedCells = React.addons.update(this.rendered.props.lockedCells, {
+		newLockedCells = React.addons.update(this.renderedTable.props.lockedCells, {
 			$push: [cell]
 		});
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			lockedCells: newLockedCells
 		});
 	};
@@ -223,7 +224,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		var newCell = {};
 		newCell[row] = column;
 
-		var newLockedCells = this.rendered.props.lockedCells.filter(function (cell, index) {
+		var newLockedCells = this.renderedTable.props.lockedCells.filter(function (cell, index) {
 			var cellField = cell[Object.keys(cell)[0]];
 			var newField = newCell[Object.keys(newCell)[0]];
 
@@ -232,7 +233,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			}
 		});
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			lockedCells: newLockedCells
 		});
 	};
