@@ -9,15 +9,19 @@
       return By = protractor.By;
     });
     return describe('owl-table', function() {
-      return it('should initially display a loading indicator', function() {
+      it('hides the ajax loading indicator when it has data', function() {
         var el;
-        el = $('.owl-ajax-loading-label');
-        el.getInnerHtml().then(function(html) {
-          return expect(html).toBe('Loading data...');
-        });
-        return el.isDisplayed().then(function(displayed) {
-          console.log(el);
-          return expect(displayed).toBe(true);
+        el = $('.owl-ajax-loading');
+        return expect(el.isDisplayed().then(function(isDisplayed) {
+          return isDisplayed;
+        })).toBe(false);
+      });
+      return it('displays the data its given', function() {
+        var foo, rows;
+        foo = null;
+        rows = element(By.tagName('table'));
+        return rows.count().then(function(count) {
+          return console.log(count);
         });
       });
     });

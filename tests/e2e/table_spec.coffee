@@ -1,4 +1,3 @@
-
 describe 'E2E: owl-table with demo page as testbed', ->
 	ptor = {}
 	By = null
@@ -9,13 +8,10 @@ describe 'E2E: owl-table with demo page as testbed', ->
 		By = protractor.By
 
 	describe 'owl-table', ->
-		it 'should initially display a loading indicator', ->
-			el = $('.owl-ajax-loading-label')
-
-			el.getInnerHtml().then (html) ->
-				expect(html).toBe('Loading data...')
-
-			el.isDisplayed().then (displayed) ->
-				expect(displayed).toBe true
-
-		#	expect(element(By.css('.owl-ajax-loading-label')).getText()).toBe('Loading data...')
+		it 'hides the ajax loading indicator when it has data', ->
+			el = $('.owl-ajax-loading')
+			expect(el.isDisplayed().then((isDisplayed) -> isDisplayed)).toBe false
+		it 'displays the data its given', ->
+			foo = null
+			rows = element(By.tagName('table'))
+			rows.count().then((count) -> console.log count)

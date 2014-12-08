@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" ng-app="owlTableDemo">
+<html lang="en" ng-app="owlTableDemoDev">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -89,6 +89,7 @@
 	<script src="bower_components/angular-ui-utils/ui-utils-ieshiv.js"></script>
 	<![endif]-->
 
+	<script src="bower_components/angular-mocks/angular-mocks.js"></script>
 	<script src="dist/owl-table.min.js"></script>
 
 	<script>
@@ -161,6 +162,7 @@
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
+					//	cosnsole.log('wat')
 						$scope.demoCtrl.data = data.data;
 						$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
 						owlTable.paginate({
@@ -173,6 +175,18 @@
 					});
 			});
 
+		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
+			.run(function ($httpBackend) {
+				var data = [{
+					id: 0,
+					'custom_2000000': 'bar'
+				}, {
+					id: 1,
+					'custom_2000001': 'bin'
+				}];
+
+				$httpBackend.whenGET('https://young-oasis-9005.herokuapp.com/api/students?nopage=true').respond({data: data});
+			});
 	</script>
 </body>
 
