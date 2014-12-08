@@ -13,7 +13,11 @@ var OwlTableReact = React.createClass({
 			this.state.changedData[row.id] = {};
 		}
 
-		this.state.changedData[row.id][column.field] = event.target.value;
+		if (column.type.indexOf('select') === '-1') {
+			this.state.changedData[row.id][column.field] = event.target.value();
+		} else {
+			this.state.changedData[row.id][column.field] = $(event.target).swiftbox('value');
+		}
 	},
 	getDefaultProps: function () {
 		return {

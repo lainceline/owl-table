@@ -4,8 +4,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 		scope: {
 			data: '=',
 			columns: '=',
-			save: '@',
-			tacky: '=owlTacky',
 			options: '='
 		},
 		templateUrl: 'partials/table.html',
@@ -37,10 +35,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				rendered = owlTable.initialize({
 					data: scope.data,
 					columns: scope.columns,
-					options: {
-						tacky: scope.options.tacky,
-						massUpdate: scope.owlCtrl.massUpdate
-					}
+					options: scope.options
 				}).renderInto(container);
 
 				scope.$watch('data', function (newValue) {
@@ -85,6 +80,13 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				elem.on('owlTableUpdated', function (event, column, row, value) {
 					if (scope.options.saveIndividualRows) {
+
+						owlTable.saveRow(column, row, value).then(function (response) {
+							scope.saved = true;
+							$timeout(function () {
+								scope.saved = false;
+							}, 2000);
+						});/*
 						owlResource({
 							id: row.id,
 							column: column.field,
@@ -97,28 +99,12 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 								scope.saved = false;
 							}, 2000);
 						});
+						*/
 					}
 
-					owlTable.syncDataFromReact(row, column, value);
+					owlTable.syncDataFromView(row, column, value);
 					event.stopPropagation();
 				});
-
-				scope.saveButtonClicked = function (event) {
-					scope.saving = true;
-
-					owlTable.save({
-						changedRows: rendered.state.changedData,
-						where: scope.save,
-						params: scope.options.ajaxParams
-					}).then(function (response) {
-						scope.saving = false;
-						console.log('save successful');
-
-						rendered.setState({
-							changedData: {}
-						});
-					});
-				};
 
 				var opts = {
 					lines: 13, // The number of lines to draw
@@ -161,6 +147,16 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 			this.prevPage = function () {
 				owlTable.prevPage();
+			};
+
+			this.savePage = function () {
+				$scope.saving = true;
+
+				owlTable.saveAllChanged();
+
+				$timeout(function () {
+					$scope.saving = false;
+				}, 2000);
 			};
 		}]
 	};

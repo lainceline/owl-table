@@ -131,7 +131,7 @@ gulp.task('clean-build', function () {
 
 gulp.task('clean-dist', function () {
 	return (
-		gulp.src(['./dist/vendor.min.js', './dist/owl-table.min.js', './dist/owl-table.min.css'])
+		gulp.src(['./dist/owl-table.min.js', './dist/owl-table.min.css'])
 			.pipe(clean())
 	);
 });

@@ -72,9 +72,9 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	};
 
 	service.renderInto = function (container) {
-		this.rendered = React.render(unrenderedTable, container);
+		this.renderedTable = React.render(unrenderedTable, container);
 
-		return this.rendered;
+		return this.renderedTable;
 	};
 
 	service.registerTable = function (id, callback) {
@@ -85,10 +85,14 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	};
 
 	service.currentPageOfData = function () {
-		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
+		var startIndex = (this.page - 1) * this.count;
+		var endIndex = (this.page * this.count) - 1;
+		endIndex = endIndex > 0 ? endIndex : 1;
+
+		return this.data.slice(startIndex, endIndex);
 	};
 
-	service.syncDataFromReact = function (row, column, value) {
+	service.syncDataFromView = function (row, column, value) {
 		var modelRow = _(this.data).where({id: row.id}).first();
 		modelRow[column.field] = value;
 	};
@@ -96,7 +100,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
 			this.data = newData;
-			this.rendered.setProps({
+			this.renderedTable.setProps({
 				data: this.currentPageOfData()
 			});
 		}
@@ -104,14 +108,14 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.updateColumns = function (newColumns) {
 		this.columns = newColumns;
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			columns: this.columns
 		});
 	};
 
 	service.updateOptions = function (newOptions) {
 		this.options = newOptions;
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			tacky: this.options.tacky
 		});
 	};
@@ -137,7 +141,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			this.page += 1;
 		}
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			data: this.currentPageOfData(),
 			pageChanged: true
 		});
@@ -148,7 +152,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			this.page -= 1;
 		}
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			data: this.currentPageOfData(),
 			pageChanged: true
 		});
@@ -165,20 +169,23 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		this.total = settings.total;
 	};
 
-	service.save = function (settings) {
-		if (typeof(settings.where) === 'undefined') {
+	service.saveAllChanged = function () {
+		if (typeof(this.options.saveUrl) === 'undefined') {
 			throw 'OwlException: No save route provided to table!';
 		}
 
-		var data = _.clone(settings.params.post);
-		data.data = settings.changedData;
+		var data = _.clone(this.options.ajaxParams.post);
+		data.data = this.renderedTable.state.changedData;
 
+		// should call my own ajax service
 		return $http({
 			method: 'post',
-			url: settings.where,
+			url: this.options.saveUrl,
 			data: data
 		});
 	};
+
+	service.saveRow = function () {};
 
 	service.lockCell = function (row, column) {
 		// row is id
