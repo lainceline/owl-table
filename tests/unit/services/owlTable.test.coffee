@@ -1,6 +1,8 @@
 describe 'owl table service', ->
 	service = {}
 	defaults = {}
+	$httpBackend = null
+	saveHandler = null
 
 	beforeEach module 'owlTable', ($provide) ->
 		$provide.value('owlResource', () ->
@@ -12,9 +14,10 @@ describe 'owl table service', ->
 		# need this null to avoid an error
 		null
 
-	beforeEach inject (owlTable, owlConstants) ->
-		service = owlTable
-		defaults = owlConstants
+	beforeEach inject ($injector) ->
+		service = $injector.get 'owlTable'
+		defaults = $injector.get 'owlConstants'
+		$httpBackend = $injector.get '$httpBackend'
 
 	describe 'initializing', ->
 		it 'creates the React element', ->
@@ -52,7 +55,7 @@ describe 'owl table service', ->
 
 			expect(service.currentPageOfData().length).toBe 1
 			expect(service.currentPageOfData()[0]).toEqual {foo: 'bar'}
-			
+
 		describe 'paginate()', ->
 			it 'calculates the pagination parameters correctly', ->
 				settings =
@@ -118,3 +121,29 @@ describe 'owl table service', ->
 				service.updateColumns newColumns
 				expect(service.renderedTable.setProps).toHaveBeenCalled()
 				expect(service.renderedTable.props.columns).toEqual newColumns
+
+	describe 'saving', ->
+		table = null
+		beforeEach ->
+			spyOn React, 'createElement'
+			service.initialize(
+				data: [],
+				columns: [],
+				options:
+					saveUrl: '/save'
+			)
+
+			service.renderedTable =
+				state:
+					changedData: []
+
+			saveHandler = $httpBackend.when('POST', '/save').respond({success: true})
+		it 'can save all the changed data at once', ->
+			changedData = [
+				{foo: 'bar'},
+				{baz: 'bin'}
+			]
+			$httpBackend.expectPOST '/save', data: changedData
+			service.renderedTable.state.changedData = changedData
+			service.saveAllChanged()
+			$httpBackend.flush()
