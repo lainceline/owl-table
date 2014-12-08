@@ -77,7 +77,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" save="https://young-oasis-9005.herokuapp.com/api/students/save"></owl-table>
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data"></owl-table>
 
 	</div>
 
@@ -109,6 +109,7 @@
 
 				this.options = {
 					saveIndividualRows: false,
+					saveUrl: 'https://young-oasis-9005.herokuapp.com/api/students/save',
 					massUpdate: true,
 					ajaxParams: {
 						post: {

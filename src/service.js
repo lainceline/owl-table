@@ -12,6 +12,7 @@ function owlResource ($http, owlConstants) {
 		var column = options.column;
 		var value = options.value;
 		var params = options.params;
+		var data = {};
 
 		var tableData = [{
 			id: options.id
@@ -19,13 +20,16 @@ function owlResource ($http, owlConstants) {
 
 		tableData[0][column] = value;
 
-		var data = _.clone(params);
+		if (typeof params !== 'undefined') {
+			data = _.clone(params);
+		}
 		data.data = tableData;
 
 		return {
 			id: options.id,
 			column: options.column,
 			value: options.value,
+			saveUrl: saveUrl,
 			save: function () {
 				return $http({
 					method: 'post',
@@ -72,9 +76,9 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	};
 
 	service.renderInto = function (container) {
-		this.rendered = React.render(unrenderedTable, container);
+		this.renderedTable = React.render(unrenderedTable, container);
 
-		return this.rendered;
+		return this.renderedTable;
 	};
 
 	service.registerTable = function (id, callback) {
@@ -85,10 +89,15 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	};
 
 	service.currentPageOfData = function () {
-		return this.data.slice(((this.page - 1) * this.count), ((this.page * this.count) - 1));
+		var startIndex = (this.page - 1) * this.count;
+		var endIndex = this.page * this.count;
+
+		endIndex = endIndex > 0 ? endIndex : 1;
+
+		return this.data.slice(startIndex, endIndex);
 	};
 
-	service.syncDataFromReact = function (row, column, value) {
+	service.syncDataFromView = function (row, column, value) {
 		var modelRow = _(this.data).where({id: row.id}).first();
 		modelRow[column.field] = value;
 	};
@@ -96,7 +105,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
 			this.data = newData;
-			this.rendered.setProps({
+			this.renderedTable.setProps({
 				data: this.currentPageOfData()
 			});
 		}
@@ -104,14 +113,14 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.updateColumns = function (newColumns) {
 		this.columns = newColumns;
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			columns: this.columns
 		});
 	};
 
 	service.updateOptions = function (newOptions) {
 		this.options = newOptions;
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			tacky: this.options.tacky
 		});
 	};
@@ -137,7 +146,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			this.page += 1;
 		}
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			data: this.currentPageOfData(),
 			pageChanged: true
 		});
@@ -148,7 +157,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			this.page -= 1;
 		}
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			data: this.currentPageOfData(),
 			pageChanged: true
 		});
@@ -165,20 +174,27 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		this.total = settings.total;
 	};
 
-	service.save = function (settings) {
-		if (typeof(settings.where) === 'undefined') {
-			throw 'OwlException: No save route provided to table!';
+	service.saveAllChanged = function () {
+		var data = {};
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
 		}
 
-		var data = _.clone(settings.params.post);
-		data.data = settings.changedData;
+		if (typeof this.options.ajaxParams !== 'undefined') {
+			data = _.clone(this.options.ajaxParams.post);
+		}
 
+		data.data = this.renderedTable.state.changedData;
+
+		// should call my own ajax service
 		return $http({
 			method: 'post',
-			url: settings.where,
+			url: this.options.saveUrl,
 			data: data
 		});
 	};
+
+	service.saveRow = function () {};
 
 	service.lockCell = function (row, column) {
 		// row is id
@@ -189,11 +205,11 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		var cell = {};
 		cell[row] = column;
 
-		newLockedCells = React.addons.update(this.rendered.props.lockedCells, {
+		newLockedCells = React.addons.update(this.renderedTable.props.lockedCells, {
 			$push: [cell]
 		});
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			lockedCells: newLockedCells
 		});
 	};
@@ -208,7 +224,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		var newCell = {};
 		newCell[row] = column;
 
-		var newLockedCells = this.rendered.props.lockedCells.filter(function (cell, index) {
+		var newLockedCells = this.renderedTable.props.lockedCells.filter(function (cell, index) {
 			var cellField = cell[Object.keys(cell)[0]];
 			var newField = newCell[Object.keys(newCell)[0]];
 
@@ -217,7 +233,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			}
 		});
 
-		this.rendered.setProps({
+		this.renderedTable.setProps({
 			lockedCells: newLockedCells
 		});
 	};

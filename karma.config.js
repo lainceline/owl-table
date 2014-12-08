@@ -15,6 +15,7 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files: [
+			'node_modules/jasmine-reporters/src/jasmine.terminal_reporter.js',
 			'dist/vendor.min.js',
 			'bower_components/angular-mocks/angular-mocks.js',
 			'lib/*.js',
@@ -35,7 +36,8 @@ module.exports = function(config) {
 		preprocessors: {
 			'**/*.coffee': ['coffee'],
 			'**/*.jade': ['ng-jade2js'],
-			'react_components/**/*.js': ['react-jsx']
+			'react_components/**/*.js': ['react-jsx'],
+			'src/**/*.js': ['coverage']
 		},
 
 		ngJade2JsPreprocessor: {
@@ -47,7 +49,7 @@ module.exports = function(config) {
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['progress'],
+		reporters: ['progress', 'html', 'coverage'],
 
 
 		// web server port
