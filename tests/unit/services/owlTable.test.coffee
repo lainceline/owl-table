@@ -33,6 +33,9 @@ describe 'owl table service', ->
 		it 'adds the passed parameters to the table array', ->
 			service.registerTable(1, () ->)
 			expect(_.last(service.tables).id).toBe 1
+		it 'can send you the table record by id', ->
+			service.registerTable(1, () ->)
+			expect(service.tableWithId(1)).toEqual [service.tables[0]]
 
 	describe 'rendering', ->
 		it 'renders the table into the dom when renderInto is called', ->
@@ -42,6 +45,14 @@ describe 'owl table service', ->
 			container = $('<div></div>')
 			service.renderInto container
 			expect(container.find('table').length).toBeGreaterThan 0
+
+	describe 'tacky integration', ->
+		it 'can update the tacky object', ->
+			service.options.tacky = {}
+			newTacky =
+				top: true
+			service.updateTacky newTacky
+			expect(service.options.tacky).toBe newTacky
 
 	describe 'pagination', ->
 		it 'will give the correct data for the page', ->
@@ -69,7 +80,6 @@ describe 'owl table service', ->
 					total: 50
 				service.paginate(settings)
 				expect(service.count).toBe defaults.defaults.PER_PAGE
-
 
 	describe 'its data', ->
 		it 'can sync the data that is passed to it (from the table view)', ->
@@ -124,6 +134,7 @@ describe 'owl table service', ->
 
 	describe 'saving', ->
 		table = null
+
 		beforeEach ->
 			spyOn React, 'createElement'
 			service.initialize(
@@ -138,6 +149,7 @@ describe 'owl table service', ->
 					changedData: []
 
 			saveHandler = $httpBackend.when('POST', '/save').respond({success: true})
+
 		describe 'saving all the changed data at once', ->
 			changedData = [
 				{foo: 'bar'},
