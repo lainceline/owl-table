@@ -27,6 +27,7 @@ var OwlCell = React.createClass({
 		if (props.column.type.indexOf('select') > -1) {
 			var split = [];
 			var options;
+			var classes = 'owl-cell-value-label';
 
 			if (props.column.type === 'select_multiple') {
 				split = _.compact(props.row[props.column.field].split('||'));
@@ -44,8 +45,11 @@ var OwlCell = React.createClass({
 					}
 				});
 
-				if (typeof options !== 'undefined') {
+				if (typeof options !== 'undefined' && options.length > 0) {
 					options = options[0].text;
+				} else {
+					options = props.row[props.column.field];
+					classes = classes + ' owl-invalid';
 				}
 			}
 
@@ -55,9 +59,9 @@ var OwlCell = React.createClass({
 				optionText = props.row[props.column.field];
 			}
 
-			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: optionText}}></span>;
+			content = <span className={classes} dangerouslySetInnerHTML={{__html: optionText}}></span>;
 		} else {
-			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
+			content = <span className={classes} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
 		}
 
 		if (props.open === true) {

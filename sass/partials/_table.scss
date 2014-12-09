@@ -129,6 +129,10 @@
 		border-bottom: 1px dotted blue;
 		text-decoration: none;
 	}
+	
+	.owl-cell-value-label.owl-invalid {
+		color: #FA0000;
+	}
 
 	input, select {
 		width: 100%;

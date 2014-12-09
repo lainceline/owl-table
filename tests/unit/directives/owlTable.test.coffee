@@ -185,6 +185,13 @@ describe 'the owl table directives', ->
 					scope.$digest()
 					value = element.find('.owl-row').find('td').find('span').html()
 					expect(value).toBe 'foo'
+				it 'shows in red if the value isnt valid', ->
+					scope.data = [{id: 0, 'select_test': 999}]
+					element = $compile(element)(scope)
+					scope.$digest()
+					span = element.find('.owl-row').find('td').find('span')
+					expect(span.html()).toBe '999'
+					expect(span.hasClass('owl-invalid')).toBe true
 
 	describe 'owlTable controller', ->
 		isolateScope = null
