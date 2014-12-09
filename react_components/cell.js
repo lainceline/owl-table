@@ -22,9 +22,12 @@ var OwlCell = React.createClass({
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];
 			if (typeof value === 'undefined') {
-				return (
-					<td>---</td>
-				);
+				value = props.row[props.column.field.toLowerCase()];
+				if (typeof value === 'undefined') {
+					return (
+						<td>---</td>
+					);
+				}
 			}
 		}
 
