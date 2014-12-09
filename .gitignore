@@ -35,3 +35,6 @@ bower_components
 
 # xml reports from nightwatch
 tests/reports
+
+# built e2e tests
+tests/e2e/*.js

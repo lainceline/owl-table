@@ -3,7 +3,7 @@ module.exports =
 		browser
 			.url("http://localhost:9000")
 			.waitForElementVisible('owl-table', 1000)
-			.waitForElementPresent('.owl-row', 1000)
+			.waitForElementPresent('.owl-row', 10000)
 
 	"it has editable rows you can open": (browser) ->
 		browser
