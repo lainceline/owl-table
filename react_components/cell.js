@@ -17,11 +17,15 @@ var OwlCell = React.createClass({
 		var td;
 		var content;
 		var optionText;
+		var value = props.row[props.column.field];
 
-		if (typeof props.row[props.column.field] === 'undefined') {
-			return (
-				<td>---</td>
-			);
+		if (typeof value === 'undefined') {
+			value = props.row[props.column.field.toUpperCase()];
+			if (typeof value === 'undefined') {
+				return (
+					<td>---</td>
+				);
+			}
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
@@ -61,13 +65,13 @@ var OwlCell = React.createClass({
 
 			content = <span className={classes} dangerouslySetInnerHTML={{__html: optionText}}></span>;
 		} else {
-			content = <span className={classes} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
+			content = <span className={classes} dangerouslySetInnerHTML={{ __html: value }}></span>;
 		}
 
 		if (props.open === true) {
 			content = <OwlInput
 						column={props.column}
-						value={props.row[props.column.field]}
+						value={value}
 						row={props.row}
 						tableDidChange={props.tableDidChange}
 					/>;
@@ -80,7 +84,7 @@ var OwlCell = React.createClass({
 					{content}
 				</td>;
 		} else {
-			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></td>;
+			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
 		}
 
 		return td;

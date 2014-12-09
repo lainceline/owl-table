@@ -154,6 +154,17 @@ describe 'the owl table directives', ->
 							$timeout.flush()
 							expect(isolateScope.saved).toBe false
 
+			it 'can handle case insensitive column fields', ->
+				scope.data = [
+					{
+						id: 0,
+						'CUSTOM_2000000': 'foo'
+					}
+				]
+				element = $compile(element)(scope)
+				scope.$digest()
+				expect(element.find('.owl-row').find('td').find('span').html()).toBe 'foo'
+
 		describe 'displays field types', ->
 			isolateScope = null
 			beforeEach ->
