@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" ng-app="owlTableDemoDev">
+<html lang="en" ng-app="owlTableDemo">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -138,7 +138,7 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'select',
+						type: 'text',
 						editable: true,  // defaults to true
 						options: [{
 							value: '32432',
@@ -177,13 +177,14 @@
 
 		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
 			.run(function ($httpBackend) {
-				var data = [{
-					id: 0,
-					'custom_2000000': 'bar'
-				}, {
-					id: 1,
-					'custom_2000001': 'bin'
-				}];
+				var data = [];
+				for (var i = 0; i < 100; i++) {
+					data.push({
+						id: 0,
+						'custom_2000000': '12345',
+						'custom_2000001': '23456'
+					});
+				}
 
 				$httpBackend.whenGET('https://young-oasis-9005.herokuapp.com/api/students?nopage=true').respond({data: data});
 			});

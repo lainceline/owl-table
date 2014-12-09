@@ -30,4 +30,8 @@ node_modules
 # Third party dependencies
 bower_components
 
+# PHPStorm, WebStorm, etc
 .idea
+
+# xml reports from nightwatch
+tests/reports

@@ -47,7 +47,7 @@
 			switch (props.column.type) {
 				case 'text':
 				case 'number':
-					input = <input type={props.column.type} onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
+					input = <input className="owl-input" type={props.column.type} onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
 					break;
 				case 'select': // fall through
 				case 'select_one': // fall through
@@ -74,7 +74,7 @@
 					input = <div className="form-inline">
 						<div className="checkbox">
 							<label>
-								<input type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
+								<input className="owl-input" type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
 							</label>
 						</div></div>;
 					break;
@@ -85,7 +85,7 @@
 						return (
 							<div key={index} className="radio">
 								<label>
-									<input type="radio" onChange={self.transmitSaveEvent} defaultValue={option.value} name={radioName} />
+									<input className="owl-input" type="radio" onChange={self.transmitSaveEvent} defaultValue={option.value} name={radioName} />
 									{option.text}
 								</label>
 							</div>
@@ -96,10 +96,10 @@
 					break;
 				case 'date':
 					input =
-						<input onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />;
+						<input className="owl-input" onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />;
 					break;
 				case 'time':
-					input = <input type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
+					input = <input className="owl-input" type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
 					break;
 				case 'file':
 					input = <span> File upload not supported yet </span>;

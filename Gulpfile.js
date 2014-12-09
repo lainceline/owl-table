@@ -20,6 +20,7 @@ var rename 		= require('gulp-rename');
 var runSequence	= require('run-sequence');
 var concat 		= require('gulp-concat');
 var clean		= require('gulp-clean');
+var shell		= require('gulp-shell');
 
 // Build tasks
 
@@ -174,3 +175,13 @@ gulp.task('protractor', function () {
 		//args: ['--baseUrl', 'http://127.0.0.1:4444']
 	}));
 });
+
+gulp.task('watch-coffee', function (callback) {
+	gulp.watch(['./tests/e2e/*.coffee'], ['coffee-tests']);
+});
+
+gulp.task('nightwatch', function (callback) {
+	gulp.watch(['./tests/e2e/**/*.js'], ['test-nightwatch']);
+});
+
+gulp.task('test-nightwatch', shell.task(['./nightwatch']));
