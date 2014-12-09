@@ -38,9 +38,6 @@ describe 'the owl table directives', ->
 		spyOn owlTable, 'saveAllChanged'
 		spyOn(owlTable, 'saveRow').and.returnValue deferred.promise
 
-	#	spyOn ajaxService
-	#	spyOn ajaxService, 'save'
-
 		scope.columns.push {type: 'text', field: 'custom_2000000', title: 'Custom 2000000'} for column in [0..10]
 		scope.options =
 			tacky:
@@ -156,6 +153,38 @@ describe 'the owl table directives', ->
 						it 'turns off after a timeout', ->
 							$timeout.flush()
 							expect(isolateScope.saved).toBe false
+
+		describe 'displays field types', ->
+			isolateScope = null
+			beforeEach ->
+				scope.columns = [{
+					type: 'select',
+					field: 'select_test',
+					title: 'Select Test',
+					options: [{
+						value: '123',
+						text: 'foo'
+					}, {
+						value: '234',
+						text: 'bar'
+					}]
+				}]
+				scope.data.push
+					id: 0,
+					'select_test': 123
+				element = $compile(element)(scope)
+				scope.$digest()
+				isolateScope = element.isolateScope()
+
+			describe 'select boxes', ->
+				it 'displays the text of the selected option', ->
+					value = element.find('.owl-row').find('td').find('span').html()
+					expect(value).toBe 'foo'
+				it 'even when the value options are unquoted in the object', ->
+					scope.columns[0].value = 123
+					scope.$digest()
+					value = element.find('.owl-row').find('td').find('span').html()
+					expect(value).toBe 'foo'
 
 	describe 'owlTable controller', ->
 		isolateScope = null

@@ -25,9 +25,12 @@ var OwlCell = React.createClass({
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
-			var split = _.compact(props.row[props.column.field].split('||'));
-
+			var split = [];
 			var options;
+
+			if (props.column.type === 'select_multiple') {
+				split = _.compact(props.row[props.column.field].split('||'));
+			}
 
 			if (split.length > 1) {
 				options =
@@ -35,9 +38,14 @@ var OwlCell = React.createClass({
 					.filter(function (option) { if (_.contains(split, option.value)) { return true; } })
 					.pluck('text').value().join(', ');
 			} else {
-				options = _(props.column.options).where({ 'value': props.row[props.column.field] }).first();
+				options = props.column.options.filter(function (option, index) {
+					if (option.value == props.row[props.column.field]) {
+						return true;
+					}
+				});
+
 				if (typeof options !== 'undefined') {
-					options = options.text;
+					options = options[0].text;
 				}
 			}
 
