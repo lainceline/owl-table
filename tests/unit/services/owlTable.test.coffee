@@ -3,20 +3,28 @@ describe 'owl table service', ->
 	defaults = {}
 	$httpBackend = null
 	saveHandler = null
+	ajaxServiceMock = {}
+	realAjaxService = null
 
 	beforeEach module 'owlTable', ($provide) ->
-		$provide.value('owlResource', () ->
-			() ->
-				{
-					save: jasmine.createSpy()
-				}
-		)
+	#	$provide.value('owlResource', ajaxServiceMock)
 		# need this null to avoid an error
 		null
 
 	beforeEach inject ($injector) ->
 		service = $injector.get 'owlTable'
 		defaults = $injector.get 'owlConstants'
+
+		$q = $injector.get '$q'
+		deferred = $q.defer()
+		deferred.resolve 'foo'
+		ajaxServiceMock = jasmine.createSpy('owlResource').and.callFake () ->
+			{
+				save: jasmine.createSpy('save').and.returnValue deferred.promise
+			}
+
+		ajaxServiceMock = $injector.get 'owlResource'
+
 		$httpBackend = $injector.get '$httpBackend'
 
 	describe 'initializing', ->
@@ -198,13 +206,16 @@ describe 'owl table service', ->
 		describe 'saving all the changed data at once', ->
 			changedData = [
 				{foo: 'bar'},
-				{baz: 'bin'}
+				{baz: 'bin'},
+				{foo2: '12-DEC-23'}
 			]
+
 			it 'can do it', ->
 				$httpBackend.expectPOST '/save', data: changedData
 				service.renderedTable.state.changedData = changedData
 				service.saveAllChanged()
 				$httpBackend.flush()
+
 			it 'throws an exception if there is no save url set', ->
 				service.options.saveUrl = undefined
 				service.renderedTable.state.changedData = changedData
@@ -213,6 +224,7 @@ describe 'owl table service', ->
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
 				service.options.saveUrl = null
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
+
 			it 'sends along any params if they are set', ->
 				service.options.ajaxParams =
 					post:
@@ -221,6 +233,11 @@ describe 'owl table service', ->
 				$httpBackend.expectPOST '/save', {data: changedData, foo: 'bar'}
 				service.saveAllChanged()
 				$httpBackend.flush()
+
+		describe 'saving one row at a time', ->
+			changedRow = {foo: 'bar'}
+			it 'delegates to a resource service', ->
+				saved = service.saveRow {field: 'foo'}, {id: 0, 'foo': 'bar'}, 'baz'
 
 	describe 'locking and unlocking cells', ->
 		beforeEach ->

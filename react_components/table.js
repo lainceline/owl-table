@@ -9,6 +9,7 @@ var OwlTableReact = React.createClass({
 		pageChanged: React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
+		console.log(event);
 		if (typeof this.state.changedData[row.id] === 'undefined') {
 			this.state.changedData[row.id] = {};
 		}

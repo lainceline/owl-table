@@ -96,7 +96,7 @@
 					break;
 				case 'date':
 					input =
-						<input className="owl-input" onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />;
+						<input className="owl-input" onChange={self.transmitSaveEvent} defaultValue={props.value} data-date-format="dd-M-yy" data-provide="datepicker"/>;
 					break;
 				case 'time':
 					input = <input className="owl-input" type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
@@ -116,6 +116,24 @@
 			}
 
 			return input;
+		},
+		componentDidMount: function () {
+			var self = this;
+			if (self.props.column.type === 'date') {
+				$(self.getDOMNode()).on('changeDate', function (date) {
+					date.target.value = date.format().toUpperCase();
+					self.transmitSaveEvent(date);
+				});
+			}
+		},
+		componentDidUpdate: function () {
+			var self = this;
+			if (self.props.column.type === 'date') {
+				$(self.getDOMNode()).on('changeData', function (date) {
+					date.target.value = date.format().toUpperCase();
+					self.transmitSaveEvent(date);
+				});
+			}
 		}
 	});
 //})();

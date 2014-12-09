@@ -138,7 +138,7 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'select',
+						type: 'date',
 						editable: true,  // defaults to true
 						options: [{
 							value: '32432',
@@ -162,7 +162,6 @@
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
-					//	cosnsole.log('wat')
 						$scope.demoCtrl.data = data.data;
 						$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
 						owlTable.paginate({

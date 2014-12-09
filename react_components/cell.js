@@ -18,6 +18,7 @@ var OwlCell = React.createClass({
 		var content;
 		var optionText;
 		var value = props.row[props.column.field];
+		var classes = 'owl-cell-value-label';
 
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];
@@ -34,7 +35,6 @@ var OwlCell = React.createClass({
 		if (props.column.type.indexOf('select') > -1) {
 			var split = [];
 			var options;
-			var classes = 'owl-cell-value-label';
 
 			if (props.column.type === 'select_multiple') {
 				split = _.compact(props.row[props.column.field].split('||'));

@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, owlConstants) {
+function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 	var unrenderedTable;
 
 	var service = {
@@ -194,7 +194,25 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		});
 	};
 
-	service.saveRow = function () {};
+	service.saveRow = function (column, row, value) {
+		var params;
+
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
+		}
+
+		if (typeof this.options.ajaxParams !== 'undefined') {
+			params = this.options.ajaxParams.post || '';
+		}
+
+		return owlResource({
+			id: row.id,
+			column: column.field,
+			value: value,
+			saveUrl: this.options.saveUrl,
+			params: params
+		}).save();
+	};
 
 	service.lockCell = function (row, column) {
 		// row is id
@@ -241,5 +259,5 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', owlTableService])
-	.service('owlResource', ['$http', 'owlConstants', owlResource]);
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', 'owlResource', owlTableService])
+	.factory('owlResource', ['$http', 'owlConstants', owlResource]);
