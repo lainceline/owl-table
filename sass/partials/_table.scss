@@ -125,6 +125,11 @@
 		text-align: center;
 	}
 
+	.owl-cell-value-label {
+		border-bottom: 1px dotted blue;
+		text-decoration: none;
+	}
+
 	input, select {
 		width: 100%;
 		font-size: 1em;

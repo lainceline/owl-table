@@ -20,7 +20,7 @@ var OwlCell = React.createClass({
 
 		if (typeof props.row[props.column.field] === 'undefined') {
 			return (
-				<td></td>
+				<td>---</td>
 			);
 		}
 
@@ -40,7 +40,7 @@ var OwlCell = React.createClass({
 					options = options.text;
 				}
 			}
-			
+
 			if (typeof options !== 'undefined') {
 				optionText = options;
 			} else {
