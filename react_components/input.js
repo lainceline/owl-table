@@ -31,6 +31,10 @@
 
 			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
 		},
+		handleSpecialFields: function (event) {
+			this.props.tableDidChange(event, this.props.row, this.props.column);
+			this.transmitSaveEvent(event);
+		},
 		render: function () {
 			var props = this.props;
 
@@ -96,10 +100,10 @@
 					break;
 				case 'date':
 					input =
-						<input className="owl-input" onChange={self.transmitSaveEvent} defaultValue={props.value} data-date-format="dd-M-yy" data-provide="datepicker"/>;
+						<input className="owl-input" defaultValue={props.value} data-date-format="dd-M-yy" data-provide="datepicker"/>;
 					break;
 				case 'time':
-					input = <input className="owl-input" type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
+					input = <input className="owl-input" type="time" onChange={self.handleSpecialFields} defaultValue={props.value} />;
 					break;
 				case 'file':
 					input = <span> File upload not supported yet </span>;
@@ -122,6 +126,7 @@
 			if (self.props.column.type === 'date') {
 				$(self.getDOMNode()).on('changeDate', function (date) {
 					date.target.value = date.format().toUpperCase();
+					self.props.tableDidChange(date, self.props.row, self.props.column);
 					self.transmitSaveEvent(date);
 				});
 			}
@@ -131,6 +136,7 @@
 			if (self.props.column.type === 'date') {
 				$(self.getDOMNode()).on('changeData', function (date) {
 					date.target.value = date.format().toUpperCase();
+					self.props.tableDidChange(date, self.props.row, self.props.column);
 					self.transmitSaveEvent(date);
 				});
 			}

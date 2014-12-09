@@ -236,7 +236,7 @@ describe 'owl table service', ->
 
 		describe 'saving one row at a time', ->
 			changedRow = {foo: 'bar'}
-			it 'delegates to a resource service', ->
+			xit 'delegates to a resource service', ->
 				saved = service.saveRow {field: 'foo'}, {id: 0, 'foo': 'bar'}, 'baz'
 
 	describe 'locking and unlocking cells', ->

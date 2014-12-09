@@ -88,7 +88,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 							}, 2000);
 						});
 					}
-
 					owlTable.syncDataFromView(row, column, value);
 					event.stopPropagation();
 				});

@@ -9,13 +9,16 @@ var OwlTableReact = React.createClass({
 		pageChanged: React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
-		console.log(event);
 		if (typeof this.state.changedData[row.id] === 'undefined') {
 			this.state.changedData[row.id] = {};
 		}
 
-		if (column.type.indexOf('select') === '-1') {
-			this.state.changedData[row.id][column.field] = event.target.value();
+		if (column.type.indexOf('select') === -1) {
+			if (typeof event.target.value === 'function') {
+				this.state.changedData[row.id][column.field] = event.target.value();
+			} else {
+				this.state.changedData[row.id][column.field] = event.target.value;
+			}
 		} else {
 			this.state.changedData[row.id][column.field] = $(event.target).swiftbox('value');
 		}

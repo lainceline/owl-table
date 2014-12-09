@@ -27,7 +27,7 @@ describe 'the owl table directives', ->
 		scope.options = {}
 
 		deferred = $q.defer()
-		deferred.resolve('foo')
+		deferred.resolve 'foo'
 
 		spyOn owlTable, 'registerTable'
 		spyOn owlTable, 'updateData'
