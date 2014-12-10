@@ -57,9 +57,10 @@
 				case 'select_one': // fall through
 				case 'select_multiple':
 					optionList = options.map(function (option, index) {
+						var textVal = $(option.text).text();
 						return (
 							<option key={index} value={option.value}>
-								{option.text}
+								{textVal}
 							</option>
 						);
 					});
