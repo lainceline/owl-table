@@ -62,7 +62,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						massUpdate: newValue
 					});
 				});
-
+				
 				// Yeah, totaly gotta get this out of here.
 				scope.massUpdate = function () {
 					scope.data = scope.data.map(function (datum, index) {

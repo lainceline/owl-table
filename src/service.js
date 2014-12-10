@@ -49,14 +49,17 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 		data: [],
 		pageData: [],
 		columns: [],
-		options: {},
+		options: {
+			sort: {
+				column: 'id',
+				order: 'asc'
+			}
+		},
 		renderedTable: {},
 		page: 1,
 		pages: 1,
 		total: 0,
-		count: owlConstants.defaults.PER_PAGE,
-		predicate: 'id',
-		sortReverse: false
+		count: owlConstants.defaults.PER_PAGE
 	};
 
 	service.lockedCells = [];
@@ -80,10 +83,11 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.sortClickHandler = function (field, reverse) {
 		if (typeof reverse !== 'undefined' && reverse !== null && reverse !== '') {
-			service.sortReverse = reverse;
+			service.options.sort.order = reverse === true ? 'desc' : 'asc';
 		}
-		service.predicate = field;
-		service.sort(reverse);
+
+		service.options.sort.column = field;
+		service.sort();
 	};
 
 	service.renderInto = function (container) {
@@ -108,7 +112,8 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 	};
 
 	service.sorted = function (data) {
-		return $filter('orderBy')(data, this.predicate, this.sortReverse);
+		var reverse = this.options.sort.order === 'desc' ? true : false;
+		return $filter('orderBy')(data, this.options.sort.column, reverse);
 	};
 
 	service.sort = function () {

@@ -57,7 +57,7 @@ var OwlTableReact = React.createClass({
 	sortClickHandler: function (field, event) {
 		var state = this.state;
 		var sortReverse = state.sortReverse;
-		//console.log(state.sorted);
+
 		if (state.sorted === false) {
 			this.setState({sorted: true}, function () {
 				this.props.sortClickHandler(field, sortReverse);
@@ -68,9 +68,6 @@ var OwlTableReact = React.createClass({
 			this.setState({sortReverse: sortReverse});
 			this.props.sortClickHandler(field, sortReverse);
 		}
-	//	console.log(state.sortReverse);
-
-
 	},
 	render: function () {
 		var self = this;

@@ -166,7 +166,7 @@ describe 'owl table service', ->
 			service.updateData newData
 			expect(service.renderedTable.setProps).toHaveBeenCalled()
 			expect(service.renderedTable.props.data).toEqual newData
-			
+
 		it 'sorts the data according to the set predicate', ->
 			data = [
 				{id: 0, foo: 'zdw'},
@@ -175,7 +175,7 @@ describe 'owl table service', ->
 				{id: 3, foo: 'aae'}
 			]
 
-			service.predicate = 'foo'
+			service.options.sort.column = 'foo'
 			service.updateData data
 
 			expect(service.data).toEqual [
