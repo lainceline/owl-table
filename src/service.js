@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource) {
 	var unrenderedTable;
 
 	var service = {
@@ -49,7 +49,12 @@ function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 		data: [],
 		pageData: [],
 		columns: [],
-		options: {},
+		options: {
+			sort: {
+				column: 'id',
+				order: 'asc'
+			}
+		},
 		renderedTable: {},
 		page: 1,
 		pages: 1,
@@ -69,10 +74,20 @@ function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 			columns: settings.columns,
 			tacky: settings.options.tacky,
 			lockedCells: [],
-			massUpdate: settings.options.massUpdate
+			massUpdate: settings.options.massUpdate,
+			sortClickHandler: this.sortClickHandler
 		});
 
 		return this;
+	};
+
+	service.sortClickHandler = function (field, reverse) {
+		if (typeof reverse !== 'undefined' && reverse !== null && reverse !== '') {
+			service.options.sort.order = reverse === true ? 'desc' : 'asc';
+		}
+
+		service.options.sort.column = field;
+		service.sort();
 	};
 
 	service.renderInto = function (container) {
@@ -93,8 +108,16 @@ function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 		var endIndex = this.page * this.count;
 
 		endIndex = endIndex > 0 ? endIndex : 1;
-
 		return this.data.slice(startIndex, endIndex);
+	};
+
+	service.sorted = function (data) {
+		var reverse = this.options.sort.order === 'desc' ? true : false;
+		return $filter('orderBy')(data, this.options.sort.column, reverse);
+	};
+
+	service.sort = function () {
+		this.updateData(this.sorted(this.data));
 	};
 
 	service.syncDataFromView = function (row, column, value) {
@@ -104,6 +127,7 @@ function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
+			newData = this.sorted(newData);
 			this.data = newData;
 			this.renderedTable.setProps({
 				data: this.currentPageOfData()
@@ -263,5 +287,5 @@ function owlTableService ($http, $rootScope, owlConstants, owlResource) {
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', 'owlResource', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', 'owlConstants', 'owlResource', owlTableService])
 	.factory('owlResource', ['$http', 'owlConstants', owlResource]);

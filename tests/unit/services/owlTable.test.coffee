@@ -135,6 +135,13 @@ describe 'owl table service', ->
 
 
 	describe 'its data', ->
+		beforeEach ->
+			service.renderedTable =
+				props:
+					data: []
+				setProps: (props) ->
+					service.renderedTable.props = props
+
 		it 'can sync the data that is passed to it (from the table view)', ->
 			service.data = [{id: 1, 'foo': null}]
 			service.syncDataFromView {id: 1}, {field: 'foo'}, 'bar'
@@ -148,14 +155,10 @@ describe 'owl table service', ->
 				foo: 'bar'
 			}]
 			service.updateData newData
-			expect(service.data).toBe newData
+			expect(service.data).toEqual newData
 		it 'updates the table view when it updates the data completely', ->
 			service.data = []
-			service.renderedTable =
-				props:
-					data: []
-				setProps: (props) ->
-					service.renderedTable.props = props
+
 			spyOn(service.renderedTable, 'setProps').and.callThrough()
 			newData = [{
 				foo: 'bar'
@@ -163,6 +166,36 @@ describe 'owl table service', ->
 			service.updateData newData
 			expect(service.renderedTable.setProps).toHaveBeenCalled()
 			expect(service.renderedTable.props.data).toEqual newData
+
+		it 'sorts the data according to the set predicate', ->
+			data = [
+				{id: 0, foo: 'zdw'},
+				{id: 1, foo: 'abc'},
+				{id: 2, foo: 'bcd'},
+				{id: 3, foo: 'aae'}
+			]
+
+			service.options.sort.column = 'foo'
+			service.updateData data
+
+			expect(service.data).toEqual [
+				{id: 3, foo: 'aae'},
+				{id: 1, foo: 'abc'},
+				{id: 2, foo: 'bcd'},
+				{id: 0, foo: 'zdw'}
+			]
+
+		it 'returns the original data if no predicate is set', ->
+			data = [
+				{id: 0, foo: 'zdw'},
+				{id: 1, foo: 'abc'},
+				{id: 2, foo: 'bcd'},
+				{id: 3, foo: 'aae'}
+			]
+
+			service.updateData data
+
+			expect(service.data).toEqual data
 
 	describe 'its columns', ->
 		describe 'completely updating the columns object', ->
