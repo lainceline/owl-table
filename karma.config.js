@@ -23,7 +23,7 @@ module.exports = function(config) {
 			'views/**/*.jade',
 			'src/**/*.js',
 			'tests/unit/**/*.coffee',
-			'tests/unit/react/**/*.js'
+			'tests/unit/react/**/*.cjsx'
 		],
 
 
@@ -39,7 +39,7 @@ module.exports = function(config) {
 			'**/*.jade': ['ng-jade2js'],
 			'react_components/**/*.js': ['react-jsx', 'coverage'],
 			'src/**/*.js': ['coverage'],
-			'tests/unit/react/**/*.js': ['react-jsx']
+			'tests/unit/react/**/*.cjsx': ['cjsx']
 		},
 
 		ngJade2JsPreprocessor: {
