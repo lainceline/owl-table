@@ -73,6 +73,14 @@
 							<button class="btn btn-sm btn-default" ng-click="demoCtrl.unlockCell()">Unlock</button>
 						</div>
 					</li>
+					<li class="navbar-form">
+						<div class="form-group">
+							Sort
+							<select class="form-control" ng-change="demoCtrl.owlTable.sort()" ng-model="demoCtrl.owlTable.predicate" ng-options="column.field as column.title for column in demoCtrl.columns">
+								<option>Select column</option>
+							</select>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -95,7 +103,7 @@
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
+			.controller('demoController', function ($scope, $http, $timeout, $filter, owlTable) {
 				var self = this;
 
 				this.columns = [];
@@ -120,6 +128,10 @@
 					},
 					tacky: {
 						top: true
+					},
+					sort: {
+						column: 'custom_2000001',
+						order: 'asc'
 					}
 				};
 
@@ -163,7 +175,9 @@
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
 						$scope.demoCtrl.data = data.data;
-						$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
+					//	$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
+					//
+					//
 						owlTable.paginate({
 							total: data.data.length, // necessary
 							count: 25, // dont have to specify this
