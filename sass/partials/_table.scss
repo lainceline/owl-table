@@ -129,7 +129,7 @@
 		border-bottom: 1px dotted blue;
 		text-decoration: none;
 	}
-	
+
 	.owl-cell-value-label.owl-invalid {
 		color: #FA0000;
 	}
@@ -154,7 +154,25 @@
 		background-color: red!important;
 	}
 }
+/*
+.owl-table-sortElement:after {
+	content: '\25B2\A\25BC';
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 3px;
+	white-space: pre;
+	font-size: 0.7em;
+}
+*/
 
+.owl-table-sortElement {
+	i {
+		margin-top: 3px;
+		margin-left: 3px;
+		font-size: 14px;
+		cursor: pointer;
+	}
+}
 .owl-table .tacky-top:not(.tacky-top-origin) {
 	box-shadow: 1px 1px 0 0 #AAA,
 	0 4px 3px -1px rgba(0, 0, 0, .2);

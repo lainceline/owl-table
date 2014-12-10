@@ -37,7 +37,9 @@ var OwlTableReact = React.createClass({
 	getInitialState: function () {
 		return {
 			changedData: {},
-			openRows: {}
+			openRows: {},
+			sortReverse: false,
+			sorted: false
 		};
 	},
 	componentDidUpdate: function () {
@@ -51,6 +53,24 @@ var OwlTableReact = React.createClass({
 				openRows: {}
 			});
 		}
+	},
+	sortClickHandler: function (field, event) {
+		var state = this.state;
+		var sortReverse = state.sortReverse;
+		//console.log(state.sorted);
+		if (state.sorted === false) {
+			this.setState({sorted: true}, function () {
+				this.props.sortClickHandler(field, sortReverse);
+			});
+		} else {
+			// flip the sort order
+			sortReverse = !sortReverse;
+			this.setState({sortReverse: sortReverse});
+			this.props.sortClickHandler(field, sortReverse);
+		}
+	//	console.log(state.sortReverse);
+
+
 	},
 	render: function () {
 		var self = this;
@@ -70,9 +90,15 @@ var OwlTableReact = React.createClass({
 		}
 
 		var headers = props.columns.map(function (column, index) {
+			var classes = 'owl-table-sortElement';
+			if (tackyTop) {
+				classes = classes + ' tacky-top';
+			}
+
 			return (
-				<th className={tackyTop ? 'tacky-top' : ''} key={index} data-field={column.field}>
+				<th className={classes} key={index} data-field={column.field}>
 					{column.title || 'None'}
+					<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 				</th>
 			);
 		});
