@@ -210,15 +210,17 @@ describe 'owl table service', ->
 				{foo2: '12-DEC-23'}
 			]
 
+			beforeEach ->
+				service.renderedTable.setState = ((state) -> this.state = state).bind service.renderedTable
+				service.renderedTable.state.changedData = changedData
+
 			it 'can do it', ->
 				$httpBackend.expectPOST '/save', data: changedData
-				service.renderedTable.state.changedData = changedData
 				service.saveAllChanged()
 				$httpBackend.flush()
 
 			it 'throws an exception if there is no save url set', ->
 				service.options.saveUrl = undefined
-				service.renderedTable.state.changedData = changedData
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
 				service.options.saveUrl = ''
 				expect(service.saveAllChanged.bind(service)).toThrow(defaults.exceptions.noSaveRoute)
@@ -229,10 +231,15 @@ describe 'owl table service', ->
 				service.options.ajaxParams =
 					post:
 						foo: 'bar'
-				service.renderedTable.state.changedData = changedData
 				$httpBackend.expectPOST '/save', {data: changedData, foo: 'bar'}
 				service.saveAllChanged()
 				$httpBackend.flush()
+
+			it 'clears the changedData', ->
+				$httpBackend.expectPOST '/save', data: changedData
+				service.saveAllChanged()
+				$httpBackend.flush()
+				expect(service.renderedTable.state.changedData).toEqual {}
 
 		describe 'saving one row at a time', ->
 			changedRow = {foo: 'bar'}
