@@ -6,7 +6,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test-saucelabs"
   },
   "repository": {
     "type": "git",
@@ -56,12 +56,12 @@
     "karma-ng-html2js-preprocessor": "^0.1.2",
     "karma-ng-jade2js-preprocessor": "^0.1.5",
     "karma-react-jsx-preprocessor": "^0.1.1",
+    "karma-sauce-launcher": "^0.2.10",
     "nightwatch": "^0.5.35",
-    "protractor": "^1.4.0",
     "react-tools": "^0.12.1",
     "run-sequence": "^1.0.2"
   },
   "dependencies": {
-    "coffee-script": "^1.8.0"
+      "coffee-script": "^1.8.0"
   }
 }
