@@ -112,14 +112,12 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 	};
 
 	service.sorted = function (data) {
-		if (this.options.sort) {
 			var reverse = this.options.sort.order === 'desc' ? true : false;
 			return $filter('orderBy')(data, this.options.sort.column, reverse);
-		}
 	};
 
 	service.sort = function () {
-		this.updateData(this.sorted(this.data));
+			this.updateData(this.sorted(this.data));
 	};
 
 	service.syncDataFromView = function (row, column, value) {
