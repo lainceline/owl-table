@@ -38,3 +38,6 @@ tests/reports
 
 # built e2e tests
 tests/e2e/*.js
+
+# sauce labs config
+sauce.json

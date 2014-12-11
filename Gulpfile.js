@@ -172,7 +172,7 @@ gulp.task('nightwatch', function (callback) {
 // test tasks
 
 gulp.task('test', function () {
-	runSequence('karma', 'coffee-tests', 'test-nightwatch');
+	runSequence('build', 'karma', 'coffee-tests', 'test-nightwatch');
 });
 
 gulp.task('karma', function (callback) {
@@ -182,4 +182,16 @@ gulp.task('karma', function (callback) {
 	}, callback);
 });
 
+gulp.task('karma-sauce', function (callback) {
+	karma.start({
+		configFile: __dirname + '/karma.conf-ci.js',
+		singleRun: true
+	}, callback);
+});
+
 gulp.task('test-nightwatch', shell.task(['nightwatch']));
+gulp.task('nightwatch-sauce', shell.task(['nightwatch -e saucelabs']));
+
+gulp.task('test-saucelabs', function (callback) {
+	runSequence('build', 'karma-sauce', 'coffee-tests', 'nightwatch-sauce', callback);
+});
