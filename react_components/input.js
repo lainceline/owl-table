@@ -28,8 +28,18 @@
 		transmitSaveEvent: function (event) {
 			var node = $(this.getDOMNode());
 			var props = this.props;
+			var newValue = event.target.value;
 
-			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
+			if (props.column.type === 'checkbox') {
+				newValue = this.refs.checkbox.getDOMNode().checked ? 'Y' : 'N';
+			}
+
+			node.trigger('owlTableUpdated', [props.column, props.row, newValue]);
+		},
+		handleSpecialFields: function (event) {
+			event.persist();
+			this.props.tableDidChange(event, this.props.row, this.props.column);
+			this.transmitSaveEvent(event);
 		},
 		render: function () {
 			var props = this.props;
@@ -53,9 +63,10 @@
 				case 'select_one': // fall through
 				case 'select_multiple':
 					optionList = options.map(function (option, index) {
+						var textVal = $('<p>').html(option.text).text();
 						return (
 							<option key={index} value={option.value}>
-								{option.text}
+								{textVal}
 							</option>
 						);
 					});
@@ -71,17 +82,13 @@
 					}
 					break;
 				case 'checkbox':
-					input = <div className="form-inline">
-						<div className="checkbox">
-							<label>
-								<input className="owl-input" type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
-							</label>
-						</div></div>;
+					input = <label className="owl-check-label">
+								<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleSpecialFields} value='Y' defaultChecked={ props.value ? true : false } />
+							</label>;
 					break;
 				case 'radio':
 					var radioName = props.column.field + '_' + props.row.id;
 					optionList = options.map(function (option, index) {
-
 						return (
 							<div key={index} className="radio">
 								<label>
@@ -96,10 +103,10 @@
 					break;
 				case 'date':
 					input =
-						<input className="owl-input" onChange={self.transmitSaveEvent} defaultValue={props.value} data-provide="datepicker" />;
+						<input className="owl-input" defaultValue={props.value} data-date-format="dd-M-yy" data-provide="datepicker"/>;
 					break;
 				case 'time':
-					input = <input className="owl-input" type="time" onChange={self.transmitSaveEvent} defaultValue={props.value} />;
+					input = <input className="owl-input" type="time" onChange={self.handleSpecialFields} defaultValue={props.value} />;
 					break;
 				case 'file':
 					input = <span> File upload not supported yet </span>;
@@ -116,6 +123,26 @@
 			}
 
 			return input;
+		},
+		componentDidMount: function () {
+			var self = this;
+			if (self.props.column.type === 'date') {
+				$(self.getDOMNode()).on('changeDate', function (date) {
+					date.target.value = date.format().toUpperCase();
+					self.props.tableDidChange(date, self.props.row, self.props.column);
+					self.transmitSaveEvent(date);
+				});
+			}
+		},
+		componentDidUpdate: function () {
+			var self = this;
+			if (self.props.column.type === 'date') {
+				$(self.getDOMNode()).on('changeData', function (date) {
+					date.target.value = date.format().toUpperCase();
+					self.props.tableDidChange(date, self.props.row, self.props.column);
+					self.transmitSaveEvent(date);
+				});
+			}
 		}
 	});
 //})();

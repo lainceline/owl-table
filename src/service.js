@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, owlConstants) {
+function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource) {
 	var unrenderedTable;
 
 	var service = {
@@ -49,7 +49,12 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		data: [],
 		pageData: [],
 		columns: [],
-		options: {},
+		options: {
+			sort: {
+				column: 'id',
+				order: 'asc'
+			}
+		},
 		renderedTable: {},
 		page: 1,
 		pages: 1,
@@ -59,20 +64,39 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.lockedCells = [];
 
+	var defaults = {
+		options: {
+			sort: {
+				column: 'id',
+				order: 'asc'
+			}
+		}
+	};
+
 	service.initialize = function (settings) {
 		this.data = settings.data;
 		this.columns = settings.columns;
-		this.options = settings.options;
+		this.options = _.defaults(settings.options, defaults.options);
 
 		unrenderedTable = React.createElement(OwlTableReact, {
 			data: settings.data,
 			columns: settings.columns,
 			tacky: settings.options.tacky,
 			lockedCells: [],
-			massUpdate: settings.options.massUpdate
+			massUpdate: settings.options.massUpdate,
+			sortClickHandler: this.sortClickHandler
 		});
 
 		return this;
+	};
+
+	service.sortClickHandler = function (field, reverse) {
+		if (typeof reverse !== 'undefined' && reverse !== null && reverse !== '') {
+			service.options.sort.order = reverse === true ? 'desc' : 'asc';
+		}
+
+		service.options.sort.column = field;
+		service.sort();
 	};
 
 	service.renderInto = function (container) {
@@ -93,8 +117,26 @@ function owlTableService ($http, $rootScope, owlConstants) {
 		var endIndex = this.page * this.count;
 
 		endIndex = endIndex > 0 ? endIndex : 1;
-
 		return this.data.slice(startIndex, endIndex);
+	};
+
+	service.sorted = function (data) {
+		var reverse = this.options.sort.order === 'desc' ? true : false;
+		var sortColumn = _.where(this.columns, {'field': this.options.sort.column})[0];
+		if (typeof sortColumn !== 'undefined') {
+			if (sortColumn.type.indexOf('select') > -1) {
+				return $filter('orderBy')(data, function (datum) {
+					var option = _.where(sortColumn.options, {'value': datum[sortColumn.field]})[0];
+					var text = $('<p>').html(option.text).text();
+					return text;
+				}, reverse);
+			}
+		}
+		return $filter('orderBy')(data, this.options.sort.column, reverse);
+	};
+
+	service.sort = function () {
+		this.updateData(this.sorted(this.data));
 	};
 
 	service.syncDataFromView = function (row, column, value) {
@@ -104,6 +146,7 @@ function owlTableService ($http, $rootScope, owlConstants) {
 
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
+			newData = this.sorted(newData);
 			this.data = newData;
 			this.renderedTable.setProps({
 				data: this.currentPageOfData()
@@ -191,10 +234,32 @@ function owlTableService ($http, $rootScope, owlConstants) {
 			method: 'post',
 			url: this.options.saveUrl,
 			data: data
-		});
+		}).then(function (response) {
+			this.renderedTable.setState({
+				changedData: {}
+			});
+		}.bind(this));
 	};
 
-	service.saveRow = function () {};
+	service.saveRow = function (column, row, value) {
+		var params;
+
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
+		}
+
+		if (typeof this.options.ajaxParams !== 'undefined') {
+			params = this.options.ajaxParams.post || '';
+		}
+
+		return owlResource({
+			id: row.id,
+			column: column.field,
+			value: value,
+			saveUrl: this.options.saveUrl,
+			params: params
+		}).save();
+	};
 
 	service.lockCell = function (row, column) {
 		// row is id
@@ -241,5 +306,5 @@ function owlTableService ($http, $rootScope, owlConstants) {
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', 'owlConstants', owlTableService])
-	.service('owlResource', ['$http', 'owlConstants', owlResource]);
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', 'owlConstants', 'owlResource', owlTableService])
+	.factory('owlResource', ['$http', 'owlConstants', owlResource]);

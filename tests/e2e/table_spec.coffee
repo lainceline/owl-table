@@ -1,14 +1,14 @@
 module.exports =
 	"The owl-table is on the page with data": (browser) ->
 		browser
-			.url("http://localhost:9000")
-			.waitForElementVisible('owl-table', 1000)
-			.waitForElementPresent('.owl-row', 1000)
+			.url("http://onijim.github.io/owl-table/")
+			.waitForElementVisible('owl-table', 10000)
+			.waitForElementPresent('.owl-row', 10000)
 
 	"it has editable rows you can open": (browser) ->
 		browser
 			.click('.owl-row')
-			.waitForElementVisible('.owl-input', 100)
+			.waitForElementVisible('.owl-input', 500)
 
 	"you can go to the next page": (browser) ->
 		browser

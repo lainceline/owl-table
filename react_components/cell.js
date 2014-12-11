@@ -17,17 +17,30 @@ var OwlCell = React.createClass({
 		var td;
 		var content;
 		var optionText;
+		var value = props.row[props.column.field];
+		var classes = 'owl-cell-value-label';
 
-		if (typeof props.row[props.column.field] === 'undefined') {
-			return (
-				<td>---</td>
-			);
+		if (typeof value === 'undefined') {
+			value = props.row[props.column.field.toUpperCase()];
+			if (typeof value === 'undefined') {
+				value = props.row[props.column.field.toLowerCase()];
+				if (typeof value === 'undefined') {
+					return (
+						<td>---</td>
+					);
+				}
+			}
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
-			var split = _.compact(props.row[props.column.field].split('||'));
-
+			var split = [];
 			var options;
+
+			if (props.column.type === 'select_multiple') {
+				split = _.compact(
+					!props.row[props.column.field] ? props.row[props.column.field] : props.row[props.column.field].split('||')
+				);
+			}
 
 			if (split.length > 1) {
 				options =
@@ -35,9 +48,17 @@ var OwlCell = React.createClass({
 					.filter(function (option) { if (_.contains(split, option.value)) { return true; } })
 					.pluck('text').value().join(', ');
 			} else {
-				options = _(props.column.options).where({ 'value': props.row[props.column.field] }).first();
-				if (typeof options !== 'undefined') {
-					options = options.text;
+				options = props.column.options.filter(function (option, index) {
+					if (option.value == props.row[props.column.field]) {
+						return true;
+					}
+				});
+
+				if (typeof options !== 'undefined' && options.length > 0) {
+					options = options[0].text;
+				} else {
+					options = props.row[props.column.field];
+					classes = classes + ' owl-invalid';
 				}
 			}
 
@@ -47,15 +68,15 @@ var OwlCell = React.createClass({
 				optionText = props.row[props.column.field];
 			}
 
-			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: optionText}}></span>;
+			content = <span className={classes} dangerouslySetInnerHTML={{__html: optionText}}></span>;
 		} else {
-			content = <span className="owl-cell-value-label" dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></span>;
+			content = <span className={classes} dangerouslySetInnerHTML={{ __html: value }}></span>;
 		}
 
 		if (props.open === true) {
 			content = <OwlInput
 						column={props.column}
-						value={props.row[props.column.field]}
+						value={value}
 						row={props.row}
 						tableDidChange={props.tableDidChange}
 					/>;
@@ -68,7 +89,7 @@ var OwlCell = React.createClass({
 					{content}
 				</td>;
 		} else {
-			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{__html: props.row[props.column.field]}}></td>;
+			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
 		}
 
 		return td;
