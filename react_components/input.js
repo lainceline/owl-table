@@ -79,7 +79,7 @@
 					input = <div className="form-inline">
 						<div className="checkbox">
 							<label>
-								<input className="owl-input" type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
+								<input className="owl-input" type="checkbox" onChange={self.transmitSaveEvent} defaultValue={ props.value } checked={ props.value === 'Y' || props.value == true ? 'CHECKED' : '' }/>
 							</label>
 						</div></div>;
 					break;
