@@ -9,7 +9,7 @@ Demo: [http://onijim.github.io/owl-table](http://onijim.github.io/owl-table)
 
 I ran into performance issues with stock AngularJS doing ng-repeat on 1000+ data items.  I've come across many optimizations, some of which I will be using in this project.
 
-Similar in concept to documentFragment, ReactJS uses a "shadow DOM" to do all of its rendering off screen.  When a change is pushed to the components, the view is flipped all at once to the real DOM.  This lets all of the heavy lifting occur in pure Javascript where it can be very fast, instead of manipulating the DOM in real-time which is slower.
+Similar in concept to documentFragment, ReactJS uses a fake DOM to do all of its rendering off screen.  When a change is pushed to the components, the view is flipped all at once to the real DOM.  This lets all of the heavy lifting occur in pure Javascript where it can be very fast, instead of manipulating the DOM in real-time which is slower.
 
 It's kinda like DirectX or OpenGL where you render all of your objects on an off-screen buffer and then flip it over on the next frame.
 
@@ -29,7 +29,6 @@ It's kinda like DirectX or OpenGL where you render all of your objects on an off
 
 `gulp build` will create `vendor.min.js` in the dist folder if `bower install` has been run.  Or use your framework's asset pipeline.
 
-Sorry for all the dependencies, this is an internal project that needs to do specific things.
 
 ## Installation
 
@@ -46,23 +45,34 @@ Sorry for all the dependencies, this is an internal project that needs to do spe
 ## Use
 
 ```html
-<owl-table data="data" columns="columns" options="options" owl-tacky="tackyOpts"> </owl-table>
+<owl-table id="myTable" data="myCtrl.data" columns="myCtrl.columns" options="myCtrl.options"> </owl-table>
 ```
 
-Please see example index.html for now to see format of the various objects to pass in
+Please see index.html in the repository for an in-depth demo of usage.
 
-## Things which are broke and/or coming soon
+## To do
 * Filtering
-* Sorting
 * Printing
 * Change page though input field
 * Settings panel for storing local display settings
-* Swiftbox integration
 
 ## Dev installation
 
-1. `git clone`
+1. git clone the repo
 2. `npm install --require-dev`
-3. `bower install --require-dev` if necessary
+3. `bower install --require-dev`
 4. `gulp build` to build sass, interpret JSX, compile CoffeeScript, etc
-5. `gulp watch` will rebuild everything when changes are detected
+5. `gulp watch` will rebuild most everything on change
+
+### Tests
+
+`gulp nightwatch` to run e2e tests
+`karma start` to run unit tests
+
+Nightwatch is based on Jasmine and is reminiscent of codeception in its ease of use and readability.
+angular-mocks is included in the bower dev requirements.
+
+Project uses CoffeeScript for tests because of its Ruby-like syntax which just goes well with testing.
+JSX is available in all CoffeeScript due to a drop-in replacement for `coffee()`
+
+After running tests, code coverage information is available in `tests/coverage` (gitignored)

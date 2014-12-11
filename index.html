@@ -73,6 +73,14 @@
 							<button class="btn btn-sm btn-default" ng-click="demoCtrl.unlockCell()">Unlock</button>
 						</div>
 					</li>
+					<li class="navbar-form">
+						<div class="form-group">
+							Sort
+							<select class="form-control" ng-change="demoCtrl.owlTable.sort()" ng-model="demoCtrl.owlTable.predicate" ng-options="column.field as column.title for column in demoCtrl.columns">
+								<option>Select column</option>
+							</select>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -89,18 +97,21 @@
 	<script src="bower_components/angular-ui-utils/ui-utils-ieshiv.js"></script>
 	<![endif]-->
 
+	<script src="bower_components/angular-mocks/angular-mocks.js"></script>
 	<script src="dist/owl-table.min.js"></script>
 
 	<script>
 
 		angular.module('owlTableDemo', ['owlTable'])
-			.controller('demoController', function ($scope, $http, $timeout, owlTable) {
+			.controller('demoController', function ($scope, $http, $timeout, $filter, owlTable) {
 				var self = this;
 
 				this.columns = [];
 				this.data = [];
 
 				this.owlTable = owlTable;
+
+				$scope.demoCtrl = this;
 
 				$scope.cellToChange = {
 					row: null,
@@ -119,6 +130,10 @@
 					},
 					tacky: {
 						top: true
+					},
+					sort: {
+						column: 'custom_2000001',
+						order: 'asc'
 					}
 				};
 
@@ -137,11 +152,11 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'select',
+						type: 'text',
 						editable: true,  // defaults to true
 						options: [{
 							value: '32432',
-							text: 'Test Value'
+							text: '<b>Test Value</b>'
 						}, {
 							value: '21323',
 							text: 'No'
@@ -162,7 +177,9 @@
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
 						$scope.demoCtrl.data = data.data;
-						$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
+					//	$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
+					//
+					//
 						owlTable.paginate({
 							total: data.data.length, // necessary
 							count: 25, // dont have to specify this
@@ -173,6 +190,19 @@
 					});
 			});
 
+		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
+			.run(function ($httpBackend) {
+				var data = [];
+				for (var i = 0; i < 100; i++) {
+					data.push({
+						id: 0,
+						'custom_2000000': '12345',
+						'custom_2000001': '23456'
+					});
+				}
+
+				$httpBackend.whenGET('https://young-oasis-9005.herokuapp.com/api/students?nopage=true').respond({data: data});
+			});
 	</script>
 </body>
 

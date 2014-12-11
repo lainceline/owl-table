@@ -1,21 +1,32 @@
+module.exports =
+	"The owl-table is on the page with data": (browser) ->
+		browser
+			.url("http://localhost:9000")
+			.waitForElementVisible('owl-table', 1000)
+			.waitForElementPresent('.owl-row', 10000)
 
-describe 'E2E: owl-table with demo page as testbed', ->
-	ptor = {}
-	By = null
+	"it has editable rows you can open": (browser) ->
+		browser
+			.click('.owl-row')
+			.waitForElementVisible('.owl-input', 100)
 
-	beforeEach ->
-		browser.get('http://localhost:9000')
-		ptor = protractor.getInstance()
-		By = protractor.By
+	"you can go to the next page": (browser) ->
+		browser
+			.click('.owl-next-page')
+			.assert.value('.owl-page-count input[type=text]', '2')
 
-	describe 'owl-table', ->
-		it 'should initially display a loading indicator', ->
-			el = $('.owl-ajax-loading-label')
+	"you cant go to page 0": (browser) ->
+		browser
+			.click('.owl-previous-page')
+			.assert.value('.owl-page-count input[type=text]', '1')
 
-			el.getInnerHtml().then (html) ->
-				expect(html).toBe('Loading data...')
+	'the data actually changes on the next page': (browser) ->
+		#value = browser.getValue('.owl-input')
+		#console.log value
+		browser
+			.click('.owl-previous-page')
+			.pause(25)
+		#	.assert.element
 
-			el.isDisplayed().then (displayed) ->
-				expect(displayed).toBe true
-
-		#	expect(element(By.css('.owl-ajax-loading-label')).getText()).toBe('Loading data...')
+	after: (browser) ->
+		browser.end()
