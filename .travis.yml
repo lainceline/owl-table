@@ -5,3 +5,9 @@ node_js:
 	- "0.8"
 	- "0.6"
 before_script: bower install --require-dev
+env:
+  global:
+    - secure: HzyhvNz43AbEYe7atpRrQYOEe7MUBZIirVDOEZV1rTUlFZsCwkQcbthZFJv4py1jRq1SJCFxqQBqSoXrNc+Kgxvc08/SqqXYc6j1nRVgsGJVJPL5q9vUJAaUq5gpS7nViLMoDuVfVnjox3m/mP7PFkJCL9LzCcJ/2Ph2uFcToyg=
+    - secure: bK5W+DiPIUaQeLSFoZI4Ju3kN0azrEtOzXbBM0uXdDzRBseogJVoRS4vWuR1IYprdQY4EMNEc8HMdr1RGBCwZLooeQr75ZVIhwwNGalpDf71H1gA1wLRe/TXW9+GFYfRt+MIlkkJgmoHu9f4I5wZg+Yja00556FbugpDswaWkoY=
+addons:
+	sauce_connect: true
