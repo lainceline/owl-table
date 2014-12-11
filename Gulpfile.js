@@ -14,7 +14,6 @@ var minifyHtml 	= require('gulp-minify-html');
 var uglify 		= require('gulp-uglify');
 
 var karma 		= require('karma').server;
-var protractor 	= require('gulp-protractor').protractor;
 
 var rename 		= require('gulp-rename');
 var runSequence	= require('run-sequence');
@@ -162,18 +161,39 @@ gulp.task('watch', function (callback) {
 	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
 });
 
-// test tasks
-
-gulp.task('test', function (callback) {
-	runSequence('clean-tests', 'coffee-tests', 'protractor');
+gulp.task('watch-coffee', function (callback) {
+	gulp.watch(['./tests/e2e/*.coffee'], ['coffee-tests']);
 });
 
-gulp.task('protractor', function () {
-	gulp.src(['./tests/e2e/*.js'])
-	.pipe(protractor({
-		configFile: 'protractor.conf.js',
-		//args: ['--baseUrl', 'http://127.0.0.1:4444']
-	}));
+gulp.task('nightwatch', function (callback) {
+	gulp.watch(['./tests/e2e/**/*.js'], ['test-nightwatch']);
+});
+
+// test tasks
+
+gulp.task('test', function () {
+	runSequence('build', 'karma', 'coffee-tests', 'test-nightwatch');
+});
+
+gulp.task('karma', function (callback) {
+	karma.start({
+		configFile: __dirname + '/karma.conf.js',
+		singleRun: true
+	}, callback);
+});
+
+gulp.task('karma-sauce', function (callback) {
+	karma.start({
+		configFile: __dirname + '/karma.conf-ci.js',
+		singleRun: true
+	}, callback);
+});
+
+gulp.task('test-nightwatch', shell.task(['nightwatch']));
+gulp.task('nightwatch-sauce', shell.task(['nightwatch -e saucelabs']));
+
+gulp.task('test-saucelabs', function (callback) {
+	runSequence('build', 'karma-sauce', 'coffee-tests', 'nightwatch-sauce', callback);
 });
 
 gulp.task('watch-coffee', function (callback) {
