@@ -75,6 +75,7 @@ var OwlCell = React.createClass({
 
 		if (props.open === true) {
 			content = <OwlInput
+						className={props.column.field}
 						column={props.column}
 						value={value}
 						row={props.row}
@@ -85,11 +86,11 @@ var OwlCell = React.createClass({
 		if (props.editable === true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				<td data-field={props.column.field}>
+				<td className={props.column.field} data-field={props.column.field}>
 					{content}
 				</td>;
 		} else {
-			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
+			td = <td className={props.column.field} data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
 		}
 
 		return td;
