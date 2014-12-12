@@ -91,4 +91,6 @@ module.exports = function(config) {
 		browsers: Object.keys(customLaunchers),
 		singleRun: true
 	});
+
+	config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
 };

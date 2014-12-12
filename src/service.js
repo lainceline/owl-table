@@ -64,10 +64,19 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.lockedCells = [];
 
+	var defaults = {
+		options: {
+			sort: {
+				column: 'id',
+				order: 'asc'
+			}
+		}
+	};
+
 	service.initialize = function (settings) {
 		this.data = settings.data;
 		this.columns = settings.columns;
-		this.options = settings.options;
+		this.options = _.defaults(settings.options, defaults.options);
 
 		unrenderedTable = React.createElement(OwlTableReact, {
 			data: settings.data,
@@ -113,6 +122,16 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.sorted = function (data) {
 		var reverse = this.options.sort.order === 'desc' ? true : false;
+		var sortColumn = _.where(this.columns, {'field': this.options.sort.column})[0];
+		if (typeof sortColumn !== 'undefined') {
+			if (sortColumn.type.indexOf('select') > -1) {
+				return $filter('orderBy')(data, function (datum) {
+					var option = _.where(sortColumn.options, {'value': datum[sortColumn.field]})[0];
+					var text = (!option ? '' : $('<p>').html(option.text).text());
+					return text;
+				}, reverse);
+			}
+		}
 		return $filter('orderBy')(data, this.options.sort.column, reverse);
 	};
 

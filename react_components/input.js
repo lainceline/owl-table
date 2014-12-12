@@ -28,10 +28,16 @@
 		transmitSaveEvent: function (event) {
 			var node = $(this.getDOMNode());
 			var props = this.props;
+			var newValue = event.target.value;
 
-			node.trigger('owlTableUpdated', [props.column, props.row, event.target.value]);
+			if (props.column.type === 'checkbox') {
+				newValue = this.refs.checkbox.getDOMNode().checked ? 'Y' : 'N';
+			}
+
+			node.trigger('owlTableUpdated', [props.column, props.row, newValue]);
 		},
 		handleSpecialFields: function (event) {
+			event.persist();
 			this.props.tableDidChange(event, this.props.row, this.props.column);
 			this.transmitSaveEvent(event);
 		},
@@ -57,7 +63,7 @@
 				case 'select_one': // fall through
 				case 'select_multiple':
 					optionList = options.map(function (option, index) {
-						var textVal = $(option.text).text();
+						var textVal = $('<p>').html(option.text).text();
 						return (
 							<option key={index} value={option.value}>
 								{textVal}
@@ -76,17 +82,13 @@
 					}
 					break;
 				case 'checkbox':
-					input = <div className="form-inline">
-						<div className="checkbox">
-							<label>
-								<input className="owl-input" type="checkbox" onChange={self.transmitSaveEvent} defaultValue="Y" /> Yes
-							</label>
-						</div></div>;
+					input = <label className="owl-check-label">
+								<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleSpecialFields} value='Y' defaultChecked={ props.value ? true : false } />
+							</label>;
 					break;
 				case 'radio':
 					var radioName = props.column.field + '_' + props.row.id;
 					optionList = options.map(function (option, index) {
-
 						return (
 							<div key={index} className="radio">
 								<label>

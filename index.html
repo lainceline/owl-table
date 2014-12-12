@@ -131,10 +131,7 @@
 					tacky: {
 						top: true
 					},
-					sort: {
-						column: 'custom_2000001',
-						order: 'asc'
-					}
+
 				};
 
 				// You can call the owlTable.lockCell directly from ng-click etc,
@@ -152,14 +149,20 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'text',
+						type: 'checkbox',
 						editable: true,  // defaults to true
 						options: [{
-							value: '32432',
+							value: '21323',
 							text: '<b>Test Value</b>'
 						}, {
-							value: '21323',
+							value: '32432',
 							text: 'No'
+						}, {
+							value: '1',
+							text: 'Zzz'
+						}, {
+							value: '99999',
+							text: 'Aaa'
 						}]
 					}
 					$scope.demoCtrl.columns.push(col);
@@ -176,10 +179,19 @@
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
+						_.forEach(data.data, function (datum) {
+							if (Math.random() >= 0.5) {
+								datum['custom_2000000'] = '99999';
+							} else {
+								if (Math.random() >= 0.5) {
+									datum['custom_2000000'] = '21323';
+								} else {
+									datum['custom_2000000'] = '1';
+								}
+							}
+						});
 						$scope.demoCtrl.data = data.data;
-					//	$scope.demoCtrl.data[3]['custom_2000000'] = '32432';
-					//
-					//
+
 						owlTable.paginate({
 							total: data.data.length, // necessary
 							count: 25, // dont have to specify this
