@@ -1,34 +1,11 @@
 owl-table
 =========
+[![Build Status](https://travis-ci.org/onijim/owl-table.svg?branch=develop)](https://travis-ci.org/onijim/owl-table)
+[![Sauce Test Status](https://saucelabs.com/buildstatus/onijim_oss)](https://saucelabs.com/u/onijim_oss)
 
 AngularJS table directive built with ReactJS for high performance
 
 Demo: [http://onijim.github.io/owl-table](http://onijim.github.io/owl-table)
-
-## Why?
-
-I ran into performance issues with stock AngularJS doing ng-repeat on 1000+ data items.  I've come across many optimizations, some of which I will be using in this project.
-
-Similar in concept to documentFragment, ReactJS uses a fake DOM to do all of its rendering off screen.  When a change is pushed to the components, the view is flipped all at once to the real DOM.  This lets all of the heavy lifting occur in pure Javascript where it can be very fast, instead of manipulating the DOM in real-time which is slower.
-
-It's kinda like DirectX or OpenGL where you render all of your objects on an off-screen buffer and then flip it over on the next frame.
-
-## Dependencies
-1. angular 1.3.2+
-2. angular-animate
-3. angular-sanitize
-4. angular-ladda
-5. spin.js
-6. ladda.js
-7. angular-ui-utils
-8. ng-csv
-9. react js with addons
-10. lodash
-11. jquery 1.11.x
-12. shims for older IE
-
-`gulp build` will create `vendor.min.js` in the dist folder if `bower install` has been run.  Or use your framework's asset pipeline.
-
 
 ## Installation
 
@@ -49,6 +26,30 @@ It's kinda like DirectX or OpenGL where you render all of your objects on an off
 ```
 
 Please see index.html in the repository for an in-depth demo of usage.
+
+## Why?
+
+I ran into performance issues with stock AngularJS doing ng-repeat on 1000+ data items.  I've come across many optimizations, some of which I will be using in this project.
+
+Similar in concept to documentFragment, ReactJS uses a fake DOM to do all of its rendering off screen.  When a change is pushed to the components, the view is flipped all at once to the real DOM.  This lets all of the heavy lifting occur in pure Javascript where it can be very fast, instead of manipulating the DOM in real-time which is slower.
+
+It's kinda like DirectX or OpenGL where you render all of your objects on an off-screen buffer and then flip it over on the next frame.
+
+## Dependencies
+1. angular 1.3.2+
+2. angular-animate
+3. angular-sanitize
+4. angular-ladda
+5. spin.js
+6. ladda.js
+7. angular-ui-utils
+8. ng-csv
+9. react js with addons
+10. lodash
+11. jquery
+12. shims for older IE
+
+`gulp build` will create `vendor.min.js` in the dist folder if `bower install` has been run.  Or use your framework's asset pipeline.
 
 ## To do
 * Filtering
@@ -76,3 +77,5 @@ Project uses CoffeeScript for tests because of its Ruby-like syntax which just g
 JSX is available in all CoffeeScript due to a drop-in replacement for `coffee()`
 
 After running tests, code coverage information is available in `tests/coverage` (gitignored)
+
+Project uses Travis CI and Sauce Labs for cloud continuous integration and testing.
