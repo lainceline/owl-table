@@ -1,6 +1,7 @@
 language: node_js
 node_js:
     - "0.10"
+before_script: bower install --require-dev
 env:
   global:
     - secure: HzyhvNz43AbEYe7atpRrQYOEe7MUBZIirVDOEZV1rTUlFZsCwkQcbthZFJv4py1jRq1SJCFxqQBqSoXrNc+Kgxvc08/SqqXYc6j1nRVgsGJVJPL5q9vUJAaUq5gpS7nViLMoDuVfVnjox3m/mP7PFkJCL9LzCcJ/2Ph2uFcToyg=
