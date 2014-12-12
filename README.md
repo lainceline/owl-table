@@ -3,6 +3,9 @@ owl-table
 [![Build Status](https://travis-ci.org/onijim/owl-table.svg?branch=develop)](https://travis-ci.org/onijim/owl-table)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/onijim_oss)](https://saucelabs.com/u/onijim_oss)
 
+[![Code Climate](https://codeclimate.com/github/onijim/owl-table/badges/gpa.svg)](https://codeclimate.com/github/onijim/owl-table)
+[![Test Coverage](https://codeclimate.com/github/onijim/owl-table/badges/coverage.svg)](https://codeclimate.com/github/onijim/owl-table)
+
 AngularJS table directive built with ReactJS for high performance
 
 Demo: [http://onijim.github.io/owl-table](http://onijim.github.io/owl-table)
