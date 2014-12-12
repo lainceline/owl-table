@@ -70,6 +70,11 @@ module.exports = function(config) {
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
 		reporters: ['progress', 'html', 'coverage', 'saucelabs'],
 
+		coverageReporter: {
+			dir: './',
+			type: 'lcov',
+			file: 'lcov.info'
+		},
 
 		// web server port
 		port: 9876,
