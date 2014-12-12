@@ -62,7 +62,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						massUpdate: newValue
 					});
 				});
-				
+
 				// Yeah, totaly gotta get this out of here.
 				scope.massUpdate = function () {
 					scope.data = scope.data.map(function (datum, index) {
@@ -80,7 +80,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 
 				elem.on('owlTableUpdated', function (event, column, row, value) {
 					if (scope.options.saveIndividualRows) {
-
 						owlTable.saveRow(column, row, value).then(function (response) {
 							scope.saved = true;
 							$timeout(function () {
@@ -88,8 +87,8 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 							}, 2000);
 						});
 					}
+					
 					owlTable.syncDataFromView(row, column, value);
-					event.stopPropagation();
 				});
 
 				var opts = {
