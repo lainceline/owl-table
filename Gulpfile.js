@@ -105,6 +105,7 @@ gulp.task('vendor', function () {
 		'./bower_components/lodash/dist/lodash.min.js',
 		'./bower_components/react/react-with-addons.js',
 		'./bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js',
+		'./bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
 
 		'./bower_components/angular/angular.js',
 		'./bower_components/angular-animate/angular-animate.js',

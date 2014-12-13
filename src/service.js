@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource) {
 	var unrenderedTable;
 
 	var service = {
@@ -101,7 +101,7 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.renderInto = function (container) {
 		this.renderedTable = React.render(unrenderedTable, container);
-
+		this.container = container;
 		return this.renderedTable;
 	};
 
@@ -152,6 +152,56 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 				data: this.currentPageOfData()
 			});
 		}
+	};
+
+	service.customizeColumns = function () {
+		var self = this;
+
+		var modal = $modal.open({
+			templateUrl: 'partials/columnModal.html',
+			controller: function ($scope, $modalInstance, columns) {
+				$scope.columns = columns;
+				$scope.visibleColumns = _.filter(columns, function (column) {
+					return column.visible !== false;
+				});
+
+				$scope.toggleColumn = function (column) {
+					if (_.contains($scope.visibleColumns, column)) {
+						$scope.visibleColumns = _.filter(columns, function (col) {
+							return column !== col;
+						});
+					} else {
+						$scope.visibleColumns.push(column);
+					}
+				};
+
+				$scope.ok = function () {
+					$modalInstance.close($scope.visibleColumns);
+				};
+			},
+			size: 'lg',
+			resolve: {
+				columns: function () {
+					return self.columns;
+				}
+			},
+			backdrop: 'static',
+		});
+
+		modal.result.then(function (selectedColumns) {
+			// loop through our columns and disable any that arent selected
+			_.forEach(self.columns, function (col) {
+				if (_.where(selectedColumns, {'field': col.field}).length === 0) {
+					col.visible = false;
+				} else {
+					col.visible = true;
+				}
+			});
+
+			self.renderedTable.setProps({
+				columns: self.columns
+			});
+		});
 	};
 
 	service.updateColumns = function (newColumns) {
@@ -316,5 +366,5 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', 'owlConstants', 'owlResource', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', owlTableService])
 	.factory('owlResource', ['$http', 'owlConstants', owlResource]);

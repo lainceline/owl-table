@@ -87,7 +87,7 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 							}, 2000);
 						});
 					}
-					
+
 					owlTable.syncDataFromView(row, column, value);
 				});
 
@@ -193,8 +193,24 @@ function owlExportControls (owlTable) {
 	};
 }
 
+function owlCustomizeColumns (owlTable) {
+	return {
+		restrict: 'EA',
+		require: '^owlTable',
+		templateUrl: 'partials/customizeColumns.html',
+		controllerAs: 'columnCtrl',
+		link: function (scope, elem, attrs) {
+
+		},
+		controller: function ($scope) {
+
+		}
+	};
+}
+
 angular.module('owlTable')
 	.directive('owlTable', ['$http', '$timeout', 'owlTable', 'owlResource', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
-	.directive('owlExportControls', ['owlTable', owlExportControls]);
+	.directive('owlExportControls', ['owlTable', owlExportControls])
+	.directive('owlCustomizeColumns', ['owlTable', owlCustomizeColumns]);
