@@ -200,7 +200,7 @@ function owlCustomizeColumns (owlTable) {
 		templateUrl: 'partials/customizeColumns.html',
 		controllerAs: 'columnCtrl',
 		link: function (scope, elem, attrs) {
-
+			
 		},
 		controller: function ($scope) {
 

@@ -77,7 +77,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		this.data = settings.data;
 		this.columns = settings.columns;
 		this.options = _.defaults(settings.options, defaults.options);
-
+		_.forEach(this.columns, function (column) {
+			if (typeof column.visible === 'undefined') {
+				column.visible = true;
+			}
+		});
 		unrenderedTable = React.createElement(OwlTableReact, {
 			data: settings.data,
 			columns: settings.columns,
@@ -166,6 +170,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 				});
 
 				$scope.toggleColumn = function (column) {
+					column.visible = !column.visible;
+				/*
 					if (_.contains($scope.visibleColumns, column)) {
 						$scope.visibleColumns = _.filter(columns, function (col) {
 							return column !== col;
@@ -173,10 +179,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 					} else {
 						$scope.visibleColumns.push(column);
 					}
-				};
 
+*/
+				};
 				$scope.ok = function () {
-					$modalInstance.close($scope.visibleColumns);
+					$modalInstance.close($scope.columns);
 				};
 			},
 			size: 'lg',
@@ -188,7 +195,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			backdrop: 'static',
 		});
 
-		modal.result.then(function (selectedColumns) {
+		modal.result.then(function (columns) {
+			/*
 			// loop through our columns and disable any that arent selected
 			_.forEach(self.columns, function (col) {
 				if (_.where(selectedColumns, {'field': col.field}).length === 0) {
@@ -201,6 +209,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			self.renderedTable.setProps({
 				columns: self.columns
 			});
+			*/
+			self.updateColumns(columns);
 		});
 	};
 

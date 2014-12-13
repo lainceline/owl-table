@@ -3,7 +3,7 @@
 
 .modal-body
 	li(ng-repeat="column in columns")
-		<a ng-click="toggleColumn(column)">{{ column.title }}
+		<a ng-click="toggleColumn(column)" ng-class="{strikethrough: !column.visible}">{{ column.title }}
 			
 .modal-footer
 	button.btn.btn-primary(ng-click="ok()") Ok 
