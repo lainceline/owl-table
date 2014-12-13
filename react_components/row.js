@@ -58,9 +58,11 @@ var OwlRow = React.createClass({
 				});
 			}
 
-			return (
-				<OwlCell column={column} row={props.data} editable={editable} focusedCell={state.focusedCell} open={props.open || state.open} key={index} tableDidChange={props.tableDidChange} />
-			);
+			if (column.visible !== false) {
+				return (
+					<OwlCell column={column} row={props.data} editable={editable} focusedCell={state.focusedCell} open={props.open || state.open} key={index} tableDidChange={props.tableDidChange} />
+				);
+			}
 		});
 
 		return(
