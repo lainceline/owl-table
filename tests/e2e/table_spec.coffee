@@ -1,3 +1,7 @@
+testHeader = '#owl_header_custom_2000001'
+customizeColumnsButton = '.owl-customize-columns-button'
+modalColumnToClick = '#customize_custom_2000001'
+
 module.exports =
 	"The owl-table is on the page with data": (browser) ->
 		browser
@@ -28,13 +32,29 @@ module.exports =
 			.click('.owl-previous-page')
 			.assert.value('.owl-page-count input[type=text]', '1')
 
-	"you can customize the columns": (browser) ->
+	"you can remove a column": (browser) ->
 		browser
-			.click '.owl-customize-columns-button'
-			.pause 200
-			.assert.visible '.owl-modal-body'
-			.click '#customize_custom_2000001'
+			.assert.elementPresent testHeader
+			.click customizeColumnsButton
+			.waitForElementVisible '.owl-modal-body', 10000
+			.click modalColumnToClick
 			.pause 200
 			.assert.cssClassPresent '#customize_custom_2000001', 'strikethrough'
+			.click '.owl-column-modal-ok'
+			.pause 200
+			.assert.elementNotPresent testHeader
+
+	"you can add the column back": (browser) ->
+		browser
+			.assert.elementNotPresent testHeader
+			.click customizeColumnsButton
+			.waitForElementVisible '.owl-modal-body', 10000
+			.click modalColumnToClick
+			.pause 200
+			.assert.cssClassNotPresent '#customize_custom_2000001', 'strikethrough'
+			.click '.owl-column-modal-ok'
+			.pause 500
+			.assert.elementPresent testHeader
+
 	after: (browser) ->
 		browser.end()
