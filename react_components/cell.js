@@ -36,7 +36,7 @@ var OwlCell = React.createClass({
 		var content;
 		var optionText;
 		var value = props.row[props.column.field];
-		var classes = 'owl-cell-value-label';
+		var classes = 'owl-cell-value-label owl-editable';
 
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];

@@ -88,13 +88,14 @@ var OwlTableReact = React.createClass({
 
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
+			var id = 'owl_header_' + column.field;
 			if (tackyTop) {
 				classes = classes + ' tacky-top';
 			}
 
 			if (column.visible !== false) {
 				return (
-					<th className={classes} key={index} data-field={column.field}>
+					<th className={classes} id={id} key={index} data-field={column.field}>
 						{column.title || 'None'}
 						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
