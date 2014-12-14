@@ -1,5 +1,9 @@
   // Styles for the table itself
 
+.strikethrough {
+	text-decoration: line-through;
+}
+
 .owl-wrapper, .owl-table-wrapper, .owl-table-inner-wrapper, .owl-react-container, .owl-ajax-loading {
 	height: 100%;
 }

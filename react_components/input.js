@@ -3,13 +3,10 @@
 		displayName: 'OwlInput',
 		propTypes: {
 			column: React.PropTypes.object.isRequired,
-			value: React.PropTypes.node,
 			row: React.PropTypes.object,
 		},
 		keydown: function (event) {
-			// Handling the focus of the input myself with tab and shift-tab is
-			// automatically handling readjusting the scroll position of the table,
-			// unlike the default behavior.  See handler in table react component
+			// See handler in table react component
 			switch (event.which) {
 				case 9:
 					event.preventDefault();
@@ -30,14 +27,20 @@
 			var props = this.props;
 			var newValue = event.target.value;
 
-			if (props.column.type === 'checkbox') {
-				newValue = this.refs.checkbox.getDOMNode().checked ? 'Y' : 'N';
-			}
-
 			node.trigger('owlTableUpdated', [props.column, props.row, newValue]);
+
+			this.props.closeCell();
 		},
 		handleSpecialFields: function (event) {
 			event.persist();
+			this.props.tableDidChange(event, this.props.row, this.props.column);
+			this.transmitSaveEvent(event);
+		},
+		handleCheckboxChange: function (event) {
+			event.persist();
+
+			var newValue = this.refs.checkbox.getDOMNode().checked ? 'Y' : 'N';
+			event.target.value = newValue;
 			this.props.tableDidChange(event, this.props.row, this.props.column);
 			this.transmitSaveEvent(event);
 		},
@@ -83,7 +86,7 @@
 					break;
 				case 'checkbox':
 					input = <label className="owl-check-label">
-								<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleSpecialFields} value='Y' defaultChecked={ props.value ? true : false } />
+								<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleCheckboxChange} value='Y' defaultChecked={ props.value ? true : false } />
 							</label>;
 					break;
 				case 'radio':
@@ -126,6 +129,9 @@
 		},
 		componentDidMount: function () {
 			var self = this;
+
+			$(self.getDOMNode()).focus();
+
 			if (self.props.column.type === 'date') {
 				$(self.getDOMNode()).on('changeDate', function (date) {
 					date.target.value = date.format().toUpperCase();
