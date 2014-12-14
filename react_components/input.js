@@ -6,9 +6,7 @@
 			row: React.PropTypes.object,
 		},
 		keydown: function (event) {
-			// Handling the focus of the input myself with tab and shift-tab is
-			// automatically handling readjusting the scroll position of the table,
-			// unlike the default behavior.  See handler in table react component
+			// See handler in table react component
 			switch (event.which) {
 				case 9:
 					event.preventDefault();
@@ -30,6 +28,8 @@
 			var newValue = event.target.value;
 
 			node.trigger('owlTableUpdated', [props.column, props.row, newValue]);
+
+			this.props.closeCell();
 		},
 		handleSpecialFields: function (event) {
 			event.persist();
@@ -129,6 +129,9 @@
 		},
 		componentDidMount: function () {
 			var self = this;
+
+			$(self.getDOMNode()).focus();
+
 			if (self.props.column.type === 'date') {
 				$(self.getDOMNode()).on('changeDate', function (date) {
 					date.target.value = date.format().toUpperCase();

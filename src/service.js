@@ -171,16 +171,6 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 
 				$scope.toggleColumn = function (column) {
 					column.visible = !column.visible;
-				/*
-					if (_.contains($scope.visibleColumns, column)) {
-						$scope.visibleColumns = _.filter(columns, function (col) {
-							return column !== col;
-						});
-					} else {
-						$scope.visibleColumns.push(column);
-					}
-
-*/
 				};
 				$scope.ok = function () {
 					$modalInstance.close($scope.columns);
@@ -196,20 +186,6 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 
 		modal.result.then(function (columns) {
-			/*
-			// loop through our columns and disable any that arent selected
-			_.forEach(self.columns, function (col) {
-				if (_.where(selectedColumns, {'field': col.field}).length === 0) {
-					col.visible = false;
-				} else {
-					col.visible = true;
-				}
-			});
-
-			self.renderedTable.setProps({
-				columns: self.columns
-			});
-			*/
 			self.updateColumns(columns);
 		});
 	};
@@ -289,9 +265,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 
 	service.saveAllChanged = function () {
 		var data = {};
-		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
-			throw owlConstants.exceptions.noSaveRoute;
-		}
+
+		this.throwIfNoSaveRoute();
 
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			data = _.clone(this.options.ajaxParams.post);
@@ -314,9 +289,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	service.saveRow = function (column, row, value) {
 		var params;
 
-		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
-			throw owlConstants.exceptions.noSaveRoute;
-		}
+		this.throwIfNoSaveRoute();
 
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			params = this.options.ajaxParams.post || '';
@@ -371,6 +344,12 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		this.renderedTable.setProps({
 			lockedCells: newLockedCells
 		});
+	};
+
+	service.throwIfNoSaveRoute = function () {
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
+		}
 	};
 
 	return service;

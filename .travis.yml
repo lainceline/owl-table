@@ -13,4 +13,4 @@ addons:
     code_climate:
         repo_token: ec7e6ac220a6fda0ec19bd8815c1128e0024dc1a2960e05bbeb623774ce8f28f
 after_script:
-    - cat lcov.info | codeclimate
+    - cat coverage/Chrome\ 35.0.1916\ \(Windows\ 7\)/lcov.info | codeclimate
