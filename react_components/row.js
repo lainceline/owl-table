@@ -52,15 +52,19 @@ var OwlRow = React.createClass({
 
 			if (lockedCells.length > 0) {
 				lockedCells.forEach(function (locked, index) {
+					/* jshint ignore:start */
 					if (locked == column.field) {
 						editable = false;
 					}
+					/* jshint ignore:end */
 				});
 			}
 
+			var ref = 'column_' + index;
+
 			if (column.visible !== false) {
 				return (
-					<OwlCell column={column} row={props.data} editable={editable} focusedCell={state.focusedCell} key={index} tableDidChange={props.tableDidChange} />
+					<OwlCell column={column} ref={ref} row={props.data} editable={editable} focusedCell={state.focusedCell} key={index} tableDidChange={props.tableDidChange} />
 				);
 			}
 		});

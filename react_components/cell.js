@@ -23,6 +23,13 @@ var OwlCell = React.createClass({
 			});
 		}
 	},
+	close: function () {
+		if (this.state.open) {
+			this.setState({
+				open: false
+			});
+		}
+	},
 	render: function () {
 		var props = this.props;
 		var td;
@@ -94,6 +101,7 @@ var OwlCell = React.createClass({
 						value={value}
 						row={props.row}
 						tableDidChange={props.tableDidChange}
+						closeCell={this.close}
 					/>;
 		}
 
