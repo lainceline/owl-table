@@ -171,16 +171,6 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 
 				$scope.toggleColumn = function (column) {
 					column.visible = !column.visible;
-				/*
-					if (_.contains($scope.visibleColumns, column)) {
-						$scope.visibleColumns = _.filter(columns, function (col) {
-							return column !== col;
-						});
-					} else {
-						$scope.visibleColumns.push(column);
-					}
-
-*/
 				};
 				$scope.ok = function () {
 					$modalInstance.close($scope.columns);
@@ -196,20 +186,6 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 
 		modal.result.then(function (columns) {
-			/*
-			// loop through our columns and disable any that arent selected
-			_.forEach(self.columns, function (col) {
-				if (_.where(selectedColumns, {'field': col.field}).length === 0) {
-					col.visible = false;
-				} else {
-					col.visible = true;
-				}
-			});
-
-			self.renderedTable.setProps({
-				columns: self.columns
-			});
-			*/
 			self.updateColumns(columns);
 		});
 	};
