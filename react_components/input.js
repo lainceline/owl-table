@@ -129,6 +129,9 @@
 		},
 		componentDidMount: function () {
 			var self = this;
+			
+			$(self.getDOMNode()).focus();
+
 			if (self.props.column.type === 'date') {
 				$(self.getDOMNode()).on('changeDate', function (date) {
 					date.target.value = date.format().toUpperCase();

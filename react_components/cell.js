@@ -60,9 +60,12 @@ var OwlCell = React.createClass({
 					.pluck('text').value().join(', ');
 			} else {
 				options = props.column.options.filter(function (option, index) {
+					/* jshint ignore:start */
+					// I want weak equality here.
 					if (option.value == props.row[props.column.field]) {
 						return true;
 					}
+					/* jshint ignore:end */
 				});
 
 				if (typeof options !== 'undefined' && options.length > 0) {
