@@ -266,8 +266,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	service.saveAllChanged = function () {
 		var data = {};
 
-		throwIfNoSaveRoute();
-	
+		this.throwIfNoSaveRoute();
+
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			data = _.clone(this.options.ajaxParams.post);
 		}
@@ -289,7 +289,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	service.saveRow = function (column, row, value) {
 		var params;
 
-		throwIfNoSaveRoute();
+		this.throwIfNoSaveRoute();
 
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			params = this.options.ajaxParams.post || '';
@@ -346,11 +346,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 	};
 
-	function throwIfNoSaveRoute() {
+	service.throwIfNoSaveRoute = function () {
 		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
 			throw owlConstants.exceptions.noSaveRoute;
 		}
-	}
+	};
 
 	return service;
 }

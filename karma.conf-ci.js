@@ -15,14 +15,29 @@ module.exports = function(config) {
 
 	// Browsers to run on Sauce Labs
 	var customLaunchers = {
-		'SL_Chrome': {
+		sl_chrome: {
 			base: 'SauceLabs',
-			browserName: 'chrome'
+			browserName: 'chrome',
+			platform: 'Windows 7',
+			version: '35'
 		},
-		'SL_Firefox': {
+		sl_ie_9: {
 			base: 'SauceLabs',
 			browserName: 'internet explorer',
+			platform: 'Windows 7',
 			version: '9'
+		},
+		sl_firefox: {
+			base: 'SauceLabs',
+			browserName: 'firefox',
+			platform: 'Windows 7',
+			version: '30'
+		},
+		sl_ie_11: {
+			base: 'SauceLabs',
+			browserName: 'internet explorer',
+			platform: 'Windows 7',
+			version: '11'
 		}
 	};
 
@@ -71,7 +86,7 @@ module.exports = function(config) {
 		reporters: ['progress', 'html', 'coverage', 'saucelabs'],
 
 		coverageReporter: {
-			dir: './',
+			dir: 'coverage',
 			type: 'lcov',
 			file: 'lcov.info'
 		},
