@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource) {
 	var unrenderedTable;
 
 	var service = {
@@ -77,7 +77,11 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 		this.data = settings.data;
 		this.columns = settings.columns;
 		this.options = _.defaults(settings.options, defaults.options);
-
+		_.forEach(this.columns, function (column) {
+			if (typeof column.visible === 'undefined') {
+				column.visible = true;
+			}
+		});
 		unrenderedTable = React.createElement(OwlTableReact, {
 			data: settings.data,
 			columns: settings.columns,
@@ -101,7 +105,7 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.renderInto = function (container) {
 		this.renderedTable = React.render(unrenderedTable, container);
-
+		this.container = container;
 		return this.renderedTable;
 	};
 
@@ -154,6 +158,38 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 		}
 	};
 
+	service.customizeColumns = function () {
+		var self = this;
+
+		var modal = $modal.open({
+			templateUrl: 'partials/columnModal.html',
+			controller: function ($scope, $modalInstance, columns) {
+				$scope.columns = columns;
+				$scope.visibleColumns = _.filter(columns, function (column) {
+					return column.visible !== false;
+				});
+
+				$scope.toggleColumn = function (column) {
+					column.visible = !column.visible;
+				};
+				$scope.ok = function () {
+					$modalInstance.close($scope.columns);
+				};
+			},
+			size: 'lg',
+			resolve: {
+				columns: function () {
+					return self.columns;
+				}
+			},
+			backdrop: 'static',
+		});
+
+		modal.result.then(function (columns) {
+			self.updateColumns(columns);
+		});
+	};
+
 	service.updateColumns = function (newColumns) {
 		this.columns = newColumns;
 		this.renderedTable.setProps({
@@ -170,6 +206,16 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.updateTacky = function (newTacky) {
 		this.options.tacky = newTacky;
+	};
+
+	service.clearAllChanged = function (callback) {
+		this.renderedTable.setState({
+			changedData: {}
+		});
+
+		if (typeof callback !== 'undefined') {
+			callback();
+		}
 	};
 
 	service.tableWithId = function (id) {
@@ -219,9 +265,8 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 
 	service.saveAllChanged = function () {
 		var data = {};
-		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
-			throw owlConstants.exceptions.noSaveRoute;
-		}
+
+		this.throwIfNoSaveRoute();
 
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			data = _.clone(this.options.ajaxParams.post);
@@ -244,9 +289,7 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 	service.saveRow = function (column, row, value) {
 		var params;
 
-		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
-			throw owlConstants.exceptions.noSaveRoute;
-		}
+		this.throwIfNoSaveRoute();
 
 		if (typeof this.options.ajaxParams !== 'undefined') {
 			params = this.options.ajaxParams.post || '';
@@ -303,8 +346,14 @@ function owlTableService ($http, $rootScope, $filter, owlConstants, owlResource)
 		});
 	};
 
+	service.throwIfNoSaveRoute = function () {
+		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
+			throw owlConstants.exceptions.noSaveRoute;
+		}
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', 'owlConstants', 'owlResource', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', owlTableService])
 	.factory('owlResource', ['$http', 'owlConstants', owlResource]);

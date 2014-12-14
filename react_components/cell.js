@@ -3,7 +3,6 @@ var OwlCell = React.createClass({
 	propTypes: {
 		column: React.PropTypes.object.isRequired,
 		row: React.PropTypes.object,
-		open: React.PropTypes.bool,
 		editable: React.PropTypes.bool
 	},
 	getDefaultProps: function () {
@@ -11,6 +10,25 @@ var OwlCell = React.createClass({
 			open: false,
 			editable: true
 		};
+	},
+	getInitialState: function () {
+		return {
+			open: false
+		};
+	},
+	open: function () {
+		if (!this.state.open) {
+			this.setState({
+				open: true
+			});
+		}
+	},
+	close: function () {
+		if (this.state.open) {
+			this.setState({
+				open: false
+			});
+		}
 	},
 	render: function () {
 		var props = this.props;
@@ -49,9 +67,12 @@ var OwlCell = React.createClass({
 					.pluck('text').value().join(', ');
 			} else {
 				options = props.column.options.filter(function (option, index) {
+					/* jshint ignore:start */
+					// I want weak equality here.
 					if (option.value == props.row[props.column.field]) {
 						return true;
 					}
+					/* jshint ignore:end */
 				});
 
 				if (typeof options !== 'undefined' && options.length > 0) {
@@ -73,23 +94,25 @@ var OwlCell = React.createClass({
 			content = <span className={classes} dangerouslySetInnerHTML={{ __html: value }}></span>;
 		}
 
-		if (props.open === true) {
+		if (this.state.open === true) {
 			content = <OwlInput
+						className={props.column.field}
 						column={props.column}
 						value={value}
 						row={props.row}
 						tableDidChange={props.tableDidChange}
+						closeCell={this.close}
 					/>;
 		}
 
 		if (props.editable === true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				<td data-field={props.column.field}>
+				<td className={props.column.field} data-field={props.column.field} onClick={this.open}>
 					{content}
 				</td>;
 		} else {
-			td = <td data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
+			td = <td className={props.column.field} data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
 		}
 
 		return td;
@@ -114,7 +137,13 @@ var OwlCell = React.createClass({
 					var node = $(self.getDOMNode());
 					var props = self.props;
 
-					var val = node.find('.swift-box-hidden-input').val();
+					var val = $(box).swiftbox('value');
+
+					if (props.column.type === 'select_multiple') {
+						val = val.join('||');
+					}
+
+					event.target.value = val;
 
 					props.tableDidChange(event, props.row, props.column);
 

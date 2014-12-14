@@ -8,6 +8,7 @@
 
 .owl-export-controls, .owl-filter-controls {
 
+	float: left;
 	vertical-align: middle;
 	display: inline-block;
 	width: auto;
@@ -67,6 +68,21 @@
 		padding: 0 10px;
 		font-weight: bold;
 		cursor: pointer;
+	}
+}
+
+.owl-customize-columns {
+	height: 26px;
+	width: auto;
+	position: relative;
+	display: inline-block;
+
+	.owl-customize-columns-button {
+		height: 22px;
+		position: relative;
+		margin-top: 7px;
+		margin-bottom: 0;
+		width: 100%;
 	}
 }
 

@@ -4,6 +4,7 @@ angular.module(
 		'ngAnimate',
 		'ngSanitize',
 		'ngCsv',
+		'ui.bootstrap',
 		'owlTablePartials'
 	]
 );

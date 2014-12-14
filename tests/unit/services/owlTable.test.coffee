@@ -274,6 +274,15 @@ describe 'owl table service', ->
 				$httpBackend.flush()
 				expect(service.renderedTable.state.changedData).toEqual {}
 
+			it 'can manually clear the changedData too', ->
+				service.renderedTable.state.changedData = changedData
+				fooBack =
+					bar: () -> 'foo'
+				spyOn fooBack, 'bar'
+				service.clearAllChanged fooBack.bar
+				expect(service.renderedTable.state.changedData).toEqual {}
+				expect(fooBack.bar).toHaveBeenCalled()
+
 		describe 'saving one row at a time', ->
 			changedRow = {foo: 'bar'}
 			xit 'delegates to a resource service', ->

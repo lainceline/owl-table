@@ -120,6 +120,7 @@
 
 				this.options = {
 					saveIndividualRows: false,
+					customizeColumns: true,
 					saveUrl: 'https://young-oasis-9005.herokuapp.com/api/students/save',
 					massUpdate: true,
 					ajaxParams: {
@@ -149,7 +150,7 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'checkbox',
+						type: 'text',
 						editable: true,  // defaults to true
 						options: [{
 							value: '21323',
@@ -200,6 +201,7 @@
 					.error(function (data) {
 						console.log('ajax error while loading');
 					});
+
 			});
 
 		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
