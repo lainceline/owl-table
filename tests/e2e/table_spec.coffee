@@ -56,5 +56,27 @@ module.exports =
 			.pause 500
 			.assert.elementPresent testHeader
 
+	"you can sort": (browser) ->
+		browser
+			.useXpath()
+			.click '//*[@id="owl_header_custom_2000000"]/i'
+			.pause 1000
+			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', '1'
+			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[1]/span', '1'
+			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[3]/td[1]/span', '1'
+
+	"you can lock a cell": (browser) ->
+		browser
+			.useXpath()
+			.setValue '/html/body/div/nav/div/ul/li[2]/div/input', 0
+			.setValue '/html/body/div/nav/div/ul/li[2]/div/select', 0
+			.click '/html/body/div/nav/div/ul/li[2]/div/button[1]'
+			.pause 500
+			.assert.cssClassNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', 'owl-editable'
+			.click '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]'
+			.pause 500
+			.assert.elementNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/input'
+
+
 	after: (browser) ->
 		browser.end()
