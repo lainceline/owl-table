@@ -6,6 +6,17 @@
 			row: React.PropTypes.object,
 		},
 		keydown: function (event) {
+			var node = $(this.getDOMNode());
+			event.persist();
+			if (this.props.column.type === 'number') {
+				if (/\D/.test(String.fromCharCode(event.which))) {
+					// invalid
+					event.preventDefault();
+					node.tooltip('show');
+				} else {
+					node.tooltip('hide');
+				}
+			}
 			// See handler in table react component
 			switch (event.which) {
 				case 9:
@@ -56,10 +67,12 @@
 			// refactor this into factory that makes subcomponents
 			// That way we could swap factories out - the below field logic is tailored
 			// to legacy code.
+			var classNames = 'owl-input';
 			switch (props.column.type) {
-				case 'text':
 				case 'number':
-					input = <input className="owl-input" type={props.column.type} onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyDown={self.keydown} onChange={self.inputDidChange}/>;
+				case 'text':
+					var containerTd = 'td[data-field="' + props.column.field + '"]';
+					input = <input className={classNames} data-container="body" data-toggle="tooltip" data-trigger="click" data-placement="right" title="Numbers only" type="text" onBlur={self.transmitSaveEvent} defaultValue={props.value} onKeyPress={self.keydown} formNoValidate={true} noValidate={true} onChange={self.inputDidChange}/>;
 					break;
 				case 'select': // fall through
 				case 'select_one': // fall through
@@ -137,6 +150,10 @@
 					self.props.tableDidChange(date, self.props.row, self.props.column);
 					self.transmitSaveEvent(date);
 				});
+			}
+
+			if (self.props.column.type === 'number') {
+				$(self.getDOMNode()).tooltip();
 			}
 		},
 		componentDidUpdate: function () {

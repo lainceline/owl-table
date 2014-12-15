@@ -334,8 +334,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	};
 
 	service.isDirty = function () {
-	//	console.log(this.renderedTable.props);
-		return this.renderedTable.state.changedData.length !== 0;
+		return !_.isEmpty(this.renderedTable.state.changedData);
 	};
 
 	service.throwIfNoSaveRoute = function () {
