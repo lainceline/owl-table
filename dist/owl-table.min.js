@@ -9,12 +9,10 @@
 			// See handler in table react component
 			switch (event.which) {
 				case 9:
-					//event.preventDefault();
 					break;
 				default:
 					break;
 			}
-			props.onKeydown();
 		},
 		inputDidChange: function (event) {
 			event.persist();
