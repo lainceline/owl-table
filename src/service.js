@@ -304,44 +304,33 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}).save();
 	};
 
-	service.lockCell = function (row, column) {
-		// row is id
-		// column is the field string ie 'first_name'
-
-		var ourRow = _.filter(this.data, function (datum) {
-			/* jshint ignore:start */
-			return datum.id == row;
-			/* jshint ignore:end */
-		});
-
-		if (typeof ourRow === 'undefined' || ourRow.length === 0) {
-			throw 'OwlException: Row does not exist';
-		} else {
-			ourRow = ourRow[0];
-		}
+	service.lockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
 		if (typeof ourRow.lockedCells === 'undefined') {
 			ourRow.lockedCells = [];
 		}
 
-		ourRow.lockedCells.push(column);
+		ourRow.lockedCells.push(columnField);
 		ourRow.lockedCells = _.uniq(ourRow.lockedCells);
 	};
 
-	service.unlockCell = function (row, column) {
-		var ourRow = _.filter(this.data, function (datum) {
-			/* jshint ignore:start */
-			return datum.id == row;
-			/* jshint ignore:end */
-		});
+	service.unlockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
-		if (typeof ourRow === 'undefined' || ourRow.length === 0) {
-			throw 'OwlException: Row does not exist';
-		} else {
-			ourRow = ourRow[0];
-		}
-
-		ourRow.lockedCells = _.without(ourRow.lockedCells, column);
+		ourRow.lockedCells = _.without(ourRow.lockedCells, columnField);
 	};
 
 	service.throwIfNoSaveRoute = function () {
@@ -358,9 +347,13 @@ function owlUtils (owlConstants) {
 		firstRowOrThrow: function (array) {
 			if (typeof array === 'undefined' || array.length === 0) {
 				throw owlConstants.exceptions.noRow;
+			} else {
+				return array[0];
 			}
 		}
 	};
+
+	return utilService;
 }
 
 angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', owlTableService])
