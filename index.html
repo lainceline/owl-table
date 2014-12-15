@@ -153,6 +153,10 @@
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
 						type: 'checkbox',
+						filters: [{
+							predicate: '',
+							type: 'contains'
+						}],
 						editable: true,  // defaults to true
 						options: [{
 							value: '21323',
@@ -176,7 +180,8 @@
 						field: 'new_column',
 						title: 'New Column',
 						type: 'text',
-						options: []
+						options: [],
+						filters: [{}]
 					});
 				}, 2000);
 

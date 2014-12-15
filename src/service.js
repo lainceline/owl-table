@@ -87,6 +87,13 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			columns: settings.columns,
 			tacky: settings.options.tacky,
 			lockedCells: [],
+			addFilter: function (column) {
+				column.filters.push({});
+	
+				service.renderedTable.setProps({
+					columns: service.columns
+				});
+			},
 			massUpdate: settings.options.massUpdate,
 			sortClickHandler: this.sortClickHandler
 		});

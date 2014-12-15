@@ -85,13 +85,17 @@ var OwlTableReact = React.createClass({
 		}
 
 		var filters = props.columns.map(function (column, index) {
+			if (typeof column.filters === 'undefined') {
+				column.filters = [{
+					predicate: '',
+					type: 'contains'
+				}];
+			}
 			// For each column, create a div with an input for each filter
-			column.filters = [];
-			column.filters.push({});
 			var colFilters = column.filters.map(function (filter, index) {
 				return (
-					<span>
-						<div className='owl-filter-button owl-filter-button-add' />
+					<span className="owl-filter">
+						<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
 						<input type="text" defaultValue="foo" />
 					</span>
 				);
@@ -99,7 +103,7 @@ var OwlTableReact = React.createClass({
 
 			return (
 				<th className="tacky-top">
-					<div>
+					<div className="owl-filter-wrapper">
 						{colFilters}
 					</div>
 				</th>
@@ -154,11 +158,11 @@ var OwlTableReact = React.createClass({
 		return (
 			<table onKeyUp={self.keyup} className="owl-table tacky">
 				<thead>
-					<tr>
+					<tr className="owl-filter-row">
 						{filters}
 					</tr>
 					<tr>
-					{headers}
+						{headers}
 					</tr>
 				</thead>
 				<tbody className="tbody">
