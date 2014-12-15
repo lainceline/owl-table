@@ -64,9 +64,9 @@
 						<button class="btn btn-sm btn-default" ng-class="{'active': demoCtrl.tacky.top === true}" ng-click="demoCtrl.options.tacky.top = !demoCtrl.options.tacky.top">Tacky Top</button>
 					</li>
 					<li class="navbar-form">
-						<div class="form-group">
+						<div class="form-group cell-locking">
 							<input type="text" class="form-control" placeholder="Record ID" ng-model="cellToChange.row" />
-							<select class="form-control" ng-model="cellToChange.column" ng-options="column as column.title for column in demoCtrl.columns">
+							<select class="form-control lock-column-select" ng-model="cellToChange.column" ng-options="column as column.title for column in demoCtrl.columns">
 								<option>Select column</option>
 							</select>
 							<button class="btn btn-sm btn-default" ng-click="demoCtrl.lockCell()">Lock</button>

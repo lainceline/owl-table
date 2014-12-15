@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils) {
 	var unrenderedTable;
 
 	var service = {
@@ -304,46 +304,33 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}).save();
 	};
 
-	service.lockCell = function (row, column) {
-		// row is id
-		// column is the field string ie 'first_name'
+	service.lockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
-		this.lockedCells[row] = column;
+		if (typeof ourRow.lockedCells === 'undefined') {
+			ourRow.lockedCells = [];
+		}
 
-		var cell = {};
-		cell[row] = column;
-
-		newLockedCells = React.addons.update(this.renderedTable.props.lockedCells, {
-			$push: [cell]
-		});
-
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+		ourRow.lockedCells.push(columnField);
+		ourRow.lockedCells = _.uniq(ourRow.lockedCells);
 	};
 
-	service.unlockCell = function (row, column) {
-		this.lockedCells = this.lockedCells.map(function (cell, key) {
-			if (column !== cell && row !== key) {
-				return cell;
-			}
-		});
+	service.unlockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
-		var newCell = {};
-		newCell[row] = column;
-
-		var newLockedCells = this.renderedTable.props.lockedCells.filter(function (cell, index) {
-			var cellField = cell[Object.keys(cell)[0]];
-			var newField = newCell[Object.keys(newCell)[0]];
-
-			if (cellField !== newField) {
-				return true;
-			}
-		});
-
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+		ourRow.lockedCells = _.without(ourRow.lockedCells, columnField);
 	};
 
 	service.throwIfNoSaveRoute = function () {
@@ -355,5 +342,20 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', owlTableService])
-	.factory('owlResource', ['$http', 'owlConstants', owlResource]);
+function owlUtils (owlConstants) {
+	var utilService = {
+		firstRowOrThrow: function (array) {
+			if (typeof array === 'undefined' || array.length === 0) {
+				throw owlConstants.exceptions.noRow;
+			} else {
+				return array[0];
+			}
+		}
+	};
+
+	return utilService;
+}
+
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', owlTableService])
+	.factory('owlResource', ['$http', 'owlConstants', owlResource])
+	.service('owlUtils', ['owlConstants', owlUtils]);

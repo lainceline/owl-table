@@ -7,6 +7,10 @@
 			noSaveRoute: {
 				type: 'OwlException: noSaveRoute',
 				error: 'No save route provided to table!'
+			},
+			noRow: {
+				type: 'OwlException: noRow',
+				error: 'Row does not exist'
 			}
 		}
 	});

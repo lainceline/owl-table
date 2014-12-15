@@ -30,13 +30,19 @@ var OwlCell = React.createClass({
 			});
 		}
 	},
+	onKeydown: function (event) {
+		switch (event.which) {
+			case 9:
+				break;
+		}
+	},
 	render: function () {
 		var props = this.props;
 		var td;
 		var content;
 		var optionText;
 		var value = props.row[props.column.field];
-		var classes = 'owl-cell-value-label';
+		var classes = 'owl-cell-value-label owl-editable';
 
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];
@@ -105,14 +111,19 @@ var OwlCell = React.createClass({
 					/>;
 		}
 
-		if (props.editable === true) {
+		var cellLocked = _.indexOf(props.row.lockedCells, props.column.field) > -1;
+
+		if (props.editable === true && cellLocked !== true) {
 			// refactor the cell and input class into each other in the future
 			td =
 				<td className={props.column.field} data-field={props.column.field} onClick={this.open}>
 					{content}
 				</td>;
 		} else {
-			td = <td className={props.column.field} data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
+			td =
+				<td className={props.column.field} data-field={props.column.field}>
+					<span className="owl-cell-value-label owl-value" dangerouslySetInnerHTML={{ __html: value }} />
+				</td>;
 		}
 
 		return td;
