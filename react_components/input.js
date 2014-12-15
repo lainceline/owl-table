@@ -39,7 +39,9 @@
 
 			node.trigger('owlTableUpdated', [props.column, props.row, newValue]);
 
-			this.props.closeCell();
+			if (props.column.type !== 'checkbox') {
+				this.props.closeCell();
+			}
 		},
 		handleSpecialFields: function (event) {
 			event.persist();

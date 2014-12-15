@@ -43,17 +43,25 @@ var OwlCell = React.createClass({
 		var optionText;
 		var value = props.row[props.column.field];
 		var classes = 'owl-cell-value-label owl-editable';
+		var self = this;
 
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];
 			if (typeof value === 'undefined') {
 				value = props.row[props.column.field.toLowerCase()];
+
 				if (typeof value === 'undefined') {
 					return (
 						<td>---</td>
 					);
 				}
 			}
+
+		}
+
+		if (props.column.type === 'checkbox') {
+			value = self.decorateCheckboxValue(value);
+			//	console.log(value);
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
@@ -127,6 +135,19 @@ var OwlCell = React.createClass({
 		}
 
 		return td;
+	},
+	decorateCheckboxValue: function (value) {
+		switch (value) {
+			case 'Y':
+				return '<i class="owl-checked glyphicon glyphicon-ok"></i>';
+				break;
+			case 'N':
+				return '<i class="owl-unchecked glyphicon glyphicon-remove"></i>';
+				break;
+			default:
+				return value;
+				break;
+		}
 	},
 	componentDidUpdate: function () {
 		var self = this;
