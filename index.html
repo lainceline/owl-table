@@ -90,6 +90,8 @@
 	</div>
 
 	<script src="dist/vendor.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
 	<script src="lib/swift-box.js"></script>
 	<script src="lib/swift-search.js"></script>
 
@@ -150,7 +152,7 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'text',
+						type: 'checkbox',
 						editable: true,  // defaults to true
 						options: [{
 							value: '21323',
@@ -182,7 +184,7 @@
 					.success(function (data) {
 						_.forEach(data.data, function (datum) {
 							if (Math.random() >= 0.5) {
-								datum['custom_2000000'] = '99999';
+								datum['custom_2000000'] = 'N';
 							} else {
 								if (Math.random() >= 0.5) {
 									datum['custom_2000000'] = '21323';

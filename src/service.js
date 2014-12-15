@@ -333,6 +333,10 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		ourRow.lockedCells = _.without(ourRow.lockedCells, columnField);
 	};
 
+	service.isDirty = function () {
+		return !_.isEmpty(this.renderedTable.state.changedData);
+	};
+
 	service.throwIfNoSaveRoute = function () {
 		if (typeof(this.options.saveUrl) === 'undefined' || this.options.saveUrl === null || this.options.saveUrl === '') {
 			throw owlConstants.exceptions.noSaveRoute;

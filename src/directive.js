@@ -1,4 +1,4 @@
-function owlTableDirective ($http, $timeout, owlTable, owlResource) {
+function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -120,6 +120,13 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 						$('.owl-table-wrapper').addClass('owl-stretch2');
 					}
 				})();
+
+				$window.onbeforeunload = function () {
+					if (owlTable.isDirty()) {
+						return 'Do you want to leave?';
+					}
+				};
+
 			};
 		},
 		controller: ['$scope', function ($scope) {
@@ -208,7 +215,7 @@ function owlCustomizeColumns (owlTable) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', '$timeout', 'owlTable', 'owlResource', owlTableDirective])
+	.directive('owlTable', ['$http', '$timeout', '$window', 'owlTable', 'owlResource', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls])
