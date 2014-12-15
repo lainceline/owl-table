@@ -41,7 +41,7 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils) {
 	var unrenderedTable;
 
 	var service = {
@@ -308,7 +308,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		// row is id
 		// column is the field string ie 'first_name'
 
-		var ourRow = _.where(this.data, {'id': row});
+		var ourRow = _.filter(this.data, function (datum) {
+			/* jshint ignore:start */
+			return datum.id == row;
+			/* jshint ignore:end */
+		});
 
 		if (typeof ourRow === 'undefined' || ourRow.length === 0) {
 			throw 'OwlException: Row does not exist';
@@ -325,27 +329,19 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	};
 
 	service.unlockCell = function (row, column) {
-		this.lockedCells = this.lockedCells.map(function (cell, key) {
-			if (column !== cell && row !== key) {
-				return cell;
-			}
+		var ourRow = _.filter(this.data, function (datum) {
+			/* jshint ignore:start */
+			return datum.id == row;
+			/* jshint ignore:end */
 		});
 
-		var newCell = {};
-		newCell[row] = column;
+		if (typeof ourRow === 'undefined' || ourRow.length === 0) {
+			throw 'OwlException: Row does not exist';
+		} else {
+			ourRow = ourRow[0];
+		}
 
-		var newLockedCells = this.renderedTable.props.lockedCells.filter(function (cell, index) {
-			var cellField = cell[Object.keys(cell)[0]];
-			var newField = newCell[Object.keys(newCell)[0]];
-
-			if (cellField !== newField) {
-				return true;
-			}
-		});
-
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+		ourRow.lockedCells = _.without(ourRow.lockedCells, column);
 	};
 
 	service.throwIfNoSaveRoute = function () {
@@ -357,5 +353,16 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', owlTableService])
-	.factory('owlResource', ['$http', 'owlConstants', owlResource]);
+function owlUtils (owlConstants) {
+	var utilService = {
+		firstRowOrThrow: function (array) {
+			if (typeof array === 'undefined' || array.length === 0) {
+				throw owlConstants.exceptions.noRow;
+			}
+		}
+	};
+}
+
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', owlTableService])
+	.factory('owlResource', ['$http', 'owlConstants', owlResource])
+	.service('owlUtils', ['owlConstants', owlUtils]);

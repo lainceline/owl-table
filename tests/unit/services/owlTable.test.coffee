@@ -317,4 +317,10 @@ describe 'owl table service', ->
 
 		describe 'unlocking a cell', ->
 			it 'removes the cell from the locked cell array', ->
-				#service.unlockCell 1, 'foo'
+				row = service.data[0]
+				col = service.columns[0]
+
+				row.lockedCells.push 'custom_1'
+
+				service.unlockCell row.id, col.field
+				expect(row.lockedCells.length).toBe 0
