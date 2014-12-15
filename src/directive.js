@@ -39,7 +39,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				}).renderInto(container);
 
 				scope.$watch('data', function (newValue) {
-					// use forthcoming empty() to remove all rows
 					if (newValue.length > 0) {
 						owlTable.updateData(newValue);
 
@@ -200,7 +199,7 @@ function owlCustomizeColumns (owlTable) {
 		templateUrl: 'partials/customizeColumns.html',
 		controllerAs: 'columnCtrl',
 		link: function (scope, elem, attrs) {
-			
+
 		},
 		controller: function ($scope) {
 

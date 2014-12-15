@@ -308,18 +308,20 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		// row is id
 		// column is the field string ie 'first_name'
 
-		this.lockedCells[row] = column;
+		var ourRow = _.where(this.data, {'id': row});
 
-		var cell = {};
-		cell[row] = column;
+		if (typeof ourRow === 'undefined' || ourRow.length === 0) {
+			throw 'OwlException: Row does not exist';
+		} else {
+			ourRow = ourRow[0];
+		}
 
-		newLockedCells = React.addons.update(this.renderedTable.props.lockedCells, {
-			$push: [cell]
-		});
+		if (typeof ourRow.lockedCells === 'undefined') {
+			ourRow.lockedCells = [];
+		}
 
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+		ourRow.lockedCells.push(column);
+		ourRow.lockedCells = _.uniq(ourRow.lockedCells);
 	};
 
 	service.unlockCell = function (row, column) {
