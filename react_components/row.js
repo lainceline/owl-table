@@ -46,7 +46,7 @@ var OwlRow = React.createClass({
 		});
 
 		return(
-			<tr className={props.className + " owl-row"} key={props.key}>
+			<tr className={props.className + " owl-row trow"} key={props.key}>
 				{cells}
 			</tr>
 		);
