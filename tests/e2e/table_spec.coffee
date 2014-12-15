@@ -11,7 +11,7 @@ module.exports =
 
 	"it has editable rows you can open": (browser) ->
 		browser
-			.click('.owl-row')
+			.click('#demoTable > div > div.owl-table-wrapper.owl-stretch2 > div.owl-table-inner-wrapper.table-responsive.tacky > div > table > tbody > tr:nth-child(1) > td.custom_2000000')
 			.waitForElementVisible('.owl-input', 500)
 
 	"you can go to the next page": (browser) ->
@@ -57,7 +57,7 @@ module.exports =
 		browser
 			.useXpath()
 			.click '//*[@id="owl_header_custom_2000000"]/i'
-			.pause 1000
+			.pause 2000
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', '1'
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[1]/span', '1'
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[3]/td[1]/span', '1'
