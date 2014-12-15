@@ -57,7 +57,7 @@ module.exports =
 		browser
 			.useXpath()
 			.click '//*[@id="owl_header_custom_2000000"]/i'
-			.pause 1000
+			.pause 5000
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', '1'
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[1]/span', '1'
 			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[3]/td[1]/span', '1'
