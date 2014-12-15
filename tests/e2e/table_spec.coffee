@@ -20,12 +20,9 @@ module.exports =
 			.assert.value('.owl-page-count input[type=text]', '2')
 
 	"you can go to the prev page": (browser) ->
-		#value = browser.getValue('.owl-input')
-		#console.log value
 		browser
 			.click('.owl-previous-page')
 			.assert.value '.owl-page-count input[type=text]', '1'
-		#	.assert.element
 
 	"you can't go to page 0": (browser) ->
 		browser
@@ -68,14 +65,14 @@ module.exports =
 	"you can lock a cell": (browser) ->
 		browser
 			.useXpath()
-			.setValue '/html/body/div/nav/div/ul/li[2]/div/input', 0
-			.setValue '/html/body/div/nav/div/ul/li[2]/div/select', 0
+			.setValue '/html/body/div/nav/div/ul/li[2]/div/input', 1
+			.pause 200
 			.click '/html/body/div/nav/div/ul/li[2]/div/button[1]'
 			.pause 500
-			.assert.cssClassNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', 'owl-editable'
+			#.assert.cssClassNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', 'owl-editable'
 			.click '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]'
 			.pause 500
-			.assert.elementNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/input'
+		#	.assert.elementNotPresent '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/input'
 
 
 	after: (browser) ->

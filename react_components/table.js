@@ -4,7 +4,6 @@ var OwlTableReact = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		columns: React.PropTypes.array.isRequired,
 		tacky: React.PropTypes.object,
-		lockedCells: React.PropTypes.array,
 		massUpdate: React.PropTypes.bool,
 		pageChanged: React.PropTypes.bool
 	},
@@ -29,7 +28,6 @@ var OwlTableReact = React.createClass({
 				top: false,
 				left: false
 			},
-			lockedCells: [],
 			massUpdate: false,
 			pageChanged: false
 		};
@@ -104,15 +102,8 @@ var OwlTableReact = React.createClass({
 		});
 
 		var rows = props.data.map(function (datum, index) {
-
-			var lockedForRow = _.find(props.lockedCells, function (value, index) {
-				if (typeof value === 'object' && parseInt(Object.keys(value)[0]) === datum.id) {
-					return true;
-				}
-			});
-
 			return (
-				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
 		});
 
