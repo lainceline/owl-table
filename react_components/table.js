@@ -68,6 +68,17 @@ var OwlTableReact = React.createClass({
 			this.props.sortClickHandler(field, sortReverse);
 		}
 	},
+	filterFieldChanged: function (filter, event) {
+		event.persist();
+		var self = this;
+		_.debounce(
+			function (filter, event) {
+				event.persist();
+				filter.term = event.target.value;
+				self.props.filterDidChange(filter);
+			}, 200
+		)(filter, event);
+	},
 	render: function () {
 		var self = this;
 
@@ -101,7 +112,7 @@ var OwlTableReact = React.createClass({
 					return (
 						<span className="owl-filter">
 							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
-							<input type="text" defaultValue="foo" />
+							<input type="text" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
 						</span>
 					);
 				});

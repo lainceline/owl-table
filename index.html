@@ -152,8 +152,8 @@
 						title: 'Custom 200000' + i,
 						type: 'checkbox',
 						filters: [{
-							predicate: '',
-							type: 'contains'
+							term: '',
+							condition: 'contains'
 						}],
 						editable: true,  // defaults to true
 						options: [{
@@ -172,16 +172,6 @@
 					}
 					$scope.demoCtrl.columns.push(col);
 				}
-
-				$timeout(function() {
-					$scope.demoCtrl.columns.push({
-						field: 'new_column',
-						title: 'New Column',
-						type: 'text',
-						options: [],
-						filters: [{}]
-					});
-				}, 2000);
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
