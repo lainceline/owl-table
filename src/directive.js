@@ -117,7 +117,7 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 					var tableWidth = headers.width() * headers.length;
 
 					if (tableWidth > $('.owl-wrapper').width()) {
-						$('.owl-table-wrapper').addClass('owl-stretch2');
+						$('.owl-table-wrapper').addClass('owl-stretch-after-load');
 					}
 				})();
 
@@ -132,6 +132,8 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 		controller: ['$scope', function ($scope) {
 			this.owlTable = owlTable;
 
+			this.hasChangedData = owlTable.hasChangedData;
+			
 			this.nextPage = function () {
 				owlTable.nextPage();
 			};

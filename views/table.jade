@@ -19,7 +19,7 @@
 			.owl-top-control-right.owl-top-control-save(ng-if="options.saveIndividualRows !== true")
 				div(ng-hide="saved !== true") Saved
 		
-				button.btn.btn-sm.btn-default#saveButton(ng-click="owlCtrl.savePage()") Save
+				button.btn.btn-sm.btn-default#saveButton(ng-click="owlCtrl.savePage()", ng-disabled="!owlCtrl.owlTable.hasChangedData",ladda="owlCtrl.saving") Save
 	
 	.owl-table-wrapper(ng-class="{'owl-stretch': loading}")
 		.owl-mass-update-row(ng-show="owlCtrl.massUpdate")
