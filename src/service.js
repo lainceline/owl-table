@@ -60,7 +60,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		pages: 1,
 		total: 0,
 		count: owlConstants.defaults.PER_PAGE,
-		hasChangedData: false
+		hasChangedData: false,
+		filteringEnabled: false
 	};
 
 	service.lockedCells = [];
@@ -90,16 +91,24 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			lockedCells: [],
 			addFilter: function (column) {
 				column.filters.push({});
-	
+
 				service.renderedTable.setProps({
 					columns: service.columns
 				});
 			},
 			massUpdate: settings.options.massUpdate,
-			sortClickHandler: this.sortClickHandler
+			sortClickHandler: this.sortClickHandler,
+			filteringEnabled: this.filteringEnabled
 		});
 
 		return this;
+	};
+
+	service.toggleFiltering = function () {
+		this.filteringEnabled = !this.filteringEnabled;
+		this.renderedTable.setProps({
+			filteringEnabled: this.filteringEnabled
+		});
 	};
 
 	service.sortClickHandler = function (field, reverse) {
