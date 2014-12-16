@@ -91,6 +91,11 @@ var OwlTableReact = React.createClass({
 				classes = classes + ' tacky-top';
 			}
 
+			// Testing purposes
+			if (column.field === 'custom_2000000') {
+				classes = classes + ' tacky-left';
+			}
+
 			if (column.visible !== false) {
 				return (
 					<th className={classes} id={id} key={index} data-field={column.field}>
@@ -136,7 +141,7 @@ var OwlTableReact = React.createClass({
 					{headers}
 					</tr>
 				</thead>
-				<tbody>
+				<tbody className="tbody">
 					{rows}
 				</tbody>
 			</table>

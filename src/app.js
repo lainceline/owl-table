@@ -5,6 +5,7 @@ angular.module(
 		'ngSanitize',
 		'ngCsv',
 		'ui.bootstrap',
+		'angular-ladda',
 		'owlTablePartials'
 	]
 );

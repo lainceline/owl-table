@@ -59,7 +59,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		page: 1,
 		pages: 1,
 		total: 0,
-		count: owlConstants.defaults.PER_PAGE
+		count: owlConstants.defaults.PER_PAGE,
+		hasChangedData: false
 	};
 
 	service.lockedCells = [];
@@ -144,8 +145,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	};
 
 	service.syncDataFromView = function (row, column, value) {
-		var modelRow = _(this.data).where({id: row.id}).first();
-		modelRow[column.field] = value;
+		$rootScope.$apply((function () {
+			var modelRow = _(this.data).where({id: row.id}).first();
+			modelRow[column.field] = value;
+			this.hasChangedData = true;
+		}).bind(this));
 	};
 
 	service.updateData = function (newData) {
@@ -265,6 +269,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 
 	service.saveAllChanged = function () {
 		var data = {};
+		var self = this;
 
 		this.throwIfNoSaveRoute();
 
@@ -280,10 +285,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			url: this.options.saveUrl,
 			data: data
 		}).then(function (response) {
-			this.renderedTable.setState({
+			self.renderedTable.setState({
 				changedData: {}
 			});
-		}.bind(this));
+			self.hasChangedData = false;
+		});
 	};
 
 	service.saveRow = function (column, row, value) {
@@ -334,7 +340,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	};
 
 	service.isDirty = function () {
-		return !_.isEmpty(this.renderedTable.state.changedData);
+		return this.hasChangedData || !_.isEmpty(this.renderedTable.state.changedData);
 	};
 
 	service.throwIfNoSaveRoute = function () {

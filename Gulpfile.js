@@ -31,8 +31,13 @@ gulp.task('jsx', function () {
 });
 
 gulp.task('sass', function () {
-	return gulp.src('./sass/*.scss')
-			.pipe(sass())
+	return gulp.src('./sass/owl-table.scss')
+			.pipe(sass({
+				precision: 10,
+				includePaths: [
+					'bower_components/bootstrap-sass-official/assets/stylesheets'
+				]
+			}))
 			.pipe(autoprefix({
 				browsers: ['last 2 versions']
 			}))
@@ -101,21 +106,21 @@ gulp.task('link-release', function () {
 gulp.task('vendor', function () {
 	return gulp.src([
 
-		'./bower_components/jquery/dist/jquery.js',
+		'./bower_components/jquery/jquery.js',
 		'./bower_components/lodash/dist/lodash.min.js',
 		'./bower_components/react/react-with-addons.js',
-		'./bower_components/bootstrap/dist/js/bootstrap.js',
+		'./bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
 		'./bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js',
 
 		'./bower_components/angular/angular.js',
-		'./bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+		'./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
 
 		'./bower_components/angular-animate/angular-animate.js',
 		'./bower_components/angular-sanitize/angular-sanitize.js',
 		'./bower_components/ng-csv/build/ng-csv.js',
 		'./bower_components/ladda/dist/spin.min.js',
 		'./bower_components/ladda/dist/ladda.min.js',
-		'./bower_components/ladda/dist/angular-ladda.min.js',
+		'./bower_components/angular-ladda/dist/angular-ladda.min.js',
 		'./bower_components/angular-ui-utils/ui-utils.min.js',
 
 		'./lib/tacky.js'
