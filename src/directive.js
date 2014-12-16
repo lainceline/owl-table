@@ -130,10 +130,12 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 			};
 		},
 		controller: ['$scope', function ($scope) {
+			var self = this;
+
 			this.owlTable = owlTable;
 
 			this.hasChangedData = owlTable.hasChangedData;
-			
+
 			this.nextPage = function () {
 				owlTable.nextPage();
 			};
@@ -143,12 +145,12 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 			};
 
 			this.savePage = function () {
-				$scope.saving = true;
+				this.saving = true;
 
 				owlTable.saveAllChanged();
 
 				$timeout(function () {
-					$scope.saving = false;
+					self.saving = false;
 				}, 2000);
 			};
 		}]

@@ -31,8 +31,13 @@ gulp.task('jsx', function () {
 });
 
 gulp.task('sass', function () {
-	return gulp.src('./sass/*.scss')
-			.pipe(sass())
+	return gulp.src('./sass/owl-table.scss')
+			.pipe(sass({
+				precision: 10,
+				includePaths: [
+					'bower_components/bootstrap-sass-official/assets/stylesheets'
+				]
+			}))
 			.pipe(autoprefix({
 				browsers: ['last 2 versions']
 			}))
@@ -101,10 +106,10 @@ gulp.task('link-release', function () {
 gulp.task('vendor', function () {
 	return gulp.src([
 
-		'./bower_components/jquery/dist/jquery.js',
+		'./bower_components/jquery/jquery.js',
 		'./bower_components/lodash/dist/lodash.min.js',
 		'./bower_components/react/react-with-addons.js',
-		'./bower_components/bootstrap/dist/js/bootstrap.min.js',
+		'./bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
 		'./bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js',
 
 		'./bower_components/angular/angular.js',

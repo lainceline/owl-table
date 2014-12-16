@@ -241,10 +241,10 @@ describe 'the owl table directives', ->
 				expect(service.saveAllChanged).toHaveBeenCalled()
 			describe 'the saving indicator', ->
 				it 'is turned on', ->
-					expect(isolateScope.saving).toBe true
+					expect(isolateScope.owlCtrl.saving).toBe true
 				it 'turns off after a timeout', ->
 					$timeout.flush()
-					expect(isolateScope.saving).toBe false
+					expect(isolateScope.owlCtrl.saving).toBe false
 
 	describe 'owlPagination directive', ->
 		owlCtrl = null
