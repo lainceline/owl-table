@@ -120,16 +120,19 @@ var OwlCell = React.createClass({
 		}
 
 		var cellLocked = _.indexOf(props.row.lockedCells, props.column.field) > -1;
-
+		var tdClasses = props.column.field;
+		if (props.column.field === 'custom_2000000') {
+			tdClasses = tdClasses + ' tacky-left';
+		}
 		if (props.editable === true && cellLocked !== true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				<td className={props.column.field} data-field={props.column.field} onClick={this.open}>
+				<td className={tdClasses} data-field={props.column.field} onClick={this.open}>
 					{content}
 				</td>;
 		} else {
 			td =
-				<td className={props.column.field} data-field={props.column.field}>
+				<td className={tdClasses} data-field={props.column.field}>
 					<span className="owl-cell-value-label owl-value" dangerouslySetInnerHTML={{ __html: value }} />
 				</td>;
 		}
