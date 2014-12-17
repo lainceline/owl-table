@@ -5,7 +5,8 @@ var OwlTableReact = React.createClass({
 		columns: React.PropTypes.array.isRequired,
 		tacky: React.PropTypes.object,
 		massUpdate: React.PropTypes.bool,
-		pageChanged: React.PropTypes.bool
+		pageChanged: React.PropTypes.bool,
+		filteringEnabled: React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
 		if (typeof this.state.changedData[row.id] === 'undefined') {
@@ -67,6 +68,17 @@ var OwlTableReact = React.createClass({
 			this.props.sortClickHandler(field, sortReverse);
 		}
 	},
+	filterFieldChanged: function (filter, event) {
+		event.persist();
+		var self = this;
+		_.debounce(
+			function (filter, event) {
+				event.persist();
+				filter.term = event.target.value;
+				self.props.filterDidChange(filter);
+			}, 200
+		)(filter, event);
+	},
 	render: function () {
 		var self = this;
 
@@ -82,6 +94,39 @@ var OwlTableReact = React.createClass({
 			if (props.tacky.left) {
 				tackyLeft = props.tacky.left;
 			}
+		}
+
+		var filterSection;
+		var filters;
+
+		if (props.filteringEnabled) {
+			filters = props.columns.map(function (column, index) {
+				if (typeof column.filters === 'undefined') {
+					column.filters = [{
+						predicate: '',
+						type: 'contains'
+					}];
+				}
+				// For each column, create a div with an input for each filter
+				var colFilters = column.filters.map(function (filter, index) {
+					return (
+						<span key={index} className="owl-filter">
+							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
+							<input type="text" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
+						</span>
+					);
+				});
+				var tackyLeft = column.field === 'custom_2000000' ? ' tacky-left' : '';
+				return (
+					<th key={index} className={"tacky-top" + tackyLeft}>
+						<div className="owl-filter-wrapper">
+							{colFilters}
+						</div>
+					</th>
+				);
+			});
+
+			filterSection = <tr className="owl-filter-row"> {filters} </tr>;
 		}
 
 		var headers = props.columns.map(function (column, index) {
@@ -135,10 +180,11 @@ var OwlTableReact = React.createClass({
 		};
 
 		return (
-			<table onKeyUp={self.keyup} className="owl-table">
+			<table onKeyUp={self.keyup} className="owl-table tacky">
 				<thead>
+					{filterSection}
 					<tr>
-					{headers}
+						{headers}
 					</tr>
 				</thead>
 				<tbody className="tbody">

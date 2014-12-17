@@ -65,7 +65,7 @@ gulp.task('coffee-tests', function () {
 });
 
 gulp.task('js', function () {
-	return gulp.src(['./src/app.js', './src/constants.js', './src/service.js', './src/directive.js'])
+	return gulp.src(['./src/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
@@ -91,16 +91,26 @@ gulp.task('compile', function (callback) {
 });
 
 gulp.task('link', function () {
-	return gulp.src(['./build/compiled-react-components.js', './build/compiled-partials.js', './build/compiled-coffee.js', './build/compiled-js.js'])
-			.pipe(concat('owl-table.min.js'))
-			.pipe(gulp.dest('./dist'));
+	return gulp.src([
+		'./build/compiled-react-components.js',
+		'./build/compiled-partials.js',
+		'./build/compiled-coffee.js',
+		'./build/compiled-js.js'
+	])
+		.pipe(concat('owl-table.min.js'))
+		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('link-release', function () {
-	return gulp.src(['./build/compiled-react-components.js', './build/compiled-partials.js', './build/compiled-coffee.js', './build/compiled-js.js'])
-	.pipe(uglify())
-	.pipe(concat('owl-table.min.js'))
-	.pipe(gulp.dest('./dist'));
+	return gulp.src([
+		'./build/compiled-react-components.js',
+		'./build/compiled-partials.js',
+		'./build/compiled-coffee.js',
+		'./build/compiled-js.js'
+	])
+		.pipe(uglify())
+		.pipe(concat('owl-table.min.js'))
+		.pipe(gulp.dest('./dist'));
 });
 
 gulp.task('vendor', function () {
@@ -124,7 +134,6 @@ gulp.task('vendor', function () {
 		'./bower_components/angular-ui-utils/ui-utils.min.js',
 
 		'./lib/tacky.js'
-
 	])
 		.pipe(concat('vendor.min.js'))
 		.pipe(gulp.dest('./dist'));

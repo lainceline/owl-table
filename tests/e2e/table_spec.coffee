@@ -57,10 +57,11 @@ module.exports =
 		browser
 			.useXpath()
 			.click '//*[@id="owl_header_custom_2000000"]/i'
-			.pause 2000
-			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[1]/span', '1'
-			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[1]/span', '1'
-			.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[3]/td[1]/span', '1'
+			.pause 3000
+			.useCss()
+			.assert.containsText 'td.custom_2000000 > span', '1'
+			#.assert.containsText '', '1'
+			#.assert.containsText '//*[@id="demoTable"]/div/div[2]/div[2]/div/table/tbody/tr[3]/td[1]/span', '1'
 
 	"you can lock a cell": (browser) ->
 		browser

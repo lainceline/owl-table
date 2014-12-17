@@ -41,13 +41,14 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils, owlFilter) {
 	var unrenderedTable;
 
 	var service = {
 		tables: [],
 		data: [],
 		pageData: [],
+		filteredData: [],
 		columns: [],
 		options: {
 			sort: {
@@ -60,7 +61,8 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		pages: 1,
 		total: 0,
 		count: owlConstants.defaults.PER_PAGE,
-		hasChangedData: false
+		hasChangedData: false,
+		filteringEnabled: false
 	};
 
 	service.lockedCells = [];
@@ -88,8 +90,17 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			columns: settings.columns,
 			tacky: settings.options.tacky,
 			lockedCells: [],
+			addFilter: function (column) {
+				column.filters.push({});
+
+				service.renderedTable.setProps({
+					columns: service.columns
+				});
+			},
 			massUpdate: settings.options.massUpdate,
-			sortClickHandler: this.sortClickHandler
+			sortClickHandler: this.sortClickHandler,
+			filterDidChange: this.filterDidChange.bind(this),
+			filteringEnabled: this.filteringEnabled
 		});
 
 		return this;
@@ -117,12 +128,21 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 	};
 
-	service.currentPageOfData = function () {
+	service.currentPageOfData = function (data) {
+		var pageOfData;
 		var startIndex = (this.page - 1) * this.count;
 		var endIndex = this.page * this.count;
 
 		endIndex = endIndex > 0 ? endIndex : 1;
-		return this.data.slice(startIndex, endIndex);
+
+		if (typeof data !== 'undefined') {
+			pageOfData = data.slice(startIndex, endIndex);
+		} else if (this.filteringEnabled) {
+			pageOfData = this.filteredData.slice(startIndex, endIndex);
+		} else {
+			pageOfData = this.data.slice(startIndex, endIndex);
+		}
+		return pageOfData;
 	};
 
 	service.sorted = function (data) {
@@ -156,6 +176,9 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		if (typeof newData !== 'undefined') {
 			newData = this.sorted(newData);
 			this.data = newData;
+			this.paginateNoApply({
+				total: newData.length
+			});
 			this.renderedTable.setProps({
 				data: this.currentPageOfData()
 			});
@@ -256,15 +279,22 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 	};
 
-	// enables client-side pagination.
-	service.paginate = function (settings) {
-
+	service.paginateNoApply = function (settings) {
 		if (typeof(settings.count) !== 'undefined') {
 			this.count = settings.count;
 		}
 
 		this.pages = Math.ceil(settings.total / this.count);
 		this.total = settings.total;
+	};
+
+	// enables client-side pagination.
+	service.paginate = function (settings) {
+		if (!$rootScope.$$phase) {
+			$rootScope.$apply((function () {
+				this.paginateNoApply(settings);
+			}).bind(this));
+		}
 	};
 
 	service.saveAllChanged = function () {
@@ -349,6 +379,39 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}
 	};
 
+	service.toggleFiltering = function () {
+		this.filteringEnabled = !this.filteringEnabled;
+
+		if (this.filteringEnabled) {
+			this.filteredData = _.filter(this.data, function () { return true; });
+			this.renderedTable.setProps({
+				filteringEnabled: this.filteringEnabled,
+			});
+		} else {
+			this.filteredData = [];
+			this.updateData(this.data);
+		}
+	};
+
+	service.filterDidChange = function (filter) {
+		var rows = owlFilter.filterTable(this.data, this.columns);
+
+		if (owlFilter.hasFilters(this.columns)) {
+			this.filteredData = rows;
+			this.paginate({
+				total: rows.length
+			});
+
+			this.renderedTable.setProps({
+				data: this.currentPageOfData()
+			});
+		} else {
+			this.paginate({
+				total: this.data.length
+			});
+		}
+	};
+
 	return service;
 }
 
@@ -360,12 +423,15 @@ function owlUtils (owlConstants) {
 			} else {
 				return array[0];
 			}
+		},
+		escapeRegExp: function (string) {
+			return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 		}
 	};
 
 	return utilService;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', owlTableService])
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', 'owlFilter', owlTableService])
 	.factory('owlResource', ['$http', 'owlConstants', owlResource])
 	.service('owlUtils', ['owlConstants', owlUtils]);

@@ -133,7 +133,11 @@
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
-						type: 'text',
+						type: 'checkbox',
+						filters: [{
+							term: '',
+							condition: 'contains'
+						}],
 						editable: true,  // defaults to true
 						options: [{
 							value: '21323',
@@ -152,15 +156,6 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
-				$timeout(function() {
-					$scope.demoCtrl.columns.push({
-						field: 'new_column',
-						title: 'New Column',
-						type: 'text',
-						options: []
-					});
-				}, 2000);
-
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (data) {
 						_.forEach(data.data, function (datum) {
@@ -176,10 +171,6 @@
 						});
 						$scope.demoCtrl.data = data.data;
 
-						owlTable.paginate({
-							total: data.data.length, // necessary
-							count: 25, // dont have to specify this
-						});
 					})
 					.error(function (data) {
 						console.log('ajax error while loading');
