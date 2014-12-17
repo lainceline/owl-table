@@ -1,6 +1,6 @@
 {
 	"curly": true,
-	"eqeqeq": true,
+	"eqeqeq": false,
 	"indent": 4,
 	"newcap": false,
 	"maxlen": 140,
