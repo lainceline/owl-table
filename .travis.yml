@@ -10,8 +10,10 @@ cache:
     directories:
         - node_modules
 branches:
-  except:
-      - gh-pages
+  only:
+      - develop
+      - master
+      - /release\/\S+/
 addons:
     code_climate:
         repo_token: ec7e6ac220a6fda0ec19bd8815c1128e0024dc1a2960e05bbeb623774ce8f28f
