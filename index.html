@@ -171,10 +171,6 @@
 						});
 						$scope.demoCtrl.data = data.data;
 
-						owlTable.paginate({
-							total: data.data.length, // necessary
-							count: 25, // dont have to specify this
-						});
 					})
 					.error(function (data) {
 						console.log('ajax error while loading');
