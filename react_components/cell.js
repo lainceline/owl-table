@@ -61,7 +61,6 @@ var OwlCell = React.createClass({
 
 		if (props.column.type === 'checkbox') {
 			value = self.decorateCheckboxValue(value);
-			//	console.log(value);
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
@@ -131,9 +130,10 @@ var OwlCell = React.createClass({
 					{content}
 				</td>;
 		} else {
+			var innerHTML = props.column.type.indexOf('select') > -1 ? optionText : value;
 			td =
 				<td className={tdClasses} data-field={props.column.field}>
-					<span className="owl-cell-value-label owl-value" dangerouslySetInnerHTML={{ __html: value }} />
+					<span className="owl-cell-value-label owl-value" dangerouslySetInnerHTML={{ __html: innerHTML }} />
 				</td>;
 		}
 
