@@ -41,13 +41,14 @@ function owlResource ($http, owlConstants) {
 	};
 }
 
-function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource) {
+function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils, owlFilter) {
 	var unrenderedTable;
 
 	var service = {
 		tables: [],
 		data: [],
 		pageData: [],
+		filteredData: [],
 		columns: [],
 		options: {
 			sort: {
@@ -59,7 +60,9 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		page: 1,
 		pages: 1,
 		total: 0,
-		count: owlConstants.defaults.PER_PAGE
+		count: owlConstants.defaults.PER_PAGE,
+		hasChangedData: false,
+		filteringEnabled: false
 	};
 
 	service.lockedCells = [];
@@ -87,8 +90,17 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			columns: settings.columns,
 			tacky: settings.options.tacky,
 			lockedCells: [],
+			addFilter: function (column) {
+				column.filters.push({});
+
+				service.renderedTable.setProps({
+					columns: service.columns
+				});
+			},
 			massUpdate: settings.options.massUpdate,
-			sortClickHandler: this.sortClickHandler
+			sortClickHandler: this.sortClickHandler,
+			filterDidChange: this.filterDidChange.bind(this),
+			filteringEnabled: this.filteringEnabled
 		});
 
 		return this;
@@ -116,12 +128,21 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 	};
 
-	service.currentPageOfData = function () {
+	service.currentPageOfData = function (data) {
+		var pageOfData;
 		var startIndex = (this.page - 1) * this.count;
 		var endIndex = this.page * this.count;
 
 		endIndex = endIndex > 0 ? endIndex : 1;
-		return this.data.slice(startIndex, endIndex);
+
+		if (typeof data !== 'undefined') {
+			pageOfData = data.slice(startIndex, endIndex);
+		} else if (this.filteringEnabled) {
+			pageOfData = this.filteredData.slice(startIndex, endIndex);
+		} else {
+			pageOfData = this.data.slice(startIndex, endIndex);
+		}
+		return pageOfData;
 	};
 
 	service.sorted = function (data) {
@@ -144,14 +165,20 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	};
 
 	service.syncDataFromView = function (row, column, value) {
-		var modelRow = _(this.data).where({id: row.id}).first();
-		modelRow[column.field] = value;
+		$rootScope.$apply((function () {
+			var modelRow = _(this.data).where({id: row.id}).first();
+			modelRow[column.field] = value;
+			this.hasChangedData = true;
+		}).bind(this));
 	};
 
 	service.updateData = function (newData) {
 		if (typeof newData !== 'undefined') {
 			newData = this.sorted(newData);
 			this.data = newData;
+			this.paginateNoApply({
+				total: newData.length
+			});
 			this.renderedTable.setProps({
 				data: this.currentPageOfData()
 			});
@@ -252,9 +279,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		});
 	};
 
-	// enables client-side pagination.
-	service.paginate = function (settings) {
-
+	service.paginateNoApply = function (settings) {
 		if (typeof(settings.count) !== 'undefined') {
 			this.count = settings.count;
 		}
@@ -263,8 +288,18 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		this.total = settings.total;
 	};
 
+	// enables client-side pagination.
+	service.paginate = function (settings) {
+		if (!$rootScope.$$phase) {
+			$rootScope.$apply((function () {
+				this.paginateNoApply(settings);
+			}).bind(this));
+		}
+	};
+
 	service.saveAllChanged = function () {
 		var data = {};
+		var self = this;
 
 		this.throwIfNoSaveRoute();
 
@@ -280,10 +315,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 			url: this.options.saveUrl,
 			data: data
 		}).then(function (response) {
-			this.renderedTable.setState({
+			self.renderedTable.setState({
 				changedData: {}
 			});
-		}.bind(this));
+			self.hasChangedData = false;
+		});
 	};
 
 	service.saveRow = function (column, row, value) {
@@ -304,46 +340,37 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}).save();
 	};
 
-	service.lockCell = function (row, column) {
-		// row is id
-		// column is the field string ie 'first_name'
+	service.lockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
-		this.lockedCells[row] = column;
+		if (typeof ourRow.lockedCells === 'undefined') {
+			ourRow.lockedCells = [];
+		}
 
-		var cell = {};
-		cell[row] = column;
-
-		newLockedCells = React.addons.update(this.renderedTable.props.lockedCells, {
-			$push: [cell]
-		});
-
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+		ourRow.lockedCells.push(columnField);
+		ourRow.lockedCells = _.uniq(ourRow.lockedCells);
 	};
 
-	service.unlockCell = function (row, column) {
-		this.lockedCells = this.lockedCells.map(function (cell, key) {
-			if (column !== cell && row !== key) {
-				return cell;
-			}
-		});
+	service.unlockCell = function (rowId, columnField) {
+		var ourRow = owlUtils.firstRowOrThrow(
+			_.filter(this.data, function (datum) {
+				/* jshint ignore:start */
+				return datum.id == rowId;
+				/* jshint ignore:end */
+			})
+		);
 
-		var newCell = {};
-		newCell[row] = column;
+		ourRow.lockedCells = _.without(ourRow.lockedCells, columnField);
+	};
 
-		var newLockedCells = this.renderedTable.props.lockedCells.filter(function (cell, index) {
-			var cellField = cell[Object.keys(cell)[0]];
-			var newField = newCell[Object.keys(newCell)[0]];
-
-			if (cellField !== newField) {
-				return true;
-			}
-		});
-
-		this.renderedTable.setProps({
-			lockedCells: newLockedCells
-		});
+	service.isDirty = function () {
+		return this.hasChangedData || !_.isEmpty(this.renderedTable.state.changedData);
 	};
 
 	service.throwIfNoSaveRoute = function () {
@@ -352,8 +379,59 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}
 	};
 
+	service.toggleFiltering = function () {
+		this.filteringEnabled = !this.filteringEnabled;
+
+		if (this.filteringEnabled) {
+			this.filteredData = _.filter(this.data, function () { return true; });
+			this.renderedTable.setProps({
+				filteringEnabled: this.filteringEnabled,
+			});
+		} else {
+			this.filteredData = [];
+			this.updateData(this.data);
+		}
+	};
+
+	service.filterDidChange = function (filter) {
+		var rows = owlFilter.filterTable(this.data, this.columns);
+
+		if (owlFilter.hasFilters(this.columns)) {
+			this.filteredData = rows;
+			this.paginate({
+				total: rows.length
+			});
+
+			this.renderedTable.setProps({
+				data: this.currentPageOfData()
+			});
+		} else {
+			this.paginate({
+				total: this.data.length
+			});
+		}
+	};
+
 	return service;
 }
 
-angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', owlTableService])
-	.factory('owlResource', ['$http', 'owlConstants', owlResource]);
+function owlUtils (owlConstants) {
+	var utilService = {
+		firstRowOrThrow: function (array) {
+			if (typeof array === 'undefined' || array.length === 0) {
+				throw owlConstants.exceptions.noRow;
+			} else {
+				return array[0];
+			}
+		},
+		escapeRegExp: function (string) {
+			return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+		}
+	};
+
+	return utilService;
+}
+
+angular.module('owlTable').service('owlTable', ['$http', '$rootScope', '$filter', '$modal', 'owlConstants', 'owlResource', 'owlUtils', 'owlFilter', owlTableService])
+	.factory('owlResource', ['$http', 'owlConstants', owlResource])
+	.service('owlUtils', ['owlConstants', owlUtils]);

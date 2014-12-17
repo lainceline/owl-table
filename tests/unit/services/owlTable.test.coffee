@@ -290,17 +290,37 @@ describe 'owl table service', ->
 
 	describe 'locking and unlocking cells', ->
 		beforeEach ->
-			spyOn(React.addons, 'update').and.callFake () ->
+			spyOn(React.addons, 'update').and.callFake ->
 				[{foo: 'bar'}]
 
+			data = [{id:0, lockedCells: [], custom_1: 1}]
+			columns = [{
+				field: 'custom_1'
+			}, {
+				field: 'custom_2'
+			}]
+			service.data = data
+			service.columns = columns
 			service.renderedTable =
-				props: {lockedCells: []}
+				props:
+					data: data
+					columns: columns
+
 				setProps: (props) -> service.renderedTable.props = props
 
 		describe 'locking a cell', ->
-			it 'adds the cell to the locked cell array', ->
-				service.lockCell 1, 'foo'
+			it 'adds the column field to the locked array for the row', ->
+				row = service.renderedTable.props.data[0]
+				col = service.renderedTable.props.columns[0]
+				service.lockCell row.id, col.field
+				expect(row.lockedCells.length).toBe 1
 
 		describe 'unlocking a cell', ->
 			it 'removes the cell from the locked cell array', ->
-				service.unlockCell 1, 'foo'
+				row = service.data[0]
+				col = service.columns[0]
+
+				row.lockedCells.push 'custom_1'
+
+				service.unlockCell row.id, col.field
+				expect(row.lockedCells.length).toBe 0

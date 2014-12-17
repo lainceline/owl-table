@@ -1,4 +1,4 @@
-function owlTableDirective ($http, $timeout, owlTable, owlResource) {
+function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 	return {
 		restrict: 'EA',
 		scope: {
@@ -39,7 +39,6 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 				}).renderInto(container);
 
 				scope.$watch('data', function (newValue) {
-					// use forthcoming empty() to remove all rows
 					if (newValue.length > 0) {
 						owlTable.updateData(newValue);
 
@@ -118,13 +117,24 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 					var tableWidth = headers.width() * headers.length;
 
 					if (tableWidth > $('.owl-wrapper').width()) {
-						$('.owl-table-wrapper').addClass('owl-stretch2');
+						$('.owl-table-wrapper').addClass('owl-stretch-after-load');
 					}
 				})();
+
+				$window.onbeforeunload = function () {
+					if (owlTable.isDirty()) {
+						return 'Do you want to leave?';
+					}
+				};
+
 			};
 		},
 		controller: ['$scope', function ($scope) {
+			var self = this;
+
 			this.owlTable = owlTable;
+
+			this.hasChangedData = owlTable.hasChangedData;
 
 			this.nextPage = function () {
 				owlTable.nextPage();
@@ -135,12 +145,12 @@ function owlTableDirective ($http, $timeout, owlTable, owlResource) {
 			};
 
 			this.savePage = function () {
-				$scope.saving = true;
+				this.saving = true;
 
 				owlTable.saveAllChanged();
 
 				$timeout(function () {
-					$scope.saving = false;
+					self.saving = false;
 				}, 2000);
 			};
 		}]
@@ -200,7 +210,7 @@ function owlCustomizeColumns (owlTable) {
 		templateUrl: 'partials/customizeColumns.html',
 		controllerAs: 'columnCtrl',
 		link: function (scope, elem, attrs) {
-			
+
 		},
 		controller: function ($scope) {
 
@@ -209,7 +219,7 @@ function owlCustomizeColumns (owlTable) {
 }
 
 angular.module('owlTable')
-	.directive('owlTable', ['$http', '$timeout', 'owlTable', 'owlResource', owlTableDirective])
+	.directive('owlTable', ['$http', '$timeout', '$window', 'owlTable', 'owlResource', owlTableDirective])
 	.directive('owlPagination', ['owlTable', owlPagination])
 	.directive('owlFilterControls', ['owlTable', owlFilterControls])
 	.directive('owlExportControls', ['owlTable', owlExportControls])

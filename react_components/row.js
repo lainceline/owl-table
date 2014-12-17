@@ -4,7 +4,6 @@ var OwlRow = React.createClass({
 		data: React.PropTypes.object.isRequired,
 		columns: React.PropTypes.array.isRequired,
 		open: React.PropTypes.bool.isRequired,
-		lockedCells: React.PropTypes.array
 	},
 	getInitialState: function () {
 		return {
@@ -35,31 +34,8 @@ var OwlRow = React.createClass({
 
 		var handler = this.clickHandler;
 
-		var lockedCells = [];
-
-		if (props.lockedCells) {
-			lockedCells = props.lockedCells[props.data.id];
-
-			if (lockedCells && lockedCells.constructor !== Array) {
-				lockedCells = [lockedCells];
-			} else {
-				lockedCells = [];
-			}
-		}
-
 		var cells = props.columns.map(function (column, index) {
 			var editable = true && column.editable;
-
-			if (lockedCells.length > 0) {
-				lockedCells.forEach(function (locked, index) {
-					/* jshint ignore:start */
-					if (locked == column.field) {
-						editable = false;
-					}
-					/* jshint ignore:end */
-				});
-			}
-
 			var ref = 'column_' + index;
 
 			if (column.visible !== false) {
@@ -70,7 +46,7 @@ var OwlRow = React.createClass({
 		});
 
 		return(
-			<tr className={props.className + " owl-row"} key={props.key}>
+			<tr className={props.className + " owl-row trow"} key={props.key}>
 				{cells}
 			</tr>
 		);

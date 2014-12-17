@@ -4,9 +4,9 @@ var OwlTableReact = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		columns: React.PropTypes.array.isRequired,
 		tacky: React.PropTypes.object,
-		lockedCells: React.PropTypes.array,
 		massUpdate: React.PropTypes.bool,
-		pageChanged: React.PropTypes.bool
+		pageChanged: React.PropTypes.bool,
+		filteringEnabled: React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
 		if (typeof this.state.changedData[row.id] === 'undefined') {
@@ -29,7 +29,6 @@ var OwlTableReact = React.createClass({
 				top: false,
 				left: false
 			},
-			lockedCells: [],
 			massUpdate: false,
 			pageChanged: false
 		};
@@ -69,6 +68,17 @@ var OwlTableReact = React.createClass({
 			this.props.sortClickHandler(field, sortReverse);
 		}
 	},
+	filterFieldChanged: function (filter, event) {
+		event.persist();
+		var self = this;
+		_.debounce(
+			function (filter, event) {
+				event.persist();
+				filter.term = event.target.value;
+				self.props.filterDidChange(filter);
+			}, 200
+		)(filter, event);
+	},
 	render: function () {
 		var self = this;
 
@@ -86,15 +96,61 @@ var OwlTableReact = React.createClass({
 			}
 		}
 
+		var filterSection;
+		var filters;
+
+		if (props.filteringEnabled) {
+			filters = props.columns.map(function (column, index) {
+				if (typeof column.filters === 'undefined') {
+					column.filters = [{
+						predicate: '',
+						type: 'contains'
+					}];
+				}
+				// For each column, create a div with an input for each filter
+				var colFilters = column.filters.map(function (filter, index) {
+					return (
+						<span key={index} className="owl-filter">
+							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
+							<input type="text" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
+						</span>
+					);
+				});
+				//var tackyLeft = column.field === 'custom_2000000' ? ' tacky-left' : '';
+				var tackyLeft = '';
+				if (isTackyLeft(column)) {
+					tackyLeft = ' tacky-left';
+				}
+				return (
+					<th key={index} className={"tacky-top" + tackyLeft}>
+						<div className="owl-filter-wrapper">
+							{colFilters}
+						</div>
+					</th>
+				);
+			});
+
+			filterSection = <tr className="owl-filter-row"> {filters} </tr>;
+		}
+
+		var isTackyLeft = function (column) {
+			return typeof column.tacky !== 'undefined' && column.tacky.left === true;
+		};
+
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
+			var id = 'owl_header_' + column.field;
 			if (tackyTop) {
 				classes = classes + ' tacky-top';
 			}
 
+			if (isTackyLeft(column)) {
+				classes = classes + ' tacky-left';
+			}
+
 			if (column.visible !== false) {
 				return (
-					<th className={classes} key={index} data-field={column.field}>
+					<th className={classes} id={id} key={index} data-field={column.field}>
 						{column.title || 'None'}
 						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
@@ -103,15 +159,8 @@ var OwlTableReact = React.createClass({
 		});
 
 		var rows = props.data.map(function (datum, index) {
-
-			var lockedForRow = _.find(props.lockedCells, function (value, index) {
-				if (typeof value === 'object' && parseInt(Object.keys(value)[0]) === datum.id) {
-					return true;
-				}
-			});
-
 			return (
-				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
 		});
 
@@ -138,13 +187,14 @@ var OwlTableReact = React.createClass({
 		};
 
 		return (
-			<table onKeyUp={self.keyup} className="owl-table">
+			<table onKeyUp={self.keyup} className="owl-table tacky">
 				<thead>
+					{filterSection}
 					<tr>
-					{headers}
+						{headers}
 					</tr>
 				</thead>
-				<tbody>
+				<tbody className="tbody">
 					{rows}
 				</tbody>
 			</table>
