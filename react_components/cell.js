@@ -162,13 +162,10 @@ var OwlCell = React.createClass({
 		var swiftboxes = $(this.getDOMNode()).find('.swiftbox');
 
 		if (swiftboxes.length > 0) {
-			swiftboxes.swiftbox();
+			swiftboxes = swiftboxes.swiftbox();
 
 			swiftboxes.each(function (index, box) {
-
-				$(box).off('change');
-
-				$(box).on('change', function (event) {
+				$(box).change(function (event) {
 					var node = $(self.getDOMNode());
 					var props = self.props;
 
