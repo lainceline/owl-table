@@ -83,7 +83,7 @@
 			"selenium" : {
 				"start_process" : false
 			}
-		}
+		},
 
 		"saucelabs-chome" : {
 			"selenium_host" : "ondemand.saucelabs.com",
