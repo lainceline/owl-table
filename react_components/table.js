@@ -116,7 +116,11 @@ var OwlTableReact = React.createClass({
 						</span>
 					);
 				});
-				var tackyLeft = column.field === 'custom_2000000' ? ' tacky-left' : '';
+				//var tackyLeft = column.field === 'custom_2000000' ? ' tacky-left' : '';
+				var tackyLeft = '';
+				if (isTackyLeft(column)) {
+					tackyLeft = ' tacky-left';
+				}
 				return (
 					<th key={index} className={"tacky-top" + tackyLeft}>
 						<div className="owl-filter-wrapper">
@@ -129,6 +133,10 @@ var OwlTableReact = React.createClass({
 			filterSection = <tr className="owl-filter-row"> {filters} </tr>;
 		}
 
+		var isTackyLeft = function (column) {
+			return typeof column.tacky !== 'undefined' && column.tacky.left === true;
+		};
+
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
 			var id = 'owl_header_' + column.field;
@@ -136,8 +144,7 @@ var OwlTableReact = React.createClass({
 				classes = classes + ' tacky-top';
 			}
 
-			// Testing purposes
-			if (column.field === 'custom_2000000') {
+			if (isTackyLeft(column)) {
 				classes = classes + ' tacky-left';
 			}
 
