@@ -121,7 +121,7 @@ var OwlCell = React.createClass({
 
 		var cellLocked = _.indexOf(props.row.lockedCells, props.column.field) > -1;
 		var tdClasses = props.column.field;
-		if (props.column.field === 'custom_2000000') {
+		if (typeof props.column.tacky !== 'undefined' && props.column.tacky.left === true) {
 			tdClasses = tdClasses + ' tacky-left';
 		}
 		if (props.editable === true && cellLocked !== true) {

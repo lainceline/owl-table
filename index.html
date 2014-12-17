@@ -151,7 +151,13 @@
 						}, {
 							value: '99999',
 							text: 'Aaa'
-						}]
+						}],
+						tacky: {
+							left: false
+						}
+					}
+					if (i === 0) {
+						col.tacky.left = true;
 					}
 					$scope.demoCtrl.columns.push(col);
 				}
