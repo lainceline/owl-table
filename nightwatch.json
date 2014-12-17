@@ -42,7 +42,7 @@
 			}
 		},
 
-		"saucelabs-ff" : {
+		"saucelabsFf" : {
 			"selenium_host" : "ondemand.saucelabs.com",
 			"selenium_port" : 80,
 			"username" : "${SAUCE_USERNAME}",
@@ -63,7 +63,7 @@
 			}
 		},
 
-		"saucelabs-ie" : {
+		"saucelabsIe" : {
 			"selenium_host" : "ondemand.saucelabs.com",
 			"selenium_port" : 80,
 			"username" : "${SAUCE_USERNAME}",
@@ -85,7 +85,7 @@
 			}
 		},
 
-		"saucelabs-chome" : {
+		"saucelabsChrome" : {
 			"selenium_host" : "ondemand.saucelabs.com",
 			"selenium_port" : 80,
 			"username" : "${SAUCE_USERNAME}",
