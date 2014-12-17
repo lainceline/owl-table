@@ -110,7 +110,7 @@ var OwlTableReact = React.createClass({
 				// For each column, create a div with an input for each filter
 				var colFilters = column.filters.map(function (filter, index) {
 					return (
-						<span className="owl-filter">
+						<span key={index} className="owl-filter">
 							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
 							<input type="text" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
 						</span>
@@ -118,7 +118,7 @@ var OwlTableReact = React.createClass({
 				});
 				var tackyLeft = column.field === 'custom_2000000' ? ' tacky-left' : '';
 				return (
-					<th className={"tacky-top" + tackyLeft}>
+					<th key={index} className={"tacky-top" + tackyLeft}>
 						<div className="owl-filter-wrapper">
 							{colFilters}
 						</div>

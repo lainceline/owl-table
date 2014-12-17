@@ -48,6 +48,7 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		tables: [],
 		data: [],
 		pageData: [],
+		filteredData: [],
 		columns: [],
 		options: {
 			sort: {
@@ -105,13 +106,6 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		return this;
 	};
 
-	service.toggleFiltering = function () {
-		this.filteringEnabled = !this.filteringEnabled;
-		this.renderedTable.setProps({
-			filteringEnabled: this.filteringEnabled
-		});
-	};
-
 	service.sortClickHandler = function (field, reverse) {
 		if (typeof reverse !== 'undefined' && reverse !== null && reverse !== '') {
 			service.options.sort.order = reverse === true ? 'desc' : 'asc';
@@ -140,8 +134,11 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		var endIndex = this.page * this.count;
 
 		endIndex = endIndex > 0 ? endIndex : 1;
+
 		if (typeof data !== 'undefined') {
 			pageOfData = data.slice(startIndex, endIndex);
+		} else if (this.filteringEnabled) {
+			pageOfData = this.filteredData.slice(startIndex, endIndex);
 		} else {
 			pageOfData = this.data.slice(startIndex, endIndex);
 		}
@@ -382,22 +379,35 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 		}
 	};
 
+	service.toggleFiltering = function () {
+		this.filteringEnabled = !this.filteringEnabled;
+
+		if (this.filteringEnabled) {
+			this.filteredData = _.filter(this.data, function () { return true; });
+			this.renderedTable.setProps({
+				filteringEnabled: this.filteringEnabled,
+			});
+		} else {
+			this.filteredData = [];
+			this.updateData(this.data);
+		}
+	};
+
 	service.filterDidChange = function (filter) {
 		var rows = owlFilter.filterTable(this.data, this.columns);
 
-		if (!owlFilter.hasNoFilters(this.columns)) {
+		if (owlFilter.hasFilters(this.columns)) {
+			this.filteredData = rows;
 			this.paginate({
 				total: rows.length
 			});
+
 			this.renderedTable.setProps({
-				data: this.currentPageOfData(rows)
+				data: this.currentPageOfData()
 			});
 		} else {
 			this.paginate({
 				total: this.data.length
-			});
-			this.renderedTable.setProps({
-				data: this.currentPageOfData()
 			});
 		}
 	};

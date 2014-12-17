@@ -25,8 +25,8 @@ function QuickCache() {
 function owlFilter (owlConstants, owlUtils) {
 	var filterService = {
 
-		hasNoFilters: function (columns) {
-			return _.every(columns, function (column) {
+		hasFilters: function (columns) {
+			return !_.every(columns, function (column) {
 				var ret = false;
 				if (_.isEmpty(column.filters)) {
 					ret = true;
