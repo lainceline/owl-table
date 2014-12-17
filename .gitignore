@@ -29,3 +29,6 @@ tests/reports
 # built e2e tests
 tests/e2e/*.js
 sauce.json
+
+.DS_Store
+sass/.DS_Store
