@@ -207,7 +207,7 @@ gulp.task('karma-sauce', function (callback) {
 });
 
 gulp.task('test-nightwatch', shell.task(['nightwatch']));
-gulp.task('nightwatch-sauce', shell.task(['nightwatch -e saucelabs-chrome, saucelabs-ie, saucelabs-ff']));
+gulp.task('nightwatch-sauce', shell.task(['nightwatch -e saucelabsChrome, saucelabsIe, saucelabsFf']));
 
 gulp.task('test-saucelabs', function (callback) {
 	runSequence('build', 'karma-sauce', 'coffee-tests', 'nightwatch-sauce', callback);
