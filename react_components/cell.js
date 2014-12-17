@@ -141,10 +141,14 @@ var OwlCell = React.createClass({
 	},
 	decorateCheckboxValue: function (value) {
 		switch (value) {
+			case true:
+			case 'true':
 			case 'Y':
 				return '<i class="owl-checked glyphicon glyphicon-ok"></i>';
 				break;
+			case false:
 			case 'N':
+			case 'false':
 				return '<i class="owl-unchecked glyphicon glyphicon-remove"></i>';
 				break;
 			default:
