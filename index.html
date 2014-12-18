@@ -129,7 +129,63 @@
 					owlTable.unlockCell($scope.cellToChange.row, $scope.cellToChange.column.field);
 				}
 
-				for (var i = 0; i < 50; i++) {
+				var demoSelectOptions = [
+					{
+						value: '1',
+						text: 'Test Value',
+					}, {
+						value: '2',
+						text: '<b>Bold</b>'
+					}, {
+						value: '3',
+						text: 'Foo'
+					}, {
+						value: '4',
+						text: 'Bar'
+					}
+				];
+
+				this.columns = [{
+					field: 'custom_2000000',
+					title: 'text',
+					type: 'text',
+					tacky: {
+						left: true
+					}
+				}, {
+					field: 'custom_2000001',
+					title: 'select',
+					type: 'select',
+					options: demoSelectOptions
+				}, {
+					field: 'custom_2000002',
+					title: 'select_multiple',
+					type: 'select_multiple',
+					options: demoSelectOptions
+				}, {
+					field: 'custom_2000003',
+					title: 'radio',
+					type: 'radio',
+					options: demoSelectOptions
+				}, {
+					field: 'custom_2000004',
+					title: 'checkbox',
+					type: 'checkbox'
+				}, {
+					field: 'custom_2000005',
+					title: 'date',
+					type: 'date'
+				}, {
+					field: 'custom_2000006',
+					title: 'time',
+					type: 'time'
+				}, {
+					field: 'custom_2000006',
+					title: 'your field here',
+					type: 'text'
+				}];
+
+				for (var i = 7; i < 50; i++) {
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
@@ -156,9 +212,7 @@
 							left: false
 						}
 					}
-					if (i === 0) {
-						col.tacky.left = true;
-					}
+					
 					$scope.demoCtrl.columns.push(col);
 				}
 

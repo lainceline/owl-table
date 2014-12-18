@@ -110,7 +110,7 @@
 							<div key={index} className="radio">
 								<label>
 									<input className="owl-input" type="radio" onChange={self.transmitSaveEvent} defaultValue={option.value} name={radioName} />
-									{option.text}
+									<span dangerouslySetInnerHTML={{__html: option.text}} />
 								</label>
 							</div>
 						);
