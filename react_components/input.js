@@ -89,7 +89,13 @@
 					});
 
 					if (props.column.type === 'select_multiple') {
-						input = <select onChange={self.handleSpecialFields} className="swiftbox" multiple={true} defaultValue={ !props.value ? props.value : props.value.split("||")}>
+						var value = !props.value ? props.value : props.value.split("||");
+
+						if (_.isUndefined(value) || !_.isArray(value)) {
+							value = [];
+						}
+
+						input = <select onChange={self.handleSpecialFields} className="swiftbox" multiple={true} defaultValue={value}>
 									{optionList}
 								</select>;
 					} else {
