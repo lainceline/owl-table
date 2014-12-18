@@ -25,14 +25,14 @@ function QuickCache() {
 function owlFilter (owlConstants, owlUtils) {
 	var filterService = {
 
-		hasFilters: function (columns) {
-			return !_.every(columns, function (column) {
+		hasNoFilters: function (columns) {
+			return _.every(columns, function (column) {
 				var ret = false;
 				if (_.isEmpty(column.filters)) {
 					ret = true;
 				} else {
 					ret = _.every(column.filters, function (filter) {
-						return filter.term === '';
+						return typeof filter.term === 'undefined' || filter.term === '' ;
 					});
 				}
 

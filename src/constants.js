@@ -11,6 +11,10 @@
 			noRow: {
 				type: 'OwlException: noRow',
 				error: 'Row does not exist'
+			},
+			badData: {
+				type: 'OwlException: badData',
+				error: 'Invalid data collection tried to be set on owlTable service'
 			}
 		},
 		filtering: {
