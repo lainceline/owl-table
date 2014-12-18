@@ -80,6 +80,27 @@ var OwlTableReact = React.createClass({
 			}, 200
 		)(filter, event);
 	},
+	keyup: function (event) {
+		var td = $(event.target).parent();
+		var handled = false;
+
+		switch (event.which) {
+			case 9:
+				if (event.shiftKey !== true) {
+					td.next().children().focus();
+				} else {
+					td.prev().children().focus();
+				}
+				handled = true;
+				break;
+			default:
+				break;
+		}
+
+		if (handled === true) {
+			event.stopPropagation();
+		}
+	},
 	render: function () {
 		var self = this;
 
@@ -161,32 +182,33 @@ var OwlTableReact = React.createClass({
 		});
 
 		var rows = props.data.map(function (datum, index) {
+			var children = datum.children;
+
+			if (!_.isUndefined(children) && _.isArray(children)) {
+				children = children.map(function (child) { return child; });
+				console.log(children);
+			}
 			return (
 				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 			);
 		});
 
-		self.keyup = function (event) {
-			var td = $(event.target).parent();
-			var handled = false;
+		var rowsWithChildren = [];
+		var rowCount = 0;
 
-			switch (event.which) {
-				case 9:
-					if (event.shiftKey !== true) {
-						td.next().children().focus();
-					} else {
-						td.prev().children().focus();
-					}
-					handled = true;
-					break;
-				default:
-					break;
-			}
+		_.forEach(props.data, function (row, index) {
+			var children = row.children;
 
-			if (handled === true) {
-				event.stopPropagation();
+			rowsWithChildren.push(<OwlRow data={row} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />);
+			rowCount++;
+
+			if (!_.isUndefined(children) && _.isArray(children)) {
+				_.forEach(children, function (child, index) {
+					rowCount++;
+					rowsWithChildren.push(<OwlRow data={child} isChild={true} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />);
+				});
 			}
-		};
+		});
 
 		var classes = 'owl-table tacky';
 		if (props.printMode !== false) {
@@ -202,7 +224,7 @@ var OwlTableReact = React.createClass({
 					</tr>
 				</thead>
 				<tbody className="tbody">
-					{rows}
+					{rowsWithChildren}
 				</tbody>
 			</table>
 		);

@@ -40,7 +40,7 @@ var OwlRow = React.createClass({
 
 			if (column.visible !== false) {
 				return (
-					<OwlCell column={column} ref={ref} row={props.data} editable={editable} focusedCell={state.focusedCell} key={index} tableDidChange={props.tableDidChange} />
+					<OwlCell column={column} ref={ref} row={props.data} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={index} tableDidChange={props.tableDidChange} />
 				);
 			}
 		});

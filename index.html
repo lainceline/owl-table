@@ -161,7 +161,22 @@
 					field: 'custom_2000002',
 					title: 'select_multiple',
 					type: 'select_multiple',
-					options: demoSelectOptions
+					options: [{
+						value: 'M',
+						text: 'M'
+					}, {
+						value: 'T',
+						text: 'T'
+					}, {
+						value: 'W',
+						text: 'W'
+					}, {
+						value: 'H',
+						text: 'H'
+					}, {
+						value: 'F',
+						text: 'F'
+					}]
 				}, {
 					field: 'custom_2000003',
 					title: 'radio',
@@ -217,8 +232,8 @@
 				}
 
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
-					.success(function (data) {
-						_.forEach(data.data, function (datum) {
+					.success(function (response) {
+						_.forEach(response.data, function (datum) {
 							if (Math.random() >= 0.5) {
 								datum['custom_2000000'] = 'N';
 							} else {
@@ -228,8 +243,17 @@
 									datum['custom_2000000'] = '1';
 								}
 							}
+
+							datum['custom_2000002'] = 'M||T||W||H||F';
 						});
-						$scope.demoCtrl.data = data.data;
+						response.data[1].children = [{
+							id: 1,
+							'custom_2000000': 'foo'
+						}, {
+							id: 2,
+							'custom_2000000': 'bar'
+						}];
+						$scope.demoCtrl.data = response.data;
 
 					})
 					.error(function (data) {
