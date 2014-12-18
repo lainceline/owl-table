@@ -23,6 +23,8 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 				scope.takingAWhile = false;
 				scope.saved = false;
 
+				scope.printing = false;
+
 				scope.owlCtrl.massUpdate = false;
 				scope.massUpdateData = {};
 
@@ -36,7 +38,8 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 					data: scope.data,
 					columns: scope.columns,
 					options: scope.options
-				}).renderInto(container);
+				})
+				.renderInto(container);
 
 				scope.$watch('data', function (newValue) {
 					if (newValue.length > 0) {
@@ -161,6 +164,22 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 				$timeout(function () {
 					self.saving = false;
 				}, 2000);
+			};
+
+			this.tableWillPrint = function () {
+				$scope.$apply(function () {
+					$scope.printing = true;
+				});
+
+				this.owlTable.prepareForPrinting();
+			};
+
+			this.tableDidPrint = function () {
+				$scope.$apply(function () {
+					$scope.printing = false;
+				});
+
+				this.owlTable.finishedPrinting();
 			};
 		}]
 	};
