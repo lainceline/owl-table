@@ -49,6 +49,7 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 				scope.$watchCollection('columns', function (newValue, oldValue) {
 					if (newValue !== oldValue) {
 						owlTable.updateColumns(newValue);
+						scaleTableToColumns();
 					}
 				});
 
@@ -57,6 +58,9 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 				}, deepWatch);
 
 				scope.$watch('owlCtrl.massUpdate', function (newValue) {
+					if (newValue === true) {
+						console.log('This is where I should be calling something to continously adjust the width of the massUpdate rows');
+					}
 					rendered.setProps({
 						massUpdate: newValue
 					});
@@ -73,6 +77,16 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 						return datum;
 					});
 				};
+
+				angular.element($window)
+					.on('beforeunload', function () {
+						if (owlTable.isDirty()) {
+							return 'You have unsaved changes.  They will be lost if you leave.';
+						}
+					})
+					.on('resize', function () {
+						scaleTableToColumns();
+				});
 
 				// Maybe this can stay since its an event handler.
 				// But owlTable should be calling owlResource for sure.
@@ -112,21 +126,16 @@ function owlTableDirective ($http, $timeout, $window, owlTable, owlResource) {
 				var target = document.getElementById('owl-spin');
 				var spinner = new Spinner(opts).spin(target);
 
-				(function adjustTableWidth () {
+				var scaleTableToColumns = function () {
 					var headers = $('owl-table').find('th');
 					var tableWidth = headers.width() * headers.length;
 
 					if (tableWidth > $('.owl-wrapper').width()) {
 						$('.owl-table-wrapper').addClass('owl-stretch-after-load');
 					}
-				})();
-
-				$window.onbeforeunload = function () {
-					if (owlTable.isDirty()) {
-						return 'Do you want to leave?';
-					}
 				};
 
+				scaleTableToColumns();
 			};
 		},
 		controller: ['$scope', function ($scope) {

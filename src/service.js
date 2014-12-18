@@ -396,20 +396,46 @@ function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlR
 	service.filterDidChange = function (filter) {
 		var rows = owlFilter.filterTable(this.data, this.columns);
 
-		if (owlFilter.hasFilters(this.columns)) {
-			this.filteredData = rows;
+		if (!owlFilter.hasNoFilters(this.columns)) {
+		/*	this.filteredData = rows;
 			this.paginate({
 				total: rows.length
 			});
 
 			this.renderedTable.setProps({
 				data: this.currentPageOfData()
-			});
+			}); */
+			this.setFilteredData(rows).andRender();
 		} else {
-			this.paginate({
-				total: this.data.length
-			});
+			this.setFilteredData().andRender();
 		}
+	};
+
+	service.setFilteredData = function (filteredData) {
+
+		if (typeof filteredData === 'undefined' || !filteredData) {
+			// This copies the array of references so we can mutate it
+			this.filteredData = _.filter(this.data, function () { return true; });
+		} else if (_.isFunction(filteredData)) {
+			this.filteredData = filteredData();
+		} else if (_.isArray(filteredData)) {
+			this.filteredData = filteredData;
+		} else {
+			throw owlConstants.exceptions.badData;
+		}
+
+		this.paginate({
+			total: this.filteredData.length
+		});
+
+		return this;
+	};
+
+	service.andRender = function () {
+		var data;
+		this.renderedTable.setProps({
+			data: this.currentPageOfData()
+		});
 	};
 
 	return service;
