@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Event Delegation Tests</title>
-<script src="data/include_js.php"></script>
+<script src="../dist/jquery.min.js"></script>
 <style>
 table {
 	border-collapse: collapse;
@@ -89,40 +89,40 @@ th, td {
 </table>
 <p>NOTE: Only IE supports propertychange, beforeactivate, beforedeactivate; buttons do not support change events.</p>
 
-        <h2>Submit Tests</h2>
-        <table>
+<h2>Submit Tests</h2>
+<table>
 	<tr>
-	    <td>
-	        Submit each:
-	    </td>
-	    <td>
-	        <form action="" id="text_submit">
-		<input class='test' type='text' value='Key Return To Submit'/>
-	        </form>
-	    </td>
-	    <td>
-	        <form action="" id="password_submit">
-		<input class='test' type='password' value=''/>
-	        </form>
-	    </td>
-	    <td>
-	        <form action="" id="submit_submit">
-		<input type='submit' value="Click Me To Submit" />
-	        </form>
-	    </td>
-	    <td>$(document).bind('submit')</td>
+		<td>
+			Submit each:
+		</td>
+		<td>
+			<form action="" id="text_submit">
+				<input class='test' type='text' value='Key Return To Submit'/>
+			</form>
+		</td>
+		<td>
+			<form action="" id="password_submit">
+				<input class='test' type='password' value=''/>
+			</form>
+		</td>
+		<td>
+			<form action="" id="submit_submit">
+				<input type='submit' value="Click Me To Submit" />
+			</form>
+		</td>
+		<td>$(document).bind('submit')</td>
 	</tr>
 	<tr>
-	        <td>Results:</td>
-	        <td id='textSubmit' class="red">TEXT</td>
-	        <td id='passwordSubmit' class="red">PASSWORD</td>
-	        <td id='submitSubmit' class="red">BUTTON</td>
-	        <td id='boundSubmit' class="red">DOCUMENT</td>
+		<td>Results:</td>
+		<td id='textSubmit' class="red">TEXT</td>
+		<td id='passwordSubmit' class="red">PASSWORD</td>
+		<td id='submitSubmit' class="red">BUTTON</td>
+		<td id='boundSubmit' class="red">DOCUMENT</td>
 	</tr>
-        </table>
+</table>
 
 	<form id="autosub"><input type=submit name=subme /></form>
-	
+
 <script type='text/javascript'>
 
 $("#fileversion").text($.fn.jquery);
@@ -168,7 +168,7 @@ for ( var i=0; i < events.length; i++ ) {
 		api = m[0],
 		type = m[1],
 		$row = $("<tr><th>"+type+" "+api+"</th></tr>");
-	
+
 	$("#changes thead td").each(function(){
 		var id = "#"+this.id,
 			$cell = $('<td></td>');
