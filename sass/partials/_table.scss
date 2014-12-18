@@ -24,6 +24,8 @@
 	margin: 2px;
 	height: 16px;
 	width: 16px;
+	min-height: 16px;
+	min-width: 16px;
 	margin-left: 3px;
 	margin-right: 5px;
 }
@@ -182,6 +184,11 @@
 	}
 }
 
+#massUpdateToggle {
+	margin-right: 10px;
+	vertical-align: top;
+}
+
 .owl-mass-update-row > table {
 	overflow: auto;
 
@@ -218,6 +225,7 @@
 	background-color: transparent;
 
 	th, td {
+		min-width: 80px;
 		border-left-color: transparent !important;
 		background-color: #CDE !important;
 		vertical-align: top !important;
