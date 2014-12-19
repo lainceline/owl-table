@@ -131,7 +131,9 @@
 		service.syncDataFromView = function (row, column, value) {
 			var modelRow = _(this.data).where({id: row.id}).first();
 			modelRow[column.field] = value;
-			this.hasChangedData = true;
+			$rootScope.$apply((function () {
+				this.hasChangedData = true;
+			}).bind(this));
 		};
 
 		service.updateData = function (newData) {
