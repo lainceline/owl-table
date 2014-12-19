@@ -65,7 +65,7 @@ gulp.task('coffee-tests', function () {
 });
 
 gulp.task('js', function () {
-	return gulp.src(['./src/*.js'])
+	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/*.js', './src/controllers/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
@@ -174,8 +174,8 @@ gulp.task('build-release', function (callback) {
 
 // Watch tasks
 
-gulp.task('watch', function (callback) {
-	gulp.watch(['./src/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
+gulp.task('watch', function () {
+	gulp.watch(['./src/*.js', './src/**/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
 });
 
 gulp.task('watch-coffee', function (callback) {
