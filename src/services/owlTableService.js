@@ -39,15 +39,19 @@
 		service.initialize = function (settings) {
 			this.data = settings.data;
 			this.columns = settings.columns;
+			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
+
 			_.forEach(this.columns, function (column) {
 				if (typeof column.visible === 'undefined') {
 					column.visible = true;
 				}
 			});
+
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,
 				columns: settings.columns,
+				childColumns: settings.childColumns,
 				tacky: settings.options.tacky,
 				lockedCells: [],
 				addFilter: function (column) {
@@ -181,6 +185,14 @@
 			this.columns = newColumns;
 			this.renderedTable.setProps({
 				columns: this.columns
+			});
+		};
+
+		service.updateChildColumns = function (newChildColumns) {
+			console.log(newChildColumns);
+			this.childColumns = newChildColumns;
+			this.renderedTable.setProps({
+				childColumns: this.childColumns
 			});
 		};
 

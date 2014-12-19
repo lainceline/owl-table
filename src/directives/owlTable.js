@@ -11,7 +11,8 @@
 			scope: {
 				data: '=',
 				columns: '=',
-				options: '='
+				options: '=',
+				childColumns: '='
 			},
 			templateUrl: 'partials/table.html',
 			controllerAs: 'owlCtrl',
@@ -44,7 +45,8 @@
 					rendered = owlTable.initialize({
 						data: scope.data,
 						columns: scope.columns,
-						options: scope.options
+						options: scope.options,
+						childColumns: scope.childColumns
 					}).renderInto(container);
 
 					scope.$watch('data', function (newValue) {
@@ -58,6 +60,13 @@
 					scope.$watchCollection('columns', function (newValue, oldValue) {
 						if (newValue !== oldValue) {
 							owlTable.updateColumns(newValue);
+							scaleTableToColumns();
+						}
+					});
+
+					scope.$watchCollection('childColumns', function (newValue, oldValue) {
+						if (newValue !== oldValue) {
+							owlTable.updateChildColumns(newValue);
 							scaleTableToColumns();
 						}
 					});

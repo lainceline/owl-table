@@ -3,6 +3,7 @@ var OwlTableReact = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		columns: React.PropTypes.array.isRequired,
+		childColumns: React.PropTypes.array,
 		tacky: React.PropTypes.object,
 		massUpdate: React.PropTypes.bool,
 		pageChanged: React.PropTypes.bool,
@@ -31,7 +32,8 @@ var OwlTableReact = React.createClass({
 			},
 			massUpdate: false,
 			pageChanged: false,
-			printMode: false
+			printMode: false,
+			childColumns: []
 		};
 	},
 	getInitialState: function () {
@@ -181,31 +183,63 @@ var OwlTableReact = React.createClass({
 			}
 		});
 
-		var rows = props.data.map(function (datum, index) {
-			var children = datum.children;
+		if (props.childColumns.length > 0) {
+			_.forEach(props.childColumns, function (child) {
+				var id = 'owl_child_header_' + child.field;
+				var classes = '';
 
-			if (!_.isUndefined(children) && _.isArray(children)) {
-				children = children.map(function (child) { return child; });
-				console.log(children);
-			}
+				if (tackyTop) {
+					classes = 'tacky-top';
+				}
+
+				if (child.visible !== false) {
+					headers.push(
+						<th className={classes} id={id} data-field={child.field}>
+							{child.title || 'None'}
+						</th>
+					);
+				}
+			});
+		}
+
+		var rows = props.data.map(function (datum, index) {
 			return (
-				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+				<OwlRow
+					data={datum}
+					columns={props.columns}
+					childColumns={props.childColumns}
+					key={index}
+					open={self.state.openRows[index] || false}
+					tableDidChange={self.tableDidChange}
+				/>
 			);
 		});
 
 		var rowsWithChildren = [];
-		var rowCount = 0;
+		var rowCount = rows.length;
 
 		_.forEach(props.data, function (row, index) {
 			var children = row.children;
 
-			rowsWithChildren.push(<OwlRow data={row} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />);
+			rowsWithChildren.push(
+				<OwlRow
+					data={row}
+					columns={props.columns}
+					childColumns={props.childColumns}
+					key={rowCount}
+					open={self.state.openRows[index] || false}
+					tableDidChange={self.tableDidChange}
+				/>
+			);
+
 			rowCount++;
 
 			if (!_.isUndefined(children) && _.isArray(children)) {
 				_.forEach(children, function (child, index) {
 					rowCount++;
-					rowsWithChildren.push(<OwlRow data={child} isChild={true} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />);
+					rowsWithChildren.push(
+						<OwlRow data={child} isChild={true} childColumns={props.childColumns} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+					);
 				});
 			}
 		});

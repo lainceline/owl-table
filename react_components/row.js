@@ -3,6 +3,7 @@ var OwlRow = React.createClass({
 	propTypes: {
 		data: React.PropTypes.object.isRequired,
 		columns: React.PropTypes.array.isRequired,
+		childColumns: React.PropTypes.array,
 		open: React.PropTypes.bool.isRequired,
 	},
 	getInitialState: function () {
@@ -34,6 +35,8 @@ var OwlRow = React.createClass({
 
 		var handler = this.clickHandler;
 
+		var cellCount = 0;
+
 		var cells = props.columns.map(function (column, index) {
 			var editable = true && column.editable;
 			var ref = 'column_' + index;
@@ -44,6 +47,23 @@ var OwlRow = React.createClass({
 				);
 			}
 		});
+
+		cellCount = cells.length;
+
+		if (props.childColumns.length > 0) {
+			_.forEach(props.childColumns, function (column) {
+				var editable = true && column.editable;
+				var ref = 'column_' + cellCount;
+
+				if (column.visible !== false) {
+					cells.push(
+						<OwlCell column={column} ref={ref} row={props.data} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={cellCount} tableDidChange={props.tableDidChange} />
+					);
+				}
+
+				cellCount++;
+			});
+		}
 
 		return(
 			<tr className={props.className + " owl-row trow"} key={props.key}>
