@@ -162,6 +162,8 @@ var OwlTableReact = React.createClass({
 			return typeof column.tacky !== 'undefined' && column.tacky.left === true;
 		}
 
+		var headerCount = -1;
+
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
 			var id = 'owl_header_' + column.field;
@@ -173,9 +175,11 @@ var OwlTableReact = React.createClass({
 				classes = classes + ' tacky-left';
 			}
 
+			headerCount++;
+
 			if (column.visible !== false) {
 				return (
-					<th className={classes} id={id} key={index} data-field={column.field}>
+					<th className={classes} id={id} key={headerCount} data-field={column.field}>
 						{column.title || 'None'}
 						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
@@ -184,7 +188,7 @@ var OwlTableReact = React.createClass({
 		});
 
 		if (props.childColumns.length > 0) {
-			_.forEach(props.childColumns, function (child) {
+			_.forEach(props.childColumns, function (child, index) {
 				var id = 'owl_child_header_' + child.field;
 				var classes = '';
 
@@ -193,8 +197,9 @@ var OwlTableReact = React.createClass({
 				}
 
 				if (child.visible !== false) {
+					headerCount++;
 					headers.push(
-						<th className={classes} id={id} data-field={child.field}>
+						<th className={classes} key={headerCount} id={id} data-field={child.field}>
 							{child.title || 'None'}
 						</th>
 					);
@@ -202,21 +207,8 @@ var OwlTableReact = React.createClass({
 			});
 		}
 
-		var rows = props.data.map(function (datum, index) {
-			return (
-				<OwlRow
-					data={datum}
-					columns={props.columns}
-					childColumns={props.childColumns}
-					key={index}
-					open={self.state.openRows[index] || false}
-					tableDidChange={self.tableDidChange}
-				/>
-			);
-		});
-
 		var rowsWithChildren = [];
-		var rowCount = rows.length;
+		var rowCount = 0;
 
 		_.forEach(props.data, function (row, index) {
 			var children = row.children;
@@ -236,10 +228,11 @@ var OwlTableReact = React.createClass({
 
 			if (!_.isUndefined(children) && _.isArray(children)) {
 				_.forEach(children, function (child, index) {
-					rowCount++;
+
 					rowsWithChildren.push(
 						<OwlRow data={child} isChild={true} childColumns={props.childColumns} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
 					);
+					rowCount++;
 				});
 			}
 		});
