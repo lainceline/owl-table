@@ -1,4 +1,5 @@
-(function () {
+(function (angular, _, $) {
+'use strict';
 
 function QuickCache() {
 	var c = function(get, set) {
@@ -23,7 +24,7 @@ function QuickCache() {
 }
 
 function owlFilter (owlConstants, owlUtils) {
-	var filterService = {
+	return {
 
 		hasNoFilters: function (columns) {
 			return _.every(columns, function (column) {
@@ -69,7 +70,7 @@ function owlFilter (owlConstants, owlUtils) {
 				return owlConstants.filtering.defaults.condition;
 			}
 
-			var term = colFilter.getTerm(filter);
+			var term = this.getTerm(filter);
 
 			if (/\*/.test(term)) {
 				var regexpFlags = '';
@@ -126,11 +127,12 @@ function owlFilter (owlConstants, owlUtils) {
 			}
 
 			for (var i in filters) {
-				var filter = filters[i];
+				if (filters.hasOwnProperty(i)) {
+					var filter = filters[i];
 
-				var ret = this.filterCell(row, column, termCache, i, filter);
-				if (ret === true) {
-					return true;
+					if (this.filterCell(row, column, termCache, i, filter) === true) {
+						return true;
+					}
 				}
 			}
 
@@ -149,7 +151,7 @@ function owlFilter (owlConstants, owlUtils) {
 			var filterCols = [];
 			var filteredRows = [];
 
-			angular.forEach(columns, function (column, key) {
+			angular.forEach(columns, function (column) {
 				if (typeof column.filters !== 'undefined' && column.filters.length > 0 && typeof column.filters[0].term !== 'undefined' && column.filters[0].term) {
 					filterCols.push(column);
 				} else if (typeof column.filters !== 'undefined' && column.filters && typeof column.filters[0].term !== 'undefined' && column.filters[0].term) {
@@ -161,9 +163,9 @@ function owlFilter (owlConstants, owlUtils) {
 			var rowShouldBeThere = false;
 
 			if (filterCols.length > 0) {
-				angular.forEach(rows, function forEachRow (row, key) {
+				angular.forEach(rows, function forEachRow (row) {
 					rowShouldBeThere = true;
-					angular.forEach(filterCols, function forEachColumn (col, key) {
+					angular.forEach(filterCols, function forEachColumn (col) {
 						if (self.filterColumn(row, col, termCache) === false) {
 							rowShouldBeThere = false;
 						}
@@ -180,10 +182,9 @@ function owlFilter (owlConstants, owlUtils) {
 			return filteredRows;
 		}
 	};
-
-	return filterService;
 }
 
-angular.module('owlTable').service('owlFilter', ['owlConstants', 'owlUtils', owlFilter]);
+angular.module('owlTable')
+	.service('owlFilter', ['owlConstants', 'owlUtils', owlFilter]);
 
-})();
+})(window.angular, window._, window.jQuery);

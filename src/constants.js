@@ -1,4 +1,6 @@
-(function () {
+//(function (angular) {
+	'use strict';
+
 	angular.module('owlTable').constant('owlConstants', {
 		defaults: {
 			PER_PAGE: 25
@@ -31,4 +33,5 @@
 			}
 		}
 	});
-})();
+
+//})(window.angular);
