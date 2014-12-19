@@ -177,6 +177,7 @@
 			});
 
 			modal.result.then(function (columns) {
+				$rootScope.$broadcast('owlTableColumnsCustomized', columns);
 				self.updateColumns(columns);
 			});
 		};

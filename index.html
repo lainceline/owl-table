@@ -247,6 +247,10 @@
 					options: demoSelectOptions
 				}];
 
+				$scope.$on('owlTableColumnsCustomized', function (event, columns) {
+					// do whatever you want here with the new column set
+				});
+
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (response) {
 						_.forEach(response.data, function (datum) {
