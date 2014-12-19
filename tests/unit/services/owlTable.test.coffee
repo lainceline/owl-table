@@ -176,7 +176,8 @@ describe 'owl table service', ->
 			]
 
 			service.options.sort.column = 'foo'
-			service.updateData data
+			service.data = data
+			service.sort()
 
 			expect(service.data).toEqual [
 				{id: 3, foo: 'aae'},

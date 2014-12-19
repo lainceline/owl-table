@@ -1,4 +1,4 @@
-(function (angular) {
+(function (angular, _, $) {
 	'use strict';
 
 	function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils, owlFilter) {
@@ -129,16 +129,14 @@
 		};
 
 		service.syncDataFromView = function (row, column, value) {
-			$rootScope.$apply((function () {
-				var modelRow = _(this.data).where({id: row.id}).first();
-				modelRow[column.field] = value;
-				this.hasChangedData = true;
-			}).bind(this));
+			var modelRow = _(this.data).where({id: row.id}).first();
+			modelRow[column.field] = value;
+			this.hasChangedData = true;
 		};
 
 		service.updateData = function (newData) {
 			if (typeof newData !== 'undefined') {
-				newData = this.sorted(newData);
+
 				this.data = newData;
 				this.paginateNoApply({
 					total: newData.length
@@ -437,4 +435,4 @@
 			owlTableService
 		]);
 
-})(window.angular);
+})(window.angular, window._, window.jQuery);
