@@ -1,0 +1,25 @@
+@media screen {
+	#owlPrintSection {
+		display: none;
+	}
+
+	.owl-table-print, .owl-table-print * {
+		display: none;
+	}
+}
+
+@media print {
+	body * {
+		visibility: hidden;
+	}
+
+	#owlPrintSection, #owlPrintSection * {
+		visibility: visible;
+	}
+
+	#owlPrintSection {
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+}

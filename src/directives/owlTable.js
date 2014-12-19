@@ -30,6 +30,8 @@
 					scope.takingAWhile = false;
 					scope.saved = false;
 
+					scope.printing = false;
+
 					scope.owlCtrl.massUpdate = false;
 					scope.massUpdateData = {};
 

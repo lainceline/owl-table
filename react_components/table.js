@@ -30,7 +30,8 @@ var OwlTableReact = React.createClass({
 				left: false
 			},
 			massUpdate: false,
-			pageChanged: false
+			pageChanged: false,
+			printMode: false
 		};
 	},
 	getInitialState: function () {
@@ -187,8 +188,13 @@ var OwlTableReact = React.createClass({
 			}
 		};
 
+		var classes = 'owl-table tacky';
+		if (props.printMode !== false) {
+			classes = classes + ' owl-table-print';
+		}
+
 		return (
-			<table onKeyUp={self.keyup} className="owl-table tacky">
+			<table onKeyUp={self.keyup} id="owl-table" className={classes}>
 				<thead>
 					{filterSection}
 					<tr>

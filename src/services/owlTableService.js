@@ -393,6 +393,20 @@
 			});
 		};
 
+		service.prepareForPrinting = function () {
+			this.renderedTable.setProps({
+				data: this.data,
+				printMode: true
+			});
+		};
+
+		service.finishedPrinting = function () {
+			this.renderedTable.setProps({
+				data: this.currentPageOfData(),
+				printMode: false
+			});
+		};
+
 		return service;
 	}
 
