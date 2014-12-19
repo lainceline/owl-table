@@ -5,7 +5,7 @@ modalColumnToClick = '#customize_custom_2000001'
 module.exports =
 	"The owl-table is on the page with data": (browser) ->
 		browser
-			.url("http://onijim.github.io/owl-table")
+			.url("http://localhost:9000")
 			.waitForElementVisible('owl-table', 10000)
 			.waitForElementPresent('.owl-row', 10000)
 

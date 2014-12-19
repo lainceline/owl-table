@@ -3,9 +3,9 @@
 
 	function owlUtils (owlConstants) {
 
-		function firstRowOrThrow (array) {
+		function firstRowIfExists (array) {
 			if (typeof array === 'undefined' || array.length === 0) {
-				throw owlConstants.exceptions.noRow;
+				return false;
 			} else {
 				return array[0];
 			}
@@ -16,7 +16,7 @@
 		}
 
 		var utilService = {
-			firstRowOrThrow: firstRowOrThrow,
+			firstRowIfExists: firstRowIfExists,
 			escapeRegExp: escapeRegExp
 		};
 

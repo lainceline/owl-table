@@ -313,7 +313,7 @@
 		};
 
 		service.lockCell = function (rowId, columnField) {
-			var ourRow = owlUtils.firstRowOrThrow(
+			var ourRow = owlUtils.firstRowIfExists(
 				_.filter(this.data, function (datum) {
 					/* jshint ignore:start */
 					return datum.id == rowId;
@@ -321,16 +321,18 @@
 				})
 			);
 
-			if (typeof ourRow.lockedCells === 'undefined') {
-				ourRow.lockedCells = [];
-			}
+			if (ourRow) {
+				if (typeof ourRow.lockedCells === 'undefined') {
+					ourRow.lockedCells = [];
+				}
 
-			ourRow.lockedCells.push(columnField);
-			ourRow.lockedCells = _.uniq(ourRow.lockedCells);
+				ourRow.lockedCells.push(columnField);
+				ourRow.lockedCells = _.uniq(ourRow.lockedCells);
+			}
 		};
 
 		service.unlockCell = function (rowId, columnField) {
-			var ourRow = owlUtils.firstRowOrThrow(
+			var ourRow = owlUtils.firstRowIfExists(
 				_.filter(this.data, function (datum) {
 					/* jshint ignore:start */
 					return datum.id == rowId;
