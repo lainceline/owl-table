@@ -177,11 +177,14 @@ var OwlCell = React.createClass({
 			swiftboxes = swiftboxes.swiftbox();
 
 			swiftboxes.each(function (index, box) {
-				$(box).change(function (event) {
+				box = $(box);
+
+				box.off('change');
+				box.change(function (event) {
 					var node = $(self.getDOMNode());
 					var props = self.props;
 
-					var val = $(box).swiftbox('value');
+					var val = box.swiftbox('value');
 
 					if (props.column.type === 'select_multiple') {
 						val = val.join('||');
