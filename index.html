@@ -71,7 +71,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data"></owl-table>
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" child-columns="demoCtrl.childColumns"></owl-table>
 
 	</div>
 
@@ -91,6 +91,7 @@
 
 				this.columns = [];
 				this.data = [];
+				this.childColumns = [];
 
 				this.owlTable = owlTable;
 
@@ -161,7 +162,22 @@
 					field: 'custom_2000002',
 					title: 'select_multiple',
 					type: 'select_multiple',
-					options: demoSelectOptions
+					options: [{
+						value: 'M',
+						text: 'M'
+					}, {
+						value: 'T',
+						text: 'T'
+					}, {
+						value: 'W',
+						text: 'W'
+					}, {
+						value: 'H',
+						text: 'H'
+					}, {
+						value: 'F',
+						text: 'F'
+					}]
 				}, {
 					field: 'custom_2000003',
 					title: 'radio',
@@ -216,9 +232,24 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
+				this.childColumns = [{
+					field: 'custom_3000000',
+					title: 'Child Column 1',
+					type: 'text',
+				}, {
+					field: 'custom_3000001',
+					title: 'Child Column 2',
+					type: 'text'
+				}, {
+					field: 'custom_3000002',
+					title: 'Child Column 3',
+					type: 'select',
+					options: demoSelectOptions
+				}];
+
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
-					.success(function (data) {
-						_.forEach(data.data, function (datum) {
+					.success(function (response) {
+						_.forEach(response.data, function (datum) {
 							if (Math.random() >= 0.5) {
 								datum['custom_2000000'] = 'N';
 							} else {
@@ -228,8 +259,21 @@
 									datum['custom_2000000'] = '1';
 								}
 							}
+
+							datum['custom_2000002'] = 'M||T||W||H||F';
 						});
-						$scope.demoCtrl.data = data.data;
+						response.data[1].children = [{
+							id: 1,
+							'custom_3000000': 'foo',
+							'custom_3000001': 'child record',
+							'custom_3000002': 'works just like regular record'
+						}, {
+							id: 2,
+							'custom_3000000': 'bar',
+							'custom_3000001': 'such text',
+							'custom_3000002': 'wow'
+						}];
+						$scope.demoCtrl.data = response.data;
 
 					})
 					.error(function (data) {
@@ -237,6 +281,7 @@
 					});
 
 			});
+
 
 		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
 			.run(function ($httpBackend) {

@@ -127,7 +127,7 @@
 		overflow: hidden;
 		font-family: inherit;
 		border: 1px solid #cccccc;
-		border-width: 0 0 0 1px;
+		border-width: 1px 0 1px 1px;
 		border-top: none;
 	}
 
@@ -248,4 +248,8 @@
 	display: inline-block;
 	width: 100%;
 	float: left;
+}
+
+.owl-empty-child-cell {
+	background-color: #E6E6E6!important;
 }

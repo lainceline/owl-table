@@ -39,15 +39,19 @@
 		service.initialize = function (settings) {
 			this.data = settings.data;
 			this.columns = settings.columns;
+			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
+
 			_.forEach(this.columns, function (column) {
 				if (typeof column.visible === 'undefined') {
 					column.visible = true;
 				}
 			});
+
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,
 				columns: settings.columns,
+				childColumns: settings.childColumns,
 				tacky: settings.options.tacky,
 				lockedCells: [],
 				addFilter: function (column) {
@@ -184,6 +188,14 @@
 			});
 		};
 
+		service.updateChildColumns = function (newChildColumns) {
+			console.log(newChildColumns);
+			this.childColumns = newChildColumns;
+			this.renderedTable.setProps({
+				childColumns: this.childColumns
+			});
+		};
+
 		service.updateOptions = function (newOptions) {
 			this.options = newOptions;
 			this.renderedTable.setProps({
@@ -301,7 +313,7 @@
 		};
 
 		service.lockCell = function (rowId, columnField) {
-			var ourRow = owlUtils.firstRowOrThrow(
+			var ourRow = owlUtils.firstRowIfExists(
 				_.filter(this.data, function (datum) {
 					/* jshint ignore:start */
 					return datum.id == rowId;
@@ -309,16 +321,18 @@
 				})
 			);
 
-			if (typeof ourRow.lockedCells === 'undefined') {
-				ourRow.lockedCells = [];
-			}
+			if (ourRow) {
+				if (typeof ourRow.lockedCells === 'undefined') {
+					ourRow.lockedCells = [];
+				}
 
-			ourRow.lockedCells.push(columnField);
-			ourRow.lockedCells = _.uniq(ourRow.lockedCells);
+				ourRow.lockedCells.push(columnField);
+				ourRow.lockedCells = _.uniq(ourRow.lockedCells);
+			}
 		};
 
 		service.unlockCell = function (rowId, columnField) {
-			var ourRow = owlUtils.firstRowOrThrow(
+			var ourRow = owlUtils.firstRowIfExists(
 				_.filter(this.data, function (datum) {
 					/* jshint ignore:start */
 					return datum.id == rowId;

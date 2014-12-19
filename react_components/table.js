@@ -3,6 +3,7 @@ var OwlTableReact = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		columns: React.PropTypes.array.isRequired,
+		childColumns: React.PropTypes.array,
 		tacky: React.PropTypes.object,
 		massUpdate: React.PropTypes.bool,
 		pageChanged: React.PropTypes.bool,
@@ -31,7 +32,8 @@ var OwlTableReact = React.createClass({
 			},
 			massUpdate: false,
 			pageChanged: false,
-			printMode: false
+			printMode: false,
+			childColumns: []
 		};
 	},
 	getInitialState: function () {
@@ -79,6 +81,27 @@ var OwlTableReact = React.createClass({
 				self.props.filterDidChange(filter);
 			}, 200
 		)(filter, event);
+	},
+	keyup: function (event) {
+		var td = $(event.target).parent();
+		var handled = false;
+
+		switch (event.which) {
+			case 9:
+				if (event.shiftKey !== true) {
+					td.next().children().focus();
+				} else {
+					td.prev().children().focus();
+				}
+				handled = true;
+				break;
+			default:
+				break;
+		}
+
+		if (handled === true) {
+			event.stopPropagation();
+		}
 	},
 	render: function () {
 		var self = this;
@@ -139,6 +162,8 @@ var OwlTableReact = React.createClass({
 			return typeof column.tacky !== 'undefined' && column.tacky.left === true;
 		}
 
+		var headerCount = -1;
+
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
 			var id = 'owl_header_' + column.field;
@@ -150,9 +175,11 @@ var OwlTableReact = React.createClass({
 				classes = classes + ' tacky-left';
 			}
 
+			headerCount++;
+
 			if (column.visible !== false) {
 				return (
-					<th className={classes} id={id} key={index} data-field={column.field}>
+					<th className={classes} id={id} key={headerCount} data-field={column.field}>
 						{column.title || 'None'}
 						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
@@ -160,33 +187,55 @@ var OwlTableReact = React.createClass({
 			}
 		});
 
-		var rows = props.data.map(function (datum, index) {
-			return (
-				<OwlRow data={datum} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+		if (props.childColumns.length > 0) {
+			_.forEach(props.childColumns, function (child, index) {
+				var id = 'owl_child_header_' + child.field;
+				var classes = '';
+
+				if (tackyTop) {
+					classes = 'tacky-top';
+				}
+
+				if (child.visible !== false) {
+					headerCount++;
+					headers.push(
+						<th className={classes} key={headerCount} id={id} data-field={child.field}>
+							{child.title || 'None'}
+						</th>
+					);
+				}
+			});
+		}
+
+		var rowsWithChildren = [];
+		var rowCount = 0;
+
+		_.forEach(props.data, function (row, index) {
+			var children = row.children;
+
+			rowsWithChildren.push(
+				<OwlRow
+					data={row}
+					columns={props.columns}
+					childColumns={props.childColumns}
+					key={rowCount}
+					open={self.state.openRows[index] || false}
+					tableDidChange={self.tableDidChange}
+				/>
 			);
+
+			rowCount++;
+
+			if (!_.isUndefined(children) && _.isArray(children)) {
+				_.forEach(children, function (child, index) {
+
+					rowsWithChildren.push(
+						<OwlRow data={child} isChild={true} childColumns={props.childColumns} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+					);
+					rowCount++;
+				});
+			}
 		});
-
-		self.keyup = function (event) {
-			var td = $(event.target).parent();
-			var handled = false;
-
-			switch (event.which) {
-				case 9:
-					if (event.shiftKey !== true) {
-						td.next().children().focus();
-					} else {
-						td.prev().children().focus();
-					}
-					handled = true;
-					break;
-				default:
-					break;
-			}
-
-			if (handled === true) {
-				event.stopPropagation();
-			}
-		};
 
 		var classes = 'owl-table tacky';
 		if (props.printMode !== false) {
@@ -202,7 +251,7 @@ var OwlTableReact = React.createClass({
 					</tr>
 				</thead>
 				<tbody className="tbody">
-					{rows}
+					{rowsWithChildren}
 				</tbody>
 			</table>
 		);
