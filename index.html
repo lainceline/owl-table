@@ -71,7 +71,7 @@
 			</div>
 		</nav>
 
-		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data"></owl-table>
+		<owl-table id="demoTable" options="demoCtrl.options" columns="demoCtrl.columns" data="demoCtrl.data" child-columns="demoCtrl.childColumns"></owl-table>
 
 	</div>
 
@@ -91,6 +91,7 @@
 
 				this.columns = [];
 				this.data = [];
+				this.childColumns = [];
 
 				this.owlTable = owlTable;
 
@@ -231,6 +232,21 @@
 					$scope.demoCtrl.columns.push(col);
 				}
 
+				this.childColumns = [{
+					field: 'custom_3000000',
+					title: 'Child Column 1',
+					type: 'text',
+				}, {
+					field: 'custom_3000001',
+					title: 'Child Column 2',
+					type: 'text'
+				}, {
+					field: 'custom_3000002',
+					title: 'Child Column 3',
+					type: 'select',
+					options: demoSelectOptions
+				}];
+
 				$http.get('https://young-oasis-9005.herokuapp.com/api/students?nopage=true')
 					.success(function (response) {
 						_.forEach(response.data, function (datum) {
@@ -261,6 +277,7 @@
 					});
 
 			});
+
 
 		angular.module('owlTableDemoDev', ['owlTableDemo', 'ngMockE2E'])
 			.run(function ($httpBackend) {
