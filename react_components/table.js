@@ -179,9 +179,8 @@ var OwlTableReact = React.createClass({
 
 			if (column.visible !== false) {
 				return (
-					<th className={classes} id={id} key={headerCount} data-field={column.field}>
+					<th onClick={_.partial(self.sortClickHandler, column.field)} className={classes} id={id} key={headerCount} data-field={column.field}>
 						{column.title || 'None'}
-						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
 				);
 			}

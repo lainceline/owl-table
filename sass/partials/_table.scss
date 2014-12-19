@@ -204,13 +204,19 @@
 }
 
 .owl-table-sortElement {
-	i {
-		margin-top: 3px;
-		margin-left: 3px;
-		font-size: 14px;
-		cursor: pointer;
-	}
+	cursor: pointer;
 }
+
+.owl-table-sortElement:after {
+	line-height: 8px;
+	content: '\25B2\A\25BC';
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 3px;
+	white-space: pre;
+	font-size: 0.7em;
+}
+
 .owl-table .tacky-top:not(.tacky-top-origin) {
 	box-shadow: 1px 1px 0 0 #AAA,
 	0 4px 3px -1px rgba(0, 0, 0, .2);
