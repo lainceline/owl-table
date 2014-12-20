@@ -17,12 +17,12 @@
     "reactjs"
   ],
   "ignore": [
-    "./views",
-    "./tests",
-    "./src",
-    "./sass",
-    "./react_components",
-    ".travis.yml",
+    "./views/**",
+    "./tests/**",
+    "./src/**",
+    "./sass/**",
+    "./react_components/**",
+    "travis.yml",
     "Gulpfile.js",
     "index.html",
     "karma.conf.js",
