@@ -44,6 +44,59 @@ var OwlTableReact = React.createClass({
 			sorted: false
 		};
 	},
+
+	componentDidMount: function () {
+		var filterOptions = {
+			''          : 'Contains',
+			'begin:'    : 'Begins with',
+			'end:'      : 'Ends with',
+			'empty'     : 'Empty',
+			'not:empty' : 'Not empty'
+		};
+
+		var filterList = document.createElement('div');
+		filterList.className = 'owl-filter-list';
+
+		for(var i in filterOptions) {
+			var option			= document.createElement('div');
+			option.className	= 'owl-filter-type';
+			option.innerHTML	= filterOptions[i];
+			option.setAttribute('data-filter-type', i);
+
+			filterList.appendChild(option);
+		}
+
+		$(document).on('click', '.owl-change-filter-type', function (event) {
+			filterList.currentInput = $(this).closest('.owl-filter').find('input');
+			filterList.style.top = event.pageY+'px';
+			filterList.style.left = event.pageX+'px';
+			$(filterList).addClass('active');
+
+			(document.body || document.documentElement).appendChild(filterList);
+			event.stopPropagation();
+		});
+
+		$(document).on('click', '.owl-filter-type', function (event) {
+			var filterType = $(this).data('filterType');
+			var currentFilterText = stripFilters(filterList.currentInput.val());
+
+			filterList.currentInput.val(filterType + currentFilterText);
+
+			event.stopPropagation();
+		});
+
+		$(document).on('click', function (event) {
+			$(filterList).removeClass('active');
+		});
+
+		var stripFilters = function (string) {
+			_.forOwn(filterOptions, function (val, key) {
+				var keyRegExp = new RegExp('^' + key);
+				string = string.replace(keyRegExp, '');
+			});
+			return string;
+		};
+	},
 	componentDidUpdate: function () {
 		if (this.props.tacky) {
 			$('.tacky').tacky();

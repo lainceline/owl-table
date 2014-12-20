@@ -285,6 +285,36 @@
 	width: 90%;
 }
 
+.owl-filter-list {
+	display: none;
+	position: absolute;
+	z-index: 99999;
+	border: 1px solid #AAA;
+	border-radius: 4px;
+	background-color: #FEFEFE;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+	min-width: 100px;
+}
+
+.owl-filter-list.active {
+	display: block;
+}
+
+.owl-filter-type {
+	padding: 0 10px;
+	height: 20px;
+	line-height: 20px;
+	background: transparent;
+	box-shadow: 0 10px 10px -5px rgba(255, 255, 255, 0.5) inset;
+	color: #000;
+	cursor: default;
+}
+
+.owl-filter-type:hover {
+	background-color: #34F;
+	color: #FFF;
+}
+
 .owl-empty-child-cell {
 	background-color: #E6E6E6!important;
 }
