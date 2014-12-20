@@ -6,6 +6,11 @@ var OwlRow = React.createClass({
 		childColumns: React.PropTypes.array,
 		open: React.PropTypes.bool.isRequired,
 	},
+	getDefaultProps: function () {
+		return {
+			className: ''
+		};
+	},
 	getInitialState: function () {
 		return {
 			open: false,
@@ -64,9 +69,11 @@ var OwlRow = React.createClass({
 				cellCount++;
 			});
 		}
+		
+		var classes = (props.className + " owl-row trow").trim();
 
 		return(
-			<tr className={props.className + " owl-row trow"} key={props.key}>
+			<tr className={classes} key={props.key}>
 				{cells}
 			</tr>
 		);
