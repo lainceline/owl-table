@@ -32,6 +32,10 @@
 				sort: {
 					column: 'id',
 					order: 'asc'
+				},
+				saveCallbacks: {
+					success: _.noop,
+					error: _.noop
 				}
 			}
 		};
@@ -287,16 +291,25 @@
 				method: 'post',
 				url: this.options.saveUrl,
 				data: data
-			}).then(function (response) {
-				self.renderedTable.setState({
-					changedData: {}
-				});
-				self.hasChangedData = false;
-			});
+			}).then(
+				function onSuccess (response) {
+					self.renderedTable.setState({
+						changedData: {}
+					});
+					self.hasChangedData = false;
+
+					self.options.saveCallbacks.success(response);
+				},
+				function onError (response) {
+					self.options.saveCallbacks.error(response);
+				}
+			);
 		};
 
 		service.saveRow = function (column, row, value) {
 			var params;
+			var successCallback = this.options.saveCallbacks.success;
+			var errorCallback = this.options.saveCallbacks.error;
 
 			this.throwIfNoSaveRoute();
 
@@ -304,13 +317,15 @@
 				params = this.options.ajaxParams.post || '';
 			}
 
-			return owlResource({
+			var resource = {
 				id: row.id,
 				column: column.field,
 				value: value,
 				saveUrl: this.options.saveUrl,
 				params: params
-			}).save();
+			};
+
+			return owlResource(resource).save().then(successCallback, errorCallback);
 		};
 
 		service.lockCell = function (rowId, columnField) {

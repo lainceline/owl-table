@@ -102,10 +102,24 @@
 					column: null
 				};
 
+				var mySuccessCallback = function (response) {
+					console.log('Ajax Success!');
+					console.log(response);
+				};
+
+				var myErrorCallback = function (response) {
+					console.error('Ajax Error!');
+					console.log(response);
+				}
+
 				this.options = {
 					saveIndividualRows: false,
 					customizeColumns: true,
 					saveUrl: 'https://young-oasis-9005.herokuapp.com/api/students/save',
+					saveCallbacks: {
+						success: mySuccessCallback,
+						error: myErrorCallback
+					},
 					massUpdate: true,
 					ajaxParams: {
 						post: {
