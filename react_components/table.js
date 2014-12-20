@@ -291,6 +291,15 @@ var OwlTableReact = React.createClass({
 
 		_.forEach(props.data, function (row, index) {
 			var children = row.children;
+			var hasChildren = !_.isUndefined(children) && _.isArray(children);
+
+			if (hasChildren) {
+				for (var i in children[0]) {
+					if (children[0].hasOwnProperty(i)) {
+						row[i] = children[0][i];
+					}
+				}
+			}
 
 			rowsWithChildren.push(
 				<OwlRow
@@ -307,8 +316,11 @@ var OwlTableReact = React.createClass({
 
 			if (!_.isUndefined(children) && _.isArray(children)) {
 				_.forEach(children, function (child, index) {
-					var classes = 'owl-child-row';
 					if (index === 0) {
+						return;
+					}
+					var classes = 'owl-child-row';
+					if (index === 1) {
 						classes = classes + ' owl-child-shadow';
 					}
 					rowsWithChildren.push(
