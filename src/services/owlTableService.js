@@ -194,7 +194,6 @@
 		};
 
 		service.updateChildColumns = function (newChildColumns) {
-			console.log(newChildColumns);
 			this.childColumns = newChildColumns;
 			this.renderedTable.setProps({
 				childColumns: this.childColumns
@@ -387,6 +386,7 @@
 		};
 
 		service.filterDidChange = function (filter) {
+			console.log(filter);
 			var rows = owlFilter.filterTable(this.data, this.columns);
 
 			if (!owlFilter.hasNoFilters(this.columns)) {

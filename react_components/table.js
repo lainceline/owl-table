@@ -1,3 +1,19 @@
+function stripFilters (string) {
+	_.forOwn(filterOptions, function (val, key) {
+		var keyRegExp = new RegExp('^' + key);
+		string = string.replace(keyRegExp, '');
+	});
+	return string;
+}
+
+var filterOptions = {
+	''          : 'Contains',
+	'begin:'    : 'Begins with',
+	'end:'      : 'Ends with',
+	'empty'     : 'Empty',
+	'not:empty' : 'Not empty'
+};
+
 var OwlTableReact = React.createClass({
 	displayName: 'OwlTable',
 	propTypes: {
@@ -46,14 +62,6 @@ var OwlTableReact = React.createClass({
 	},
 
 	componentDidMount: function () {
-		var filterOptions = {
-			''          : 'Contains',
-			'begin:'    : 'Begins with',
-			'end:'      : 'Ends with',
-			'empty'     : 'Empty',
-			'not:empty' : 'Not empty'
-		};
-
 		var filterList = document.createElement('div');
 		filterList.className = 'owl-filter-list';
 
@@ -79,8 +87,25 @@ var OwlTableReact = React.createClass({
 		$(document).on('click', '.owl-filter-type', function (event) {
 			var filterType = $(this).data('filterType');
 			var currentFilterText = stripFilters(filterList.currentInput.val());
+			var condition;
 
+			switch (filterType) {
+				case 'begin:':
+					condition = 2;
+					break;
+				case 'end:':
+					condition = 4;
+					break;
+				default:
+					condition = 16;
+					break;
+			}
+
+			filterList.currentInput.data('conditionType', condition);
 			filterList.currentInput.val(filterType + currentFilterText);
+
+			$(filterList).removeClass('active');
+			filterList.currentInput.focus();
 
 			event.stopPropagation();
 		});
@@ -88,14 +113,6 @@ var OwlTableReact = React.createClass({
 		$(document).on('click', function (event) {
 			$(filterList).removeClass('active');
 		});
-
-		var stripFilters = function (string) {
-			_.forOwn(filterOptions, function (val, key) {
-				var keyRegExp = new RegExp('^' + key);
-				string = string.replace(keyRegExp, '');
-			});
-			return string;
-		};
 	},
 	componentDidUpdate: function () {
 		if (this.props.tacky) {
@@ -130,7 +147,8 @@ var OwlTableReact = React.createClass({
 		_.debounce(
 			function (filter, event) {
 				event.persist();
-				filter.term = event.target.value;
+				filter.condition = $(event.target).data('conditionType');
+				filter.term = stripFilters(event.target.value);
 				self.props.filterDidChange(filter);
 			}, 200
 		)(filter, event);
@@ -186,13 +204,21 @@ var OwlTableReact = React.createClass({
 				}
 				// For each column, create a div with an input for each filter
 				var colFilters = column.filters.map(function (filter, index) {
-					return (
-						<div key={index} className="owl-filter">
-							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
-							<input type="text" className="owl-filter-input" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
-							<div className="owl-change-filter-type" />
-						</div>
-					);
+					if (column.type !== 'checkbox') {
+						return (
+							<div key={index} className="owl-filter">
+								<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
+								<input type="text" className="owl-filter-input" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
+								<div className="owl-change-filter-type" />
+							</div>
+						);
+					} else {
+						return (
+							<label key={index} className="owl-filter">
+								<input type="checkbox" className="owl-filter-checkbox" onChange={self.filterFieldChanged.bind(null, filter)} value="Y" />
+							</label>
+						);
+					}
 				});
 
 				var tackyLeft = '';
