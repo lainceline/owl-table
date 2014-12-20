@@ -315,6 +315,11 @@
 	color: #FFF;
 }
 
+.owl-child-row.owl-child-shadow {
+	.owl-empty-child-cell {
+		box-shadow: inset 0 5px 6px -6px #000;
+	}
+}
 .owl-empty-child-cell {
 	background-color: #E6E6E6!important;
 }
