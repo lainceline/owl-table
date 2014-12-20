@@ -30,24 +30,47 @@ var OwlCell = React.createClass({
 			});
 		}
 	},
+	onKeydown: function (event) {
+		switch (event.which) {
+			case 9:
+				break;
+		}
+	},
 	render: function () {
 		var props = this.props;
 		var td;
 		var content;
 		var optionText;
 		var value = props.row[props.column.field];
-		var classes = 'owl-cell-value-label';
+		var classes = 'owl-cell-value-label owl-editable';
+		var self = this;
 
 		if (typeof value === 'undefined') {
 			value = props.row[props.column.field.toUpperCase()];
 			if (typeof value === 'undefined') {
 				value = props.row[props.column.field.toLowerCase()];
+
 				if (typeof value === 'undefined') {
-					return (
-						<td>---</td>
-					);
+					var elem;
+
+					if (!props.isChild) {
+						elem = (<td>---</td>);
+					} else {
+						elem = (<td className='owl-empty-child-cell'></td>);
+					}
+
+					return elem;
 				}
 			}
+
+		}
+
+		if (props.column.type === 'checkbox') {
+			value = self.decorateCheckboxValue(value);
+		}
+
+		if (props.column.type === 'radio') {
+			value = self.textForRadioValue(value);
 		}
 
 		if (props.column.type.indexOf('select') > -1) {
@@ -105,17 +128,52 @@ var OwlCell = React.createClass({
 					/>;
 		}
 
-		if (props.editable === true) {
+		var cellLocked = _.indexOf(props.row.lockedCells, props.column.field) > -1;
+
+		var tdClasses = props.column.field;
+		if (typeof props.column.tacky !== 'undefined' && props.column.tacky.left === true) {
+			tdClasses = tdClasses + ' tacky-left';
+		}
+
+		if (props.editable === true && cellLocked !== true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				<td className={props.column.field} data-field={props.column.field} onClick={this.open}>
+				<td className={tdClasses} data-field={props.column.field} onClick={this.open}>
 					{content}
 				</td>;
 		} else {
-			td = <td className={props.column.field} data-field={props.column.field} dangerouslySetInnerHTML={{ __html: value }}></td>;
+			var innerHTML = props.column.type.indexOf('select') > -1 ? optionText : value;
+			td =
+				<td className={tdClasses} data-field={props.column.field}>
+					<span className="owl-cell-value-label owl-value" dangerouslySetInnerHTML={{ __html: innerHTML }} />
+				</td>;
 		}
 
 		return td;
+	},
+	decorateCheckboxValue: function (value) {
+		switch (value) {
+			case true:
+			case 'true':
+			case 'Y':
+				return '<i class="owl-checked glyphicon glyphicon-ok"></i>';
+			case false:
+			case 'N':
+			case 'false':
+				return '<i class="owl-unchecked glyphicon glyphicon-remove"></i>';
+			default:
+				return value;
+		}
+	},
+	textForRadioValue: function (value) {
+		var returnValue = value;
+		var indexedOptions = _.indexBy(this.props.column.options, 'value');
+
+		if (!_.isUndefined(indexedOptions[value])) {
+			returnValue = indexedOptions[value].text;
+		}
+
+		return returnValue;
 	},
 	componentDidUpdate: function () {
 		var self = this;
@@ -127,17 +185,17 @@ var OwlCell = React.createClass({
 		var swiftboxes = $(this.getDOMNode()).find('.swiftbox');
 
 		if (swiftboxes.length > 0) {
-			swiftboxes.swiftbox();
+			swiftboxes = swiftboxes.swiftbox();
 
 			swiftboxes.each(function (index, box) {
+				box = $(box);
 
-				$(box).off('change');
-
-				$(box).on('change', function (event) {
+				box.off('change');
+				box.change(function (event) {
 					var node = $(self.getDOMNode());
 					var props = self.props;
 
-					var val = $(box).swiftbox('value');
+					var val = box.swiftbox('value');
 
 					if (props.column.type === 'select_multiple') {
 						val = val.join('||');

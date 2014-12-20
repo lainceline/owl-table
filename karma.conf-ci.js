@@ -32,12 +32,6 @@ module.exports = function(config) {
 			browserName: 'firefox',
 			platform: 'Windows 7',
 			version: '30'
-		},
-		sl_ie_11: {
-			base: 'SauceLabs',
-			browserName: 'internet explorer',
-			platform: 'Windows 7',
-			version: '11'
 		}
 	};
 
@@ -101,8 +95,17 @@ module.exports = function(config) {
 		logLevel: config.LOG_INFO,
 
 		sauceLabs: {
-			testName: 'owl-table'
+			testName: 'owl-table',
+			username: 'onijim_oss',
+			accessKey: '7c1dc5eb-688b-470b-bb1f-c686774d48aa',
+			connectOptions: {
+				username: 'onijim_oss',
+				accessKey: '7c1dc5eb-688b-470b-bb1f-c686774d48aa'
+			}
 		},
+		browserDisconnectTimeout: 10000,
+		browserDisconnectTolerance: 1,
+		browserNoActivityTimeout: 30000,
 		captureTimeout: 120000,
 		customLaunchers: customLaunchers,
 

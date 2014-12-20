@@ -1,5 +1,6 @@
 .owl-filter-controls
 	span.owl-control-label
 		| Filters:
-	span.owl-filter-buttons
-		| OFF
+	span.owl-filter-buttons(ng-click="owlCtrl.owlTable.toggleFiltering()")
+		span(ng-if="owlCtrl.owlTable.filteringEnabled") ON
+		span(ng-if="!owlCtrl.owlTable.filteringEnabled") OFF

@@ -1,6 +1,6 @@
 {
   "name": "owl-table",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "AngularJS table rendered with ReactJS for performance",
   "directories": {
     "test": "tests"
@@ -63,6 +63,7 @@
     "run-sequence": "^1.0.2"
   },
   "dependencies": {
-    "coffee-script": "^1.8.0"
+    "coffee-script": "^1.8.0",
+    "saucelabs": "^0.1.1"
   }
 }

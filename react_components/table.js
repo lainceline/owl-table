@@ -3,10 +3,11 @@ var OwlTableReact = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		columns: React.PropTypes.array.isRequired,
+		childColumns: React.PropTypes.array,
 		tacky: React.PropTypes.object,
-		lockedCells: React.PropTypes.array,
 		massUpdate: React.PropTypes.bool,
-		pageChanged: React.PropTypes.bool
+		pageChanged: React.PropTypes.bool,
+		filteringEnabled: React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
 		if (typeof this.state.changedData[row.id] === 'undefined') {
@@ -29,9 +30,10 @@ var OwlTableReact = React.createClass({
 				top: false,
 				left: false
 			},
-			lockedCells: [],
 			massUpdate: false,
-			pageChanged: false
+			pageChanged: false,
+			printMode: false,
+			childColumns: []
 		};
 	},
 	getInitialState: function () {
@@ -69,6 +71,38 @@ var OwlTableReact = React.createClass({
 			this.props.sortClickHandler(field, sortReverse);
 		}
 	},
+	filterFieldChanged: function (filter, event) {
+		event.persist();
+		var self = this;
+		_.debounce(
+			function (filter, event) {
+				event.persist();
+				filter.term = event.target.value;
+				self.props.filterDidChange(filter);
+			}, 200
+		)(filter, event);
+	},
+	keyup: function (event) {
+		var td = $(event.target).parent();
+		var handled = false;
+
+		switch (event.which) {
+			case 9:
+				if (event.shiftKey !== true) {
+					td.next().children().focus();
+				} else {
+					td.prev().children().focus();
+				}
+				handled = true;
+				break;
+			default:
+				break;
+		}
+
+		if (handled === true) {
+			event.stopPropagation();
+		}
+	},
 	render: function () {
 		var self = this;
 
@@ -86,66 +120,137 @@ var OwlTableReact = React.createClass({
 			}
 		}
 
+		var filterSection;
+		var filters;
+
+		if (props.filteringEnabled) {
+			filters = props.columns.map(function (column, index) {
+				if (typeof column.filters === 'undefined') {
+					column.filters = [{
+						predicate: '',
+						type: 'contains'
+					}];
+				}
+				// For each column, create a div with an input for each filter
+				var colFilters = column.filters.map(function (filter, index) {
+					return (
+						<span key={index} className="owl-filter">
+							<div onClick={props.addFilter.bind(this, column)} className='owl-filter-button owl-filter-button-add' />
+							<input type="text" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
+						</span>
+					);
+				});
+
+				var tackyLeft = '';
+				if (isTackyLeft(column)) {
+					tackyLeft = ' tacky-left';
+				}
+
+				return (
+					<th key={index} className={"tacky-top" + tackyLeft}>
+						<div className="owl-filter-wrapper">
+							{colFilters}
+						</div>
+					</th>
+				);
+			});
+
+			filterSection = <tr className="owl-filter-row"> {filters} </tr>;
+		}
+
+		function isTackyLeft (column) {
+			return typeof column.tacky !== 'undefined' && column.tacky.left === true;
+		}
+
+		var headerCount = -1;
+
 		var headers = props.columns.map(function (column, index) {
 			var classes = 'owl-table-sortElement';
+			var id = 'owl_header_' + column.field;
 			if (tackyTop) {
 				classes = classes + ' tacky-top';
 			}
 
+			if (isTackyLeft(column)) {
+				classes = classes + ' tacky-left';
+			}
+
+			headerCount++;
+
 			if (column.visible !== false) {
 				return (
-					<th className={classes} key={index} data-field={column.field}>
+					<th onClick={_.partial(self.sortClickHandler, column.field)} className={classes} id={id} key={headerCount} data-field={column.field}>
 						{column.title || 'None'}
-						<i onClick={_.partial(self.sortClickHandler, column.field)} className='glyphicon glyphicon-sort' />
 					</th>
 				);
 			}
 		});
 
-		var rows = props.data.map(function (datum, index) {
+		if (props.childColumns.length > 0) {
+			_.forEach(props.childColumns, function (child, index) {
+				var id = 'owl_child_header_' + child.field;
+				var classes = '';
 
-			var lockedForRow = _.find(props.lockedCells, function (value, index) {
-				if (typeof value === 'object' && parseInt(Object.keys(value)[0]) === datum.id) {
-					return true;
+				if (tackyTop) {
+					classes = 'tacky-top';
+				}
+
+				if (child.visible !== false) {
+					headerCount++;
+					headers.push(
+						<th className={classes} key={headerCount} id={id} data-field={child.field}>
+							{child.title || 'None'}
+						</th>
+					);
 				}
 			});
+		}
 
-			return (
-				<OwlRow data={datum} lockedCells={lockedForRow} columns={props.columns} key={index} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+		var rowsWithChildren = [];
+		var rowCount = 0;
+
+		_.forEach(props.data, function (row, index) {
+			var children = row.children;
+
+			rowsWithChildren.push(
+				<OwlRow
+					data={row}
+					columns={props.columns}
+					childColumns={props.childColumns}
+					key={rowCount}
+					open={self.state.openRows[index] || false}
+					tableDidChange={self.tableDidChange}
+				/>
 			);
+
+			rowCount++;
+
+			if (!_.isUndefined(children) && _.isArray(children)) {
+				_.forEach(children, function (child, index) {
+
+					rowsWithChildren.push(
+						<OwlRow data={child} isChild={true} childColumns={props.childColumns} columns={props.columns} key={rowCount} open={self.state.openRows[index] || false} tableDidChange={self.tableDidChange} />
+					);
+					rowCount++;
+				});
+			}
 		});
 
-		self.keyup = function (event) {
-			var td = $(event.target).parent();
-			var handled = false;
-
-			switch (event.which) {
-				case 9:
-					if (event.shiftKey !== true) {
-						td.next().children().focus();
-					} else {
-						td.prev().children().focus();
-					}
-					handled = true;
-					break;
-				default:
-					break;
-			}
-
-			if (handled === true) {
-				event.stopPropagation();
-			}
-		};
+		var classes = 'owl-table tacky';
+		if (props.printMode !== false) {
+			classes = classes + ' owl-table-print';
+		}
 
 		return (
-			<table onKeyUp={self.keyup} className="owl-table">
+			<table onKeyUp={self.keyup} id="owl-table" className={classes}>
 				<thead>
+					{filterSection}
 					<tr>
-					{headers}
+						{headers}
 					</tr>
 				</thead>
-				<tbody>
-					{rows}
+				<tbody className="tbody">
+					{rowsWithChildren}
 				</tbody>
 			</table>
 		);
