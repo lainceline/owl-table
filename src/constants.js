@@ -1,4 +1,4 @@
-//(function (angular) {
+(function (angular) {
 	'use strict';
 
 	angular.module('owlTable').constant('owlConstants', {
@@ -24,6 +24,7 @@
 			ENDS_WITH: 4,
 			EXACT: 8,
 			CONTAINS: 16,
+			NOT_EQUAL: 32,
 			defaults: {
 				term: '',
 				condition: 16,
@@ -34,4 +35,4 @@
 		}
 	});
 
-//})(window.angular);
+})(window.angular);

@@ -106,10 +106,34 @@ function owlFilter (owlConstants, owlUtils) {
 				if (!filter.condition.test(value)) {
 					return false;
 				}
-			} else {
+			} else if (conditionType === 'function') {
+				return filter.condition(term, value, row, column);
+			} else if (filter.condition === owlConstants.filtering.STARTS_WITH) {
+				var startswithRE = termCache(cacheId) ? termCache(cacheId) : termCache(cacheId, new RegExp('^' + term, regexpFlags));
+
+				if (!startswithRE.test(value)) {
+					return false;
+				}
+			} else if (filter.condition === owlConstants.filtering.ENDS_WITH) {
+				var endswithRE = termCache(cacheId) ? termCache(cacheId) : termCache(cacheId, new RegExp(term + '$', regexpFlags));
+
+				if (!endswithRE.test(value)) {
+					return false;
+				}
+			} else if (filter.condition === owlConstants.EXACT) {
+				var exactRE = termCache(cacheId) ? termCache(cacheId) : termCache(cacheId,  new RegExp('^' + term + '$', regexpFlags));
+
+				if (!exactRE.test(value)) {
+					return false;
+				}
+			} else if (filter.condition === owlConstants.filtering.CONTAINS) {
 				var containsRE = termCache(cacheId) ? termCache(cacheId) : termCache(cacheId, new RegExp(term, regexpFlags));
 
 				if (!containsRE.test(value)) {
+					return false;
+				}
+			} else if (filter.condition === uiGridConstants.filter.NOT_EQUAL) {
+				if (!angular.equals(value, term)) {
 					return false;
 				}
 			}
