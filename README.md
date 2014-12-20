@@ -65,6 +65,7 @@ I found that some people were using React to provide the views for their apps an
 3. `bower install --require-dev`
 4. `gulp build` to build sass, interpret JSX, compile CoffeeScript, etc
 5. `gulp watch` will rebuild most everything on change
+6. `gulp help` for task list and info
 
 ### Tests
 
