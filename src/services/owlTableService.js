@@ -65,6 +65,12 @@
 						columns: service.columns
 					});
 				},
+				removeFilter: function (column, index) {
+					column.filters.splice(index, 1);
+					service.renderedTable.setProps({
+						columns: service.columns
+					});
+				},
 				massUpdate: settings.options.massUpdate,
 				sortClickHandler: this.sortClickHandler,
 				filterDidChange: this.filterDidChange.bind(this),
@@ -386,7 +392,6 @@
 		};
 
 		service.filterDidChange = function (filter) {
-			console.log(filter);
 			var rows = owlFilter.filterTable(this.data, this.columns);
 
 			if (!owlFilter.hasNoFilters(this.columns)) {
@@ -397,7 +402,6 @@
 		};
 
 		service.setFilteredData = function (filteredData) {
-
 			if (typeof filteredData === 'undefined' || !filteredData) {
 				// This copies the array of references so we can mutate it
 				this.filteredData = _.filter(this.data, function () { return true; });
