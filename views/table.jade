@@ -26,11 +26,11 @@
 			table
 				thead
 					tr
-						th(ng-repeat="column in columns track by $index")
+						th.owl-mass-update-header(data-field="{{column.field}}", ng-repeat="column in columns track by $index")
 							| {{column.title}}
 				tbody
 					tr
-						td(ng-repeat="column in columns track by $index")
+						td.owl-mass-update-cell(ng-repeat="column in columns track by $index")
 							input(type="text", ng-model="massUpdateData[column.field]")
 								
 		.owl-table-inner-wrapper.table-responsive.tacky(ng-hide="loading === true")
