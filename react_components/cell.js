@@ -8,7 +8,9 @@ var OwlCell = React.createClass({
 	getDefaultProps: function () {
 		return {
 			open: false,
-			editable: true
+			editable: true,
+			isChild: false,
+			isChildColumn: false
 		};
 	},
 	getInitialState: function () {
@@ -53,7 +55,7 @@ var OwlCell = React.createClass({
 				if (typeof value === 'undefined') {
 					var elem;
 
-					if (!props.isChild) {
+					if (!props.isChild && !props.isChildColumn) {
 						elem = (<td>---</td>);
 					} else {
 						elem = (<td className='owl-empty-child-cell'></td>);
@@ -112,8 +114,15 @@ var OwlCell = React.createClass({
 				optionText = props.row[props.column.field];
 			}
 
+			if (props.isChild) {
+				classes = classes + ' owl-child-cell';
+			}
+
 			content = <span className={classes} dangerouslySetInnerHTML={{__html: optionText}}></span>;
 		} else {
+			if (props.isChild) {
+				classes = classes + ' owl-child-cell';
+			}
 			content = <span className={classes} dangerouslySetInnerHTML={{ __html: value }}></span>;
 		}
 
@@ -133,6 +142,10 @@ var OwlCell = React.createClass({
 		var tdClasses = props.column.field;
 		if (typeof props.column.tacky !== 'undefined' && props.column.tacky.left === true) {
 			tdClasses = tdClasses + ' tacky-left';
+		}
+
+		if (props.isChild) {
+			tdClasses = tdClasses + ' owl-child-cell';
 		}
 
 		if (props.editable === true && cellLocked !== true) {

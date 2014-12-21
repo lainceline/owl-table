@@ -62,14 +62,14 @@ var OwlRow = React.createClass({
 
 				if (column.visible !== false) {
 					cells.push(
-						<OwlCell column={column} ref={ref} row={props.data} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={cellCount} tableDidChange={props.tableDidChange} />
+						<OwlCell column={column} ref={ref} row={props.data} isChildColumn={true} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={cellCount} tableDidChange={props.tableDidChange} />
 					);
 				}
 
 				cellCount++;
 			});
 		}
-		
+
 		var classes = (props.className + " owl-row trow").trim();
 
 		return(
