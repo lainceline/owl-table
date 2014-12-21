@@ -22,9 +22,9 @@
 		filtering: {
 			STARTS_WITH: 2,
 			ENDS_WITH: 4,
-			EXACT: 8,
+			EMPTY: 8,
 			CONTAINS: 16,
-			NOT_EQUAL: 32,
+			NOT_EMPTY: 32,
 			defaults: {
 				term: '',
 				condition: 16,

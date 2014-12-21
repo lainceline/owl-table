@@ -91,6 +91,10 @@ function owlFilter (owlConstants, owlUtils) {
 				filter.condition = owlConstants.filtering.CONTAINS;
 			}
 
+			if (filter.condition === 8 || filter.condition === 32) {
+				filter.term = 'foo';
+			}
+
 			var cacheId = column.field + i;
 
 			var regexpFlags = 'i';
@@ -120,10 +124,8 @@ function owlFilter (owlConstants, owlUtils) {
 				if (!endswithRE.test(value)) {
 					return false;
 				}
-			} else if (filter.condition === owlConstants.EXACT) {
-				var exactRE = termCache(cacheId) ? termCache(cacheId) : termCache(cacheId,  new RegExp('^' + term + '$', regexpFlags));
-
-				if (!exactRE.test(value)) {
+			} else if (filter.condition === 8) {
+				if (value.length !== 0) {
 					return false;
 				}
 			} else if (filter.condition === owlConstants.filtering.CONTAINS) {
@@ -132,12 +134,11 @@ function owlFilter (owlConstants, owlUtils) {
 				if (!containsRE.test(value)) {
 					return false;
 				}
-			} else if (filter.condition === uiGridConstants.filter.NOT_EQUAL) {
-				if (!angular.equals(value, term)) {
+			} else if (filter.condition === owlConstants.filtering.NOT_EMPTY) {
+				if (value.length === 0) {
 					return false;
 				}
 			}
-
 			return true;
 		},
 
@@ -180,6 +181,8 @@ function owlFilter (owlConstants, owlUtils) {
 					filterCols.push(column);
 				} else if (typeof column.filters !== 'undefined' && column.filters && typeof column.filters[0].term !== 'undefined' && column.filters[0].term) {
 					// Don't ask, cause I don't know.
+					filterCols.push(column);
+				} else if (typeof column.filters !== 'undefined' && (column.filters[0].condition === 8 || column.filters[0].condition === 32)) {
 					filterCols.push(column);
 				}
 			});

@@ -62,6 +62,8 @@ var OwlTableReact = React.createClass({
 	},
 
 	componentDidMount: function () {
+		var self = this;
+
 		var filterList = document.createElement('div');
 		filterList.className = 'owl-filter-list';
 
@@ -96,6 +98,12 @@ var OwlTableReact = React.createClass({
 				case 'end:':
 					condition = 4;
 					break;
+				case 'empty':
+					condition = 8;
+					break;
+				case 'not:empty':
+					condition = 32;
+					break;
 				default:
 					condition = 16;
 					break;
@@ -103,10 +111,21 @@ var OwlTableReact = React.createClass({
 
 			filterList.currentInput.data('conditionType', condition);
 			filterList.currentInput.val(filterType + currentFilterText);
+			filterList.currentInput.change();
 
 			$(filterList).removeClass('active');
 			filterList.currentInput.focus();
 
+			if (condition === 8 || condition === 32) {
+				var filter = {
+					condition: condition,
+					term: ''
+				};
+
+				var field = filterList.currentInput.closest('.owl-filter').data('field');
+
+				self.props.filterDidChange(filter, field);
+			}
 			event.stopPropagation();
 		});
 
@@ -208,7 +227,7 @@ var OwlTableReact = React.createClass({
 						var buttonClass = index === 0 ? ' owl-filter-button-add' : ' owl-filter-button-remove';
 						var onClick = index === 0 ? props.addFilter.bind(this, column) : props.removeFilter.bind(this, column, index);
 						return (
-							<div key={index} className="owl-filter">
+							<div data-field={column.field} key={index} className="owl-filter">
 								<div onClick={onClick} className={'owl-filter-button' + buttonClass}/>
 								<input type="text" className="owl-filter-input" onChange={self.filterFieldChanged.bind(null, filter)} defaultValue={filter.predicate} />
 								<div className="owl-change-filter-type" />

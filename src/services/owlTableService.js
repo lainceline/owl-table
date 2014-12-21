@@ -391,7 +391,12 @@
 			}
 		};
 
-		service.filterDidChange = function (filter) {
+		service.filterDidChange = function (filter, columnField) {
+			if (typeof columnField !== 'undefined') {
+				var column = _.where(this.columns, {'field': columnField});
+				column[0].filters[0] = filter;
+			}
+			
 			var rows = owlFilter.filterTable(this.data, this.columns);
 
 			if (!owlFilter.hasNoFilters(this.columns)) {
