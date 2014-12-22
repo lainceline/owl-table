@@ -1696,7 +1696,7 @@ angular.module('owlTable')
 
 })(window.angular);
 
-(function (angular, _, $, Spinner) {
+(function (angular, _, $) {
 	'use strict';
 	/**
 	*	owlTableDirective
@@ -1826,28 +1826,6 @@ angular.module('owlTable')
 						owlTable.syncDataFromView(row, column, value);
 					});
 
-					var opts = {
-						lines: 13, // The number of lines to draw
-						length: 20, // The length of each line
-						width: 10, // The line thickness
-						radius: 30, // The radius of the inner circle
-						corners: 1, // Corner roundness (0..1)
-						rotate: 0, // The rotation offset
-						direction: 1, // 1: clockwise, -1: counterclockwise
-						color: '#000', // #rgb or #rrggbb or array of colors
-						speed: 1, // Rounds per second
-						trail: 60, // Afterglow percentage
-						shadow: true, // Whether to render a shadow
-						hwaccel: false, // Whether to use hardware acceleration
-						className: 'spinner', // The CSS class to assign to the spinner
-						zIndex: 2e9, // The z-index (defaults to 2000000000)
-						top: '50%', // Top position relative to parent
-						left: '50%' // Left position relative to parent
-					};
-
-					var target = document.getElementById('owl-spin');
-					var spinner = new Spinner(opts).spin(target);
-
 					var scaleTableToColumns = function () {
 						var headers = $('owl-table').find('th');
 						var tableWidth = headers.width() * headers.length;
@@ -1893,7 +1871,7 @@ angular.module('owlTable')
 	angular.module('owlTable')
 		.directive('owlTable', owlTableDirective);
 
-})(window.angular, window._, window.jQuery, window.Spinner);
+})(window.angular, window._, window.jQuery);
 
 (function (angular) {
 	'use strict';
@@ -2054,6 +2032,59 @@ angular.module('owlTable')
 
 })(window.angular);
 
+(function (angular, _, $, Spinner) {
+	'use strict';
+
+	function owlSpinner(owlTable) {
+		function link (scope, elem, attrs, tableCtrl) {
+			var opts = {
+				lines: 13, // The number of lines to draw
+				length: 20, // The length of each line
+				width: 10, // The line thickness
+				radius: 30, // The radius of the inner circle
+				corners: 1, // Corner roundness (0..1)
+				rotate: 0, // The rotation offset
+				direction: 1, // 1: clockwise, -1: counterclockwise
+				color: '#000', // #rgb or #rrggbb or array of colors
+				speed: 1, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: true, // Whether to render a shadow
+				hwaccel: false, // Whether to use hardware acceleration
+				className: 'spinner', // The CSS class to assign to the spinner
+				zIndex: 2e9, // The z-index (defaults to 2000000000)
+				top: '50%', // Top position relative to parent
+				left: '50%' // Left position relative to parent
+			};
+
+			var target = angular.element('#owl-spin').get(0);
+
+			var spinner = new Spinner(opts).spin(target);
+		}
+
+		return {
+			restrict: 'EA',
+			require: '^owlTable',
+			link: link,
+			templateUrl: 'partials/ajaxLoader.html'
+		};
+	}
+	angular.module('owlTable')
+		.directive('owlSpinner', ['owlTable', owlSpinner]);
+		
+})(window.angular, window._, window.jQuery, window.Spinner);
+
+(function(module) {
+try {
+  module = angular.module('owlTablePartials');
+} catch (e) {
+  module = angular.module('owlTablePartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('partials/ajaxLoader.html',
+    '<div ng-show="loading === true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div>');
+}]);
+})();
+
 (function(module) {
 try {
   module = angular.module('owlTablePartials');
@@ -2122,6 +2153,6 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/table.html',
-    '<div class="container-fluid owl-wrapper"><div class="owl-top-controls"><owl-pagination></owl-pagination><owl-export-controls></owl-export-controls><owl-filter-controls></owl-filter-controls><owl-customize-columns ng-if="options.customizeColumns"></owl-customize-columns><span class="owl-top-control-right-buttons"><div ng-if="options.massUpdate === true" class="form-inline owl-top-control-right owl-top-control-mass-update"><div class="form-group"><div class="checkbox"><label><input id="massUpdateToggle" type="checkbox" value="true" ng-model="owlCtrl.massUpdate">Mass Update</label></div></div><div ng-if="owlCtrl.massUpdate" class="form-group"><button id="massUpdate" ng-click="massUpdate()" class="btn btn-sm btn-default">Run Mass Update</button></div></div><div ng-if="options.saveIndividualRows !== true" class="owl-top-control-right owl-top-control-save"><div ng-hide="saved !== true">Saved</div><button id="saveButton" ng-class="{\'btn-danger\': owlCtrl.owlTable.hasChangedData, \'btn-default\': !owlCtrl.owlTable.hasChangedData}" ng-click="owlCtrl.savePage()" ng-disabled="!owlCtrl.owlTable.hasChangedData" ladda="owlCtrl.saving" data-style="expand-left" data-spinner-color="#FFF000" class="btn btn-sm btn-default">Save</button></div></span></div><div ng-class="{\'owl-stretch\': loading}" class="owl-table-wrapper"><div ng-show="owlCtrl.massUpdate" class="owl-mass-update-row"><table><thead><tr><th data-field="{{column.field}}" ng-repeat="column in columns track by $index" class="owl-mass-update-header">{{column.title}}</th></tr></thead><tbody><tr><td ng-repeat="column in columns track by $index" class="owl-mass-update-cell"><input type="text" ng-model="massUpdateData[column.field]"></td></tr></tbody></table></div><div ng-hide="loading === true" class="owl-table-inner-wrapper table-responsive tacky"><div class="owl-react-container"></div></div><div ng-show="loading === true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"></div><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div><owl-pagination></owl-pagination></div>');
+    '<div class="container-fluid owl-wrapper"><div class="owl-top-controls"><owl-pagination></owl-pagination><owl-export-controls></owl-export-controls><owl-filter-controls></owl-filter-controls><owl-customize-columns ng-if="options.customizeColumns"></owl-customize-columns><span class="owl-top-control-right-buttons"><div ng-if="options.massUpdate === true" class="form-inline owl-top-control-right owl-top-control-mass-update"><div class="form-group"><div class="checkbox"><label><input id="massUpdateToggle" type="checkbox" value="true" ng-model="owlCtrl.massUpdate">Mass Update</label></div></div><div ng-if="owlCtrl.massUpdate" class="form-group"><button id="massUpdate" ng-click="massUpdate()" class="btn btn-sm btn-default">Run Mass Update</button></div></div><div ng-if="options.saveIndividualRows !== true" class="owl-top-control-right owl-top-control-save"><div ng-hide="saved !== true">Saved</div><button id="saveButton" ng-class="{\'btn-danger\': owlCtrl.owlTable.hasChangedData, \'btn-default\': !owlCtrl.owlTable.hasChangedData}" ng-click="owlCtrl.savePage()" ng-disabled="!owlCtrl.owlTable.hasChangedData" ladda="owlCtrl.saving" data-style="expand-left" data-spinner-color="#FFF000" class="btn btn-sm btn-default">Save</button></div></span></div><div ng-class="{\'owl-stretch\': loading}" class="owl-table-wrapper"><div ng-show="owlCtrl.massUpdate" class="owl-mass-update-row"><table><thead><tr><th data-field="{{column.field}}" ng-repeat="column in columns track by $index" class="owl-mass-update-header">{{column.title}}</th></tr></thead><tbody><tr><td ng-repeat="column in columns track by $index" class="owl-mass-update-cell"><input type="text" ng-model="massUpdateData[column.field]"></td></tr></tbody></table></div><div ng-hide="loading === true" class="owl-table-inner-wrapper table-responsive tacky"><div class="owl-react-container"></div></div><owl-spinner></owl-spinner></div><owl-pagination></owl-pagination></div>');
 }]);
 })();
