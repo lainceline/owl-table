@@ -1,4 +1,4 @@
-(function (angular, _, $) {
+(function (angular, _, $, React, OwlTableReact) {
 	'use strict';
 
 	function owlTableService ($http, $rootScope, $filter, $modal, owlConstants, owlResource, owlUtils, owlFilter) {
@@ -164,7 +164,7 @@
 
 			var modal = $modal.open({
 				templateUrl: 'partials/columnModal.html',
-				controller: function ($scope, $modalInstance, columns) {
+				controller: ['$scope', '$modalInstance', 'columns', function ($scope, $modalInstance, columns) {
 					$scope.columns = columns;
 					$scope.visibleColumns = _.filter(columns, function (column) {
 						return column.visible !== false;
@@ -176,7 +176,7 @@
 					$scope.ok = function () {
 						$modalInstance.close($scope.columns);
 					};
-				},
+				}],
 				size: 'lg',
 				resolve: {
 					columns: function () {
@@ -396,7 +396,7 @@
 				var column = _.where(this.columns, {'field': columnField});
 				column[0].filters[0] = filter;
 			}
-			
+
 			var rows = owlFilter.filterTable(this.data, this.columns);
 
 			if (!owlFilter.hasNoFilters(this.columns)) {
@@ -449,17 +449,19 @@
 		return service;
 	}
 
-	angular.module('owlTable')
-		.service('owlTable', [
-			'$http',
-			'$rootScope',
-			'$filter',
-			'$modal',
-			'owlConstants',
-			'owlResource',
-			'owlUtils',
-			'owlFilter',
-			owlTableService
-		]);
+	owlTableService.$inject = [
+	'$http',
+	'$rootScope',
+	'$filter',
+	'$modal',
+	'owlConstants',
+	'owlResource',
+	'owlUtils',
+	'owlFilter'];
 
-})(window.angular, window._, window.jQuery);
+	angular.module('owlTable')
+		.service('owlTable',
+			owlTableService
+		);
+
+})(window.angular, window._, window.jQuery, window.React, window.OwlTableReact);

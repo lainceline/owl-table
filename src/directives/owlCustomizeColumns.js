@@ -9,7 +9,9 @@
 		};
 	}
 
+	owlCustomizeColumns.$inject = ['owlTable'];
+	
 	angular.module('owlTable')
-		.directive('owlCustomizeColumns', ['owlTable', owlCustomizeColumns]);
+		.directive('owlCustomizeColumns', owlCustomizeColumns);
 
 })(window.angular);

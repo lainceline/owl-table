@@ -23,7 +23,9 @@
 		return utilService;
 	}
 
+	owlUtils.$inject = ['owlConstants'];
+
 	angular.module('owlTable')
-		.service('owlUtils', ['owlConstants', owlUtils]);
+		.service('owlUtils', owlUtils);
 
 })(window.angular);

@@ -21,6 +21,8 @@ var concat 		= require('gulp-concat');
 var clean		= require('gulp-clean');
 var shell		= require('gulp-shell');
 
+var closureCompiler = require('gulp-closure-compiler');
+
 var helpMessages = {
 	sass: 'Builds the owl-table SCSS file to dist folder.  Autoprefixes and minifies.',
 	coffeeTests: 'Compiles E2E CoffeeScript tests into JS to run with Nightwatch.',
@@ -99,16 +101,26 @@ gulp.task('partials', false, function () {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('closure', false, function () {
+	return gulp.src(['./build/compiled-react-components.js', './build/compiled-js.js', './build/compiled-partials.js'])
+		.pipe(closureCompiler({
+			compilerPath: 'bower_components/closure-compiler/lib/vendor/compiler.jar',
+			fileName: 'compiled.js',
+			compilerFlags: {
+				language_in: 'ECMASCRIPT5',
+			//	compilation_level: 'WHITESPACE_ONLY'
+			}
+		}))
+		.pipe(gulp.dest('./build'));
+});
+
 gulp.task('compile', false, function (callback) {
 	runSequence(['jsx', 'js', 'sass', 'coffee', 'partials'], callback);
 });
 
 gulp.task('link', false, function () {
 	return gulp.src([
-		'./build/compiled-react-components.js',
-		'./build/compiled-partials.js',
-		'./build/compiled-coffee.js',
-		'./build/compiled-js.js'
+		'./build/compiled.js'
 	])
 		.pipe(concat('owl-table.min.js'))
 		.pipe(gulp.dest('./dist'));
@@ -178,7 +190,7 @@ gulp.task('clean', helpMessages.clean, function (callback) {
 });
 
 gulp.task('build', helpMessages.build, function (callback) {
-	runSequence('clean', 'compile', ['link', 'vendor'], 'clean-build', callback);
+	runSequence('clean', 'compile', 'closure', ['link', 'vendor'], 'clean-build', callback);
 });
 
 gulp.task('build-release', false, function (callback) {

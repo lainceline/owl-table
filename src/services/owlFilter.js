@@ -211,7 +211,9 @@ function owlFilter (owlConstants, owlUtils) {
 	};
 }
 
+owlFilter.$inject = ['owlConstants', 'owlUtils'];
+
 angular.module('owlTable')
-	.service('owlFilter', ['owlConstants', 'owlUtils', owlFilter]);
+	.service('owlFilter', owlFilter);
 
 })(window.angular, window._, window.jQuery);

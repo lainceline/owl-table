@@ -10,17 +10,19 @@
 			compile: function (tElem, tAttrs) {
 				return function link (scope, elem, attrs) {};
 			},
-			controller: function ($scope) {
+			controller: ['$scope', function ($scope) {
 				this.csvHeader = function () {
 					return $scope.columns.map(function (column) {
 						return column.title;
 					});
 				};
-			}
+			}]
 		};
 	}
 
+	owlExportControls.$inject = ['owlTable'];
+
 	angular.module('owlTable')
-		.directive('owlExportControls', ['owlTable', owlExportControls]);
-		
+		.directive('owlExportControls', owlExportControls);
+
 })(window.angular);
