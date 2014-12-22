@@ -200,10 +200,12 @@
 		};
 
 		service.updateChildColumns = function (newChildColumns) {
-			this.childColumns = newChildColumns;
-			this.renderedTable.setProps({
-				childColumns: this.childColumns
-			});
+			if (typeof newChildColumns !== 'undefined') {
+				this.childColumns = newChildColumns;
+				this.renderedTable.setProps({
+					childColumns: this.childColumns
+				});
+			}
 		};
 
 		service.updateOptions = function (newOptions) {
@@ -268,6 +270,7 @@
 
 			this.pages = Math.ceil(settings.total / this.count);
 			this.total = settings.total;
+			this.page = 1;
 		};
 
 		// enables client-side pagination.
