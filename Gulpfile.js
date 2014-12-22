@@ -80,7 +80,7 @@ gulp.task('coffee-tests', helpMessages.coffeeTests, function () {
 });
 
 gulp.task('js', false, function () {
-	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/*.js', './src/controllers/*.js'])
+	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/owlTable.js', './src/directives/owlCustomizeColumns.js', './src/directives/owlExportControls.js', './src/directives/owlFilterControls.js', './src/directives/owlPagination.js', './src/directives/owlPrint.js', './src/controllers/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
@@ -107,8 +107,8 @@ gulp.task('closure', false, function () {
 			compilerPath: 'bower_components/closure-compiler/lib/vendor/compiler.jar',
 			fileName: 'compiled.js',
 			compilerFlags: {
-				language_in: 'ECMASCRIPT5',
-			//	compilation_level: 'WHITESPACE_ONLY'
+				language_in: 'ECMASCRIPT5_STRICT',
+				compilation_level: 'WHITESPACE_ONLY'
 			}
 		}))
 		.pipe(gulp.dest('./build'));

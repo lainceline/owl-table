@@ -28,6 +28,14 @@
 				});
 			}
 
+			if (_.isUndefined(tableCtrl.tableWillPrint)) {
+				tableCtrl.tableWillPrint = _.noop;
+			}
+
+			if (_.isUndefined(tableCtrl.tableDidPrint)) {
+				tableCtrl.tableDidPrint = _.noop;
+			}
+
 			$window.onafterprint = afterPrint;
 
 			var printElement = function (elem) {
