@@ -64,12 +64,10 @@
 						}
 					});
 
-					scope.$watchCollection('childColumns', function (newValue, oldValue) {
-						if (newValue !== oldValue) {
-							owlTable.updateChildColumns(newValue);
-							scaleTableToColumns();
-						}
-					});
+					scope.$watch('childColumns', function (newValue, oldValue) {
+						owlTable.updateChildColumns(newValue);
+						scaleTableToColumns();
+					}, deepWatch);
 
 					scope.$watch('options', function (newValue, oldValue) {
 						owlTable.updateOptions(newValue, oldValue);
