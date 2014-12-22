@@ -78,7 +78,7 @@ gulp.task('coffee-tests', helpMessages.coffeeTests, function () {
 });
 
 gulp.task('js', false, function () {
-	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/*.js', './src/controllers/*.js'])
+	return gulp.src(['./src/*.js', './src/controllers/*.js', './src/services/*.js', './src/directives/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });

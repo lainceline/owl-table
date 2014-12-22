@@ -41,10 +41,26 @@
 		};
 
 		service.initialize = function (settings) {
-			this.data = settings.data;
-			this.columns = settings.columns;
+			this.data = 		settings.data;
+			this.columns = 		settings.columns;
 			this.childColumns = settings.childColumns;
-			this.options = _.defaults(settings.options, defaults.options);
+			this.options = 		_.defaults(settings.options, defaults.options);
+
+			var addFilter = function (column) {
+				column.filters.push({});
+
+				service.renderedTable.setProps({
+					columns: service.columns
+				});
+			};
+
+			var removeFilter = function (column, index) {
+				column.filters.splice(index, 1);
+
+				service.renderedTable.setProps({
+					columns: service.columns
+				});
+			};
 
 			_.forEach(this.columns, function (column) {
 				if (typeof column.visible === 'undefined') {
@@ -53,31 +69,26 @@
 			});
 
 			unrenderedTable = React.createElement(OwlTableReact, {
-				data: settings.data,
-				columns: settings.columns,
-				childColumns: settings.childColumns,
-				tacky: settings.options.tacky,
-				lockedCells: [],
-				addFilter: function (column) {
-					column.filters.push({});
-
-					service.renderedTable.setProps({
-						columns: service.columns
-					});
-				},
-				removeFilter: function (column, index) {
-					column.filters.splice(index, 1);
-					service.renderedTable.setProps({
-						columns: service.columns
-					});
-				},
-				massUpdate: settings.options.massUpdate,
-				sortClickHandler: this.sortClickHandler,
-				filterDidChange: this.filterDidChange.bind(this),
-				filteringEnabled: this.filteringEnabled
+				data: 				settings.data,
+				columns: 			settings.columns,
+				childColumns: 		settings.childColumns,
+				tacky: 				settings.options.tacky,
+				lockedCells: 		[],
+				addFilter: 			addFilter,
+				removeFilter:   	removeFilter,
+				massUpdate: 		settings.options.massUpdate,
+				sortClickHandler: 	this.sortClickHandler,
+				filterDidChange: 	this.filterDidChange.bind(this),
+				filteringEnabled: 	this.filteringEnabled
 			});
 
 			return this;
+		};
+
+		service.renderInto = function (container) {
+			this.renderedTable = React.render(unrenderedTable, container);
+			this.container = container;
+			return this.renderedTable;
 		};
 
 		service.sortClickHandler = function (field, reverse) {
@@ -87,12 +98,6 @@
 
 			service.options.sort.column = field;
 			service.sort();
-		};
-
-		service.renderInto = function (container) {
-			this.renderedTable = React.render(unrenderedTable, container);
-			this.container = container;
-			return this.renderedTable;
 		};
 
 		service.registerTable = function (id, callback) {
@@ -396,7 +401,7 @@
 				var column = _.where(this.columns, {'field': columnField});
 				column[0].filters[0] = filter;
 			}
-			
+
 			var rows = owlFilter.filterTable(this.data, this.columns);
 
 			if (!owlFilter.hasNoFilters(this.columns)) {
@@ -459,6 +464,7 @@
 			'owlResource',
 			'owlUtils',
 			'owlFilter',
+			'owlMassUpdate',
 			owlTableService
 		]);
 

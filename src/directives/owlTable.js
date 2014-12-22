@@ -77,14 +77,7 @@
 
 					scope.$watch('owlCtrl.massUpdate', function (newValue) {
 						if (newValue === true) {
-						//	console.log($('.owl-mass-update-header'));
-							$('.owl-mass-update-header').each(function (index, header) {
-							//	var columnHeader = $('.owl-table-sortElement[data-field="' + + '"]')
-								header = $(header);
-								var field = header.data('field');
-								var columnHeader = $('.owl-table-sortElement[data-field="'+field+'"]');
-							//	header.width(columnHeader.width());
-							});
+						
 
 						}
 						rendered.setProps({

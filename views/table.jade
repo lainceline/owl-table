@@ -22,16 +22,6 @@
 				button.btn.btn-sm.btn-default#saveButton(ng-class="{'btn-danger': owlCtrl.owlTable.hasChangedData, 'btn-default': !owlCtrl.owlTable.hasChangedData}", ng-click="owlCtrl.savePage()", ng-disabled="!owlCtrl.owlTable.hasChangedData", ladda="owlCtrl.saving", data-style="expand-left", data-spinner-color="#FFF000") Save
 	
 	.owl-table-wrapper(ng-class="{'owl-stretch': loading}")
-		.owl-mass-update-row(ng-show="owlCtrl.massUpdate")
-			table
-				thead
-					tr
-						th.owl-mass-update-header(data-field="{{column.field}}", ng-repeat="column in columns track by $index")
-							| {{column.title}}
-				tbody
-					tr
-						td.owl-mass-update-cell(ng-repeat="column in columns track by $index")
-							input(type="text", ng-model="massUpdateData[column.field]")
 								
 		.owl-table-inner-wrapper.table-responsive.tacky(ng-hide="loading === true")
 			.owl-react-container

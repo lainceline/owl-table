@@ -17,13 +17,13 @@ var filterOptions = {
 var OwlTableReact = React.createClass({
 	displayName: 'OwlTable',
 	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		columns: React.PropTypes.array.isRequired,
-		childColumns: React.PropTypes.array,
-		tacky: React.PropTypes.object,
-		massUpdate: React.PropTypes.bool,
-		pageChanged: React.PropTypes.bool,
-		filteringEnabled: React.PropTypes.bool
+		data: 				React.PropTypes.array.isRequired,
+		columns: 			React.PropTypes.array.isRequired,
+		childColumns: 		React.PropTypes.array,
+		tacky: 				React.PropTypes.object,
+		massUpdate: 		React.PropTypes.bool,
+		pageChanged: 		React.PropTypes.bool,
+		filteringEnabled: 	React.PropTypes.bool
 	},
 	tableDidChange: function (event, row, column) {
 		if (typeof this.state.changedData[row.id] === 'undefined') {
@@ -67,7 +67,7 @@ var OwlTableReact = React.createClass({
 		var filterList = document.createElement('div');
 		filterList.className = 'owl-filter-list';
 
-		for(var i in filterOptions) {
+		for (var i in filterOptions) {
 			var option			= document.createElement('div');
 			option.className	= 'owl-filter-type';
 			option.innerHTML	= filterOptions[i];
@@ -208,6 +208,34 @@ var OwlTableReact = React.createClass({
 			if (props.tacky.left) {
 				tackyLeft = props.tacky.left;
 			}
+		}
+
+		var massUpdateSection;
+		var massUpdateHeaders;
+		var massUpdateRow;
+
+		if (props.massUpdate) {
+			massUpdateHeaders = props.columns.map(function (column, index) {
+				return <th key={index} className="tacky-top" data-field={column.field}> {column.field} </th>;
+			});
+
+			var massUpdateChanged = function (event, row, column) {
+				console.log('update changed');
+			};
+
+			massUpdateRow = props.columns.map(function (column, index) {
+				return (
+					<td key={index} className="tacky-top" data-field={column.field}>
+						<OwlInput
+						className={column.field}
+						column={column}
+						value={''}
+						row={{}}
+						tableDidChange={massUpdateChanged}
+						/>
+					</td>
+				);
+			});
 		}
 
 		var filterSection;
@@ -360,6 +388,8 @@ var OwlTableReact = React.createClass({
 		return (
 			<table onKeyUp={self.keyup} id="owl-table" className={classes}>
 				<thead>
+					<tr>{massUpdateHeaders}</tr>
+					<tr>{massUpdateRow}</tr>
 					{filterSection}
 					<tr>
 						{headers}
