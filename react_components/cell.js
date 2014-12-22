@@ -118,6 +118,11 @@ var OwlCell = React.createClass({
 				classes = classes + ' owl-child-cell';
 			}
 
+			if (optionText === '') {
+				optionText = '---';
+				classes = classes.replace(' owl-invalid', '');
+			}
+
 			content = <span className={classes} dangerouslySetInnerHTML={{__html: optionText}}></span>;
 		} else {
 			if (props.isChild) {
