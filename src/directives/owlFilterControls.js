@@ -12,7 +12,9 @@
 		};
 	}
 
+	owlFilterControls.$inject = ['owlTable'];
+
 	angular.module('owlTable')
-		.directive('owlFilterControls', ['owlTable', owlFilterControls]);
+		.directive('owlFilterControls', owlFilterControls);
 
 })(window.angular);

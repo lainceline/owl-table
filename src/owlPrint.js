@@ -53,6 +53,7 @@
 		};
 	}
 
-	angular.module('owlTable').directive('owlPrint', ['$window', 'owlTable', owlPrintDirective]);
+	owlPrintDirective.$inject = ['$window', 'owlTable'];
+	angular.module('owlTable').directive('owlPrint', owlPrintDirective);
 
 })(window.angular);

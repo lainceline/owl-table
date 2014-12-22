@@ -192,12 +192,9 @@
 		};
 	}
 
+	owlTableDirective.$inject = ['$timeout', '$window', 'owlTable'];
+
 	angular.module('owlTable')
-		.directive('owlTable', [
-			'$timeout',
-			'$window',
-			'owlTable',
-			owlTableDirective
-		]);
+		.directive('owlTable', owlTableDirective);
 
 })(window.angular, window._, window.jQuery, window.Spinner);
