@@ -1,109 +1,5 @@
   // Styles for the table itself
 
-.strikethrough {
-	text-decoration: line-through;
-}
-
-.owl-wrapper, .owl-table-wrapper, .owl-table-inner-wrapper, .owl-react-container, .owl-ajax-loading {
-	height: 100%;
-}
-
-.owl-checked {
-	font-size: 16px;
-	color: #44CF17;
-}
-
-.owl-unchecked {
-	font-size: 16px;
-	color: #FC001A;
-}
-
-.owl-filter-button {
-	cursor: pointer;
-	float: left;
-	margin: 2px;
-	height: 16px;
-	width: 16px;
-	min-height: 16px;
-	min-width: 16px;
-	margin-left: 3px;
-	margin-right: 5px;
-}
-
-.owl-filter-button.owl-filter-button-add {
-	width: 16px;
-	height: 16px;
-	background-repeat: no-repeat;
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7blnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMDvokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXItnPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8BXjWG3FgNHc9XPT71Ojy3sMFdfJRCeKxEsVtKwFHwALZfCUk3tIfNR8XiJwc1LmL4dg141JPKtj3WUdNFJqLGFVPC4OkR4BxajTWsChY64wmCnMxsWPCHcutKBxMVp5mxA1S+aMComToaqTRUQknLTH62kHOVEE+VQnjahscNCy0cMBWsSI0TCQcZc5ALkEYckL5A5noWSBhfm2AecMAjbcRWV0pUTh0HE64TNf0mczcnnQyu/MilaFJCae1nw2fbz1DnVOxyGTlKeZft/Ff8x1BRssfACjTwQAAAABJRU5ErkJggg==)
-}
-
-.owl-stretch, .owl-stretch-after-load {
-	display: block;
-	width: 100%;
-}
-
-.owl-top-controls {
-
-	.owl-top-control-right-buttons {
-		float: right;
-	}
-
-	.btn {
-		margin: 0 10px 10px 10px;
-		float: left;
-		display: inline-block;
-	}
-
-	.owl-top-control-right {
-		float: left;
-	}
-
-	.owl-top-control-save {
-		float: right;
-		div {
-			float: left;
-			margin-top: 4px;
-			transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.0s;
-			opacity: 1;
-		}
-		div.ng-hide-remove {
-			opacity: 0;
-			display: block !important;
-		}
-		div.ng-hide-remove.ng-hide-remove-active {
-			opacity: 1;
-		}
-	}
-}
-
-.owl-table-wrapper {
-	border: 1px solid #aaaaaa;
-	display: inline-block;
-}
-
-.owl-hidden {
-	display: none;
-}
-
-.owl-ajax-loading {
-	background-color: gray;
-	opacity: 0.3;
-	padding: 30px;
-	height: 100%;
-
-	.owl-ajax-loading-interior {
-		position: relative;
-		top: 50%;
-		transform: translateY(-50%);
-		text-align: center;
-	}
-
-	p {
-		color: white;
-		transform: translateY(450%);
-	}
-}
-
 .owl-table, .owl-mass-update-row > table {
 	max-width: 100%;
 	width: 100%;
@@ -138,6 +34,13 @@
 	thead, tfoot {
 		tr, tr:hover {
 			background-color: #F6F6F6;
+		}
+	}
+
+	thead {
+		input {
+			border: 1px solid #999;
+			background-color: #FFF;
 		}
 	}
 
@@ -176,6 +79,16 @@
 		font-size: 1em;
 	}
 
+	input {
+		padding: 1px;
+		min-width: 100%;
+		width: 1px;
+		height: 18px;
+		font-size: 12px;
+		font-family: "Myriad Pro Semi Bold", Verdana, Tahoma, sans-serif;
+		box-sizing: border-box;
+	}
+
 	.owl-react-mass-update-row {
 		background-color: red!important;
 		td {
@@ -195,12 +108,6 @@
 	tbody > tr {
 		background-color: red!important;
 	}
-}
-
-.owl-check-label {
-	width: 100%;
-	margin-bottom: 0px;
-	padding-bottom: 5px;
 }
 
 .owl-table-sortElement {
@@ -225,37 +132,4 @@
 .owl-table .tacky-left:not(.tacky-left-origin) {
 	box-shadow: 1px 1px 0 0 #AAA,
 	4px 0px 3px -1px rgba(0, 0, 0, .2);
-}
-
-.owl-filter-row {
-	background-color: transparent;
-
-	th, td {
-		min-width: 80px;
-		border-left-color: transparent !important;
-		background-color: #CDE !important;
-		vertical-align: top !important;
-		box-shadow: 0 -8px 2px -6px rgba(0, 0, 0, 0.2) inset !important;
-		padding: 2px;
-		input {
-			margin: 0;
-			padding: 0;
-			margin-bottom: 2px;
-			width: 80%;
-		}
-	}
-}
-
-.owl-filter-wrapper {
-	max-width: 150px;
-}
-
-.owl-filter {
-	display: inline-block;
-	width: 100%;
-	float: left;
-}
-
-.owl-empty-child-cell {
-	background-color: #E6E6E6!important;
 }

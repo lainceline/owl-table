@@ -125,7 +125,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'date':
 				input =
-					<input className="owl-input" defaultValue={props.value} data-date-format="mm/dd/yyyy" data-provide="datepicker"/>;
+					<input className="owl-input" defaultValue={props.value} data-date-format="dd/mm/yyyy" data-provide="datepicker"/>;
 				break;
 			case 'time':
 				input = <input className="owl-input" type="time" onChange={self.handleSpecialFields} defaultValue={props.value} />;

@@ -28,6 +28,14 @@
 				});
 			}
 
+			if (_.isUndefined(tableCtrl.tableWillPrint)) {
+				tableCtrl.tableWillPrint = _.noop;
+			}
+
+			if (_.isUndefined(tableCtrl.tableDidPrint)) {
+				tableCtrl.tableDidPrint = _.noop;
+			}
+
 			$window.onafterprint = afterPrint;
 
 			var printElement = function (elem) {
@@ -53,6 +61,7 @@
 		};
 	}
 
-	angular.module('owlTable').directive('owlPrint', ['$window', 'owlTable', owlPrintDirective]);
+	owlPrintDirective.$inject = ['$window', 'owlTable'];
+	angular.module('owlTable').directive('owlPrint', owlPrintDirective);
 
 })(window.angular);

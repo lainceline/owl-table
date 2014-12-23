@@ -2,8 +2,9 @@
 	h3.modal-title Customize Columns
 
 .modal-body.owl-modal-body
-	li(ng-repeat="column in columns")
-		a(ng-attr-id="{{'customize_' + column.field}}", ng-click="toggleColumn(column)", ng-class="{strikethrough: !column.visible}") {{ column.title }}
+	ul.row
+		li.col-md-4.col-sm-4.col-lg-4(ng-repeat="column in columns")
+			a(ng-attr-id="{{'customize_' + column.field}}", ng-click="toggleColumn(column)", ng-class="{strikethrough: !column.visible}") {{ column.title }}
 			
 .modal-footer
 	button.btn.btn-primary.owl-column-modal-ok(ng-click="ok()") Ok 

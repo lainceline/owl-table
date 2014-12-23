@@ -44,7 +44,9 @@
 		};
 	}
 
+	owlResource.$inject = ['$http', 'owlUtils'];
+
 	angular.module('owlTable')
-		.factory('owlResource', ['$http', 'owlUtils', owlResource]);
-		
+		.factory('owlResource', owlResource);
+
 })(window.angular, window._);

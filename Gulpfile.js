@@ -1,6 +1,6 @@
 'use strict';
 
-var gulp 		= require('gulp');
+var gulp 		= require('gulp-help')(require('gulp'));
 
 var coffee 		= require('gulp-coffee');
 var sass 		= require('gulp-sass');
@@ -21,16 +21,31 @@ var concat 		= require('gulp-concat');
 var clean		= require('gulp-clean');
 var shell		= require('gulp-shell');
 
+var closureCompiler = require('gulp-closure-compiler');
+
+var helpMessages = {
+	sass: 'Builds the owl-table SCSS file to dist folder.  Autoprefixes and minifies.',
+	coffeeTests: 'Compiles E2E CoffeeScript tests into JS to run with Nightwatch.',
+	vendor: 'Builds vendor.min.js from bower_components and lib folder.  Intended for development use.',
+	watch: 'Main watch task for re-building dist files when source files change.',
+	nightwatch: 'Runs E2E tests in continuous mode.',
+	test: 'Runs full testing suite.  Executes gulp build before running.',
+	karma: 'Runs unit test suite once.',
+	watchCoffee: 'Watches for changes to E2E tests and executes coffee-tests.',
+	testNightwatch: 'Runs E2E tests once after compiling CoffeeScript E2E tests.',
+	build: 'Compiles JS and CSS to the dist folder.',
+	clean: 'Cleans up build artifacts.'
+};
 // Build tasks
 
-gulp.task('jsx', function () {
+gulp.task('jsx', false, function () {
 	return gulp.src(['./react_components/input.js', './react_components/cell.js', './react_components/row.js', './react_components/table.js'])
 			.pipe(react())
 			.pipe(concat('compiled-react-components.js'))
 			.pipe(gulp.dest('./build'));
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', helpMessages.sass, function () {
 	return gulp.src('./sass/owl-table.scss')
 			.pipe(sass({
 				precision: 10,
@@ -48,14 +63,14 @@ gulp.task('sass', function () {
 			.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('coffee', function () {
+gulp.task('coffee', false, function () {
 	return gulp.src(['./src/*.coffee', './src/**/*.coffee'])
 		.pipe(coffee())
 		.pipe(concat('compiled-coffee.js'))
 		.pipe(gulp.dest('./build'));
 });
 
-gulp.task('coffee-tests', function () {
+gulp.task('coffee-tests', helpMessages.coffeeTests, function () {
 	return gulp.src(['./tests/e2e/*.coffee', './tests/e2e/**/*.coffee'])
 		.pipe(coffee())
 		.pipe(rename({
@@ -64,13 +79,13 @@ gulp.task('coffee-tests', function () {
 		.pipe(gulp.dest('./tests/e2e'));
 });
 
-gulp.task('js', function () {
-	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/*.js', './src/controllers/*.js'])
+gulp.task('js', false, function () {
+	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/owlTable.js', './src/directives/owlCustomizeColumns.js', './src/directives/owlExportControls.js', './src/directives/owlFilterControls.js', './src/directives/owlPagination.js', './src/directives/owlPrint.js', './src/directives/owlSpinner.js', './src/controllers/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
 
-gulp.task('partials', function () {
+gulp.task('partials', false, function () {
 	return gulp.src('./views/*.jade')
 		.pipe(jade())
 		.pipe(minifyHtml({
@@ -86,34 +101,46 @@ gulp.task('partials', function () {
 		.pipe(gulp.dest('./build'));
 });
 
-gulp.task('compile', function (callback) {
+gulp.task('closure', false, function () {
+	return gulp.src(['./build/compiled-react-components.js', './build/compiled-js.js', './build/compiled-partials.js'])
+		.pipe(closureCompiler({
+			compilerPath: 'bower_components/closure-compiler/lib/vendor/compiler.jar',
+			fileName: 'compiled.js',
+			compilerFlags: {
+				language_in: 'ECMASCRIPT5_STRICT',
+				//compilation_level: 'WHITESPACE_ONLY'
+			}
+		}))
+		.pipe(gulp.dest('./build'));
+});
+
+gulp.task('compile', false, function (callback) {
 	runSequence(['jsx', 'js', 'sass', 'coffee', 'partials'], callback);
 });
 
-gulp.task('link', function () {
+gulp.task('concat', false, function () {
+	return gulp.src(['./build/compiled-react-components.js', './build/compiled-js.js', './build/compiled-partials.js'])
+		.pipe(concat('compiled.js'))
+		.pipe(gulp.dest('./build'));
+});
+
+gulp.task('link', false, function () {
 	return gulp.src([
-		'./build/compiled-react-components.js',
-		'./build/compiled-partials.js',
-		'./build/compiled-coffee.js',
-		'./build/compiled-js.js'
+		'./build/compiled.js'
 	])
 		.pipe(concat('owl-table.min.js'))
 		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('link-release', function () {
-	return gulp.src([
-		'./build/compiled-react-components.js',
-		'./build/compiled-partials.js',
-		'./build/compiled-coffee.js',
-		'./build/compiled-js.js'
-	])
-		.pipe(uglify())
-		.pipe(concat('owl-table.min.js'))
+gulp.task('link-unminified', false, function () {
+	return gulp.src(
+		'./build/compiled.js'
+	)
+		.pipe(concat('owl-table.js'))
 		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('vendor', function () {
+gulp.task('vendor', helpMessages.vendor, function () {
 	return gulp.src([
 
 		'./bower_components/jquery/jquery.js',
@@ -139,76 +166,84 @@ gulp.task('vendor', function () {
 		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('clean-build', function () {
+gulp.task('clean-build', false, function () {
 	return (
 		gulp.src(['./build/*.*', './build'])
 		.pipe(clean())
 	);
 });
 
-gulp.task('clean-dist', function () {
+gulp.task('clean-dist', false, function () {
 	return (
 		gulp.src(['./dist/owl-table.min.js', './dist/owl-table.min.css'])
 			.pipe(clean())
 	);
 });
 
-gulp.task('clean-tests', function () {
+gulp.task('clean-tests', false, function () {
 	return (
 		gulp.src(['./tests/e2e/*_spec.js', './tests/e2e/**/*_spec.js', './tests/unit/*_spec.js', './tests/unit/**/*_spec.js'])
 			.pipe(clean())
 	);
 });
 
-gulp.task('clean', function (callback) {
+gulp.task('clean', helpMessages.clean, function (callback) {
 	runSequence(['clean-build', 'clean-dist'], callback);
 });
 
-gulp.task('build', function (callback) {
-	runSequence('clean', 'compile', ['link', 'vendor'], 'clean-build', callback);
+gulp.task('build-minified', function (callback) {
+	runSequence('compile', 'closure', ['link', 'vendor'], 'clean-build', callback);
 });
 
-gulp.task('build-release', function (callback) {
+gulp.task('build-unminified', false, function (callback) {
+	runSequence('compile', 'concat', ['link-unminified', 'vendor'], 'clean-build', callback);
+});
+
+gulp.task('build', helpMessages.build, function (callback) {
+	runSequence('clean', 'build-minified', 'build-unminified', 'clean-build', callback);
+});
+
+gulp.task('build-release', false, function (callback) {
 	runSequence('clean', 'compile', 'link', 'link-release', 'clean-build', callback);
 });
 
 // Watch tasks
 
-gulp.task('watch', function () {
+gulp.task('watch', helpMessages.watch, function () {
 	gulp.watch(['./src/*.js', './src/**/*.js', './views/*.jade', './react_components/*.js', './sass/*.scss', './sass/**/*.scss'], ['build']);
 });
 
-gulp.task('watch-coffee', function (callback) {
+gulp.task('watch-coffee', helpMessages.watchCoffee, function (callback) {
 	gulp.watch(['./tests/e2e/*.coffee'], ['coffee-tests']);
 });
 
-gulp.task('nightwatch', function (callback) {
+gulp.task('nightwatch', helpMessages.nightwatch, function (callback) {
 	gulp.watch(['./tests/e2e/**/*.js'], ['test-nightwatch']);
 });
 
 // test tasks
 
-gulp.task('test', function () {
+gulp.task('test', helpMessages.test, function () {
 	runSequence('build', 'karma', 'coffee-tests', 'test-nightwatch');
 });
 
-gulp.task('karma', function (callback) {
+gulp.task('karma', helpMessages.karma, function (callback) {
 	karma.start({
 		configFile: __dirname + '/karma.conf.js',
 		singleRun: true
 	}, callback);
 });
 
-gulp.task('karma-sauce', function (callback) {
+gulp.task('karma-sauce', false, function (callback) {
 	karma.start({
 		configFile: __dirname + '/karma.conf-ci.js',
 		singleRun: true
 	}, callback);
 });
 
-gulp.task('test-nightwatch', shell.task(['nightwatch']));
-gulp.task('nightwatch-sauce', shell.task(['nightwatch -e saucelabs']));
+gulp.task('test-nightwatch', helpMessages.testNightwatch, shell.task(['nightwatch']));
+gulp.task('nightwatch-sauce', false, shell.task(['nightwatch -e saucelabs']));
 
-gulp.task('test-saucelabs', function (callback) {
+gulp.task('test-saucelabs', false, function (callback) {
 	runSequence('build', 'karma-sauce', 'coffee-tests', 'nightwatch-sauce', callback);
 });

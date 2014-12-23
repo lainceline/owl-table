@@ -14,7 +14,9 @@
 		};
 	}
 
+	owlPagination.$inject = ['owlTable'];
+
 	angular.module('owlTable')
-		.directive('owlPagination', ['owlTable', owlPagination]);
+		.directive('owlPagination', owlPagination);
 
 })(window.angular);

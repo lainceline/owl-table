@@ -1,4 +1,4 @@
-(function (angular, _, $, Spinner) {
+(function (angular, _, $) {
 	'use strict';
 	/**
 	*	owlTableDirective
@@ -64,12 +64,10 @@
 						}
 					});
 
-					scope.$watchCollection('childColumns', function (newValue, oldValue) {
-						if (newValue !== oldValue) {
-							owlTable.updateChildColumns(newValue);
-							scaleTableToColumns();
-						}
-					});
+					scope.$watch('childColumns', function (newValue, oldValue) {
+						owlTable.updateChildColumns(newValue);
+						scaleTableToColumns();
+					}, deepWatch);
 
 					scope.$watch('options', function (newValue, oldValue) {
 						owlTable.updateOptions(newValue, oldValue);
@@ -77,7 +75,15 @@
 
 					scope.$watch('owlCtrl.massUpdate', function (newValue) {
 						if (newValue === true) {
-							console.log('This is where I should be calling something to continously adjust the width of the massUpdate rows');
+						//	console.log($('.owl-mass-update-header'));
+							$('.owl-mass-update-header').each(function (index, header) {
+							//	var columnHeader = $('.owl-table-sortElement[data-field="' + + '"]')
+								header = $(header);
+								var field = header.data('field');
+								var columnHeader = $('.owl-table-sortElement[data-field="'+field+'"]');
+							//	header.width(columnHeader.width());
+							});
+
 						}
 						rendered.setProps({
 							massUpdate: newValue
@@ -122,28 +128,6 @@
 						owlTable.syncDataFromView(row, column, value);
 					});
 
-					var opts = {
-						lines: 13, // The number of lines to draw
-						length: 20, // The length of each line
-						width: 10, // The line thickness
-						radius: 30, // The radius of the inner circle
-						corners: 1, // Corner roundness (0..1)
-						rotate: 0, // The rotation offset
-						direction: 1, // 1: clockwise, -1: counterclockwise
-						color: '#000', // #rgb or #rrggbb or array of colors
-						speed: 1, // Rounds per second
-						trail: 60, // Afterglow percentage
-						shadow: true, // Whether to render a shadow
-						hwaccel: false, // Whether to use hardware acceleration
-						className: 'spinner', // The CSS class to assign to the spinner
-						zIndex: 2e9, // The z-index (defaults to 2000000000)
-						top: '50%', // Top position relative to parent
-						left: '50%' // Left position relative to parent
-					};
-
-					var target = document.getElementById('owl-spin');
-					var spinner = new Spinner(opts).spin(target);
-
 					var scaleTableToColumns = function () {
 						var headers = $('owl-table').find('th');
 						var tableWidth = headers.width() * headers.length;
@@ -184,12 +168,9 @@
 		};
 	}
 
-	angular.module('owlTable')
-		.directive('owlTable', [
-			'$timeout',
-			'$window',
-			'owlTable',
-			owlTableDirective
-		]);
+	owlTableDirective.$inject = ['$timeout', '$window', 'owlTable'];
 
-})(window.angular, window._, window.jQuery, window.Spinner);
+	angular.module('owlTable')
+		.directive('owlTable', owlTableDirective);
+
+})(window.angular, window._, window.jQuery);
