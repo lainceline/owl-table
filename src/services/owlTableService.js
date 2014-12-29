@@ -224,6 +224,8 @@
 				changedData: {}
 			});
 
+			this.hasChangedData = false;
+
 			if (typeof callback !== 'undefined') {
 				callback();
 			}
