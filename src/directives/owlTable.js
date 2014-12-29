@@ -30,6 +30,7 @@
 					scope.loading = true;
 					scope.takingAWhile = false;
 					scope.saved = false;
+					scope.ajaxError = false;
 
 					scope.printing = false;
 
@@ -88,6 +89,13 @@
 						rendered.setProps({
 							massUpdate: newValue
 						});
+					});
+
+					scope.$on('owlTableAjaxError', function (event, message) {
+						//scope.loading = false;
+						scope.ajaxError = true;
+
+						scope.ajaxErrorMessage = message[0];
 					});
 
 					// Yeah, totaly gotta get this out of here.

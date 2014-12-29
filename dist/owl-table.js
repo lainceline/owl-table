@@ -1426,6 +1426,10 @@ angular.module('owlTable')
 			}
 		};
 
+		service.ajaxError = function (message) {
+			$rootScope.$broadcast('owlTableAjaxError', [message]);
+		};
+
 		service.tableWithId = function (id) {
 			return this.tables.map(function (table) {
 				if (table.id === id) {
@@ -1730,6 +1734,7 @@ angular.module('owlTable')
 					scope.loading = true;
 					scope.takingAWhile = false;
 					scope.saved = false;
+					scope.ajaxError = false;
 
 					scope.printing = false;
 
@@ -1788,6 +1793,13 @@ angular.module('owlTable')
 						rendered.setProps({
 							massUpdate: newValue
 						});
+					});
+
+					scope.$on('owlTableAjaxError', function (event, message) {
+						//scope.loading = false;
+						scope.ajaxError = true;
+
+						scope.ajaxErrorMessage = message[0];
 					});
 
 					// Yeah, totaly gotta get this out of here.
@@ -2061,6 +2073,10 @@ angular.module('owlTable')
 			var target = angular.element('#owl-spin').get(0);
 
 			var spinner = new Spinner(opts).spin(target);
+
+			scope.$on('owlTableAjaxError', function (event, message) {
+				spinner.stop();
+			});
 		}
 
 		return {
@@ -2072,7 +2088,7 @@ angular.module('owlTable')
 	}
 	angular.module('owlTable')
 		.directive('owlSpinner', ['owlTable', owlSpinner]);
-		
+
 })(window.angular, window._, window.jQuery, window.Spinner);
 
 (function(module) {
@@ -2083,7 +2099,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/ajaxLoader.html',
-    '<div ng-show="loading === true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div>');
+    '<div ng-show="loading === true &amp;&amp; ajaxError !== true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div><div ng-show="ajaxError === true" class="owl-ajax-loading owl-ajax-error"><div class="owl-ajax-loading-interior owl-ajax-error-interior"><p ng-show="ajaxError === true" class="owl-ajax-loading-label owl-ajax-error-label">{{ajaxErrorMessage}}</p></div></div>');
 }]);
 })();
 

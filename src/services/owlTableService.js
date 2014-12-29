@@ -231,6 +231,10 @@
 			}
 		};
 
+		service.ajaxError = function (message) {
+			$rootScope.$broadcast('owlTableAjaxError', [message]);
+		};
+
 		service.tableWithId = function (id) {
 			return this.tables.map(function (table) {
 				if (table.id === id) {

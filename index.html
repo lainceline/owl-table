@@ -296,6 +296,7 @@
 					})
 					.error(function (data) {
 						console.log('ajax error while loading');
+						owlTable.ajaxError('Oops, something went wrong!');
 					});
 
 			});
