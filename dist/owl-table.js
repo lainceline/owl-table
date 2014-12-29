@@ -232,13 +232,18 @@ var OwlCell = React.createClass({
 				if (typeof value === 'undefined' || value === '') {
 					var elem;
 					var tdClasses = props.column.field;
-					
+					var spanClasses = '';
+
 					if (typeof props.column.tacky !== 'undefined' && props.column.tacky.left === true) {
 						tdClasses = tdClasses + ' tacky-left';
 					}
 
+					if (props.editable === true) {
+						spanClasses = 'owl-cell-value-label owl-editable';
+					}
+
 					if (!props.isChild && !props.isChildColumn) {
-						elem = (React.createElement("td", {className: tdClasses}, "---"));
+						elem = (React.createElement("td", {className: tdClasses}, React.createElement("span", {className: spanClasses}, "---")));
 					} else {
 						elem = (React.createElement("td", {className: "owl-empty-child-cell"}));
 					}
