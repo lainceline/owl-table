@@ -1,0 +1,29 @@
+.modal-header
+	h3.modal-title.text-danger Mass Update Wizard
+	
+.modal-body(ng-switch="massUpdateModalCtrl.currentWizardPage")
+	.owl-modal-page(ng-switch-when="1")
+		h4.text-danger WARNING
+		p Mass Update will affect all currently loaded rows of data.  This is irreversible and can potentially destroy data.
+		p Please be careful.  The mass update will take place directly through this wizard.
+	.owl-modal-page(ng-switch-when="2")
+		h4.text-danger Select column
+		p Please select the column you wish to Mass Update.
+		select.swiftbox.modalColumnSelect(ng-model="massUpdateModalCtrl.selectedColumn", ng-options="column.title for column in massUpdateModalCtrl.columns")
+	.owl-modal-page(ng-switch-when="3")
+		h4.text-danger Enter new value
+		p Please enter or select the new value you wish to Mass Update.
+		span(ng-switch="massUpdateModalCtrl.selectedColumn.type")
+			input(type="input", ng-switch-when="text", ng-model="massUpdateModalCtrl.newValue")
+			input(type="checkbox", ng-switch-when="checkbox", ng-model="massUpdateModalCtrl.newValue")
+			swift-box(ng-switch-when="select", optexp="option.text for option in massUpdateModalCtrl.selectedColumn.options", ng-model="massUpdateModalCtrl.newValue")
+	.owl-modal-page(ng-switch-when="4")
+		h4.text-danger Review choices
+		p Please make sure the following is correct.  If you wish to make changes, use the Back button.
+		.well
+			p Column:  {{massUpdateModalCtrl.selectedColumn.field}}
+			p New value: {{massUpdateModalCtrl.newValueDecorated()}}
+.modal-footer
+	button.pull-left.btn.btn-sm.btn-default(ng-click="massUpdateModalCtrl.prevPage()", ng-disabled="massUpdateModalCtrl.currentWizardPage === 1") Back
+	button.btn.btn-sm.btn-primary(ng-click="massUpdateModalCtrl.nextPage()", ng-if="massUpdateModalCtrl.currentWizardPage < 4") Next
+	button.btn.btn-sm.btn-danger(ng-click="massUpdateModalCtrl.executeMassUpdate()", ng-if="massUpdateModalCtrl.currentWizardPage === 4") Run Mass Update

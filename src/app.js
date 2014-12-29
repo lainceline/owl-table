@@ -9,6 +9,7 @@
 			'ngCsv',
 			'ui.bootstrap',
 			'angular-ladda',
+			'swiftbox',
 			'owlTablePartials'
 		]
 	);

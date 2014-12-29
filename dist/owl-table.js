@@ -864,6 +864,42 @@ var OwlTableReact = React.createClass({
 	}
 });
 
+(function (angular, _, $) {
+
+	function swiftboxDirective ($timeout, $document) {
+		return {
+			restrict: 'E',
+			scope: false,
+			replace: true,
+			template: function (elem, attrs) {
+				return '<select ng-options="' + attrs.optexp + '" ></select>';
+			},
+			link: function (scope, elem, attrs) {
+				$timeout(function () {
+					$(elem).addClass('swiftbox').swiftbox();
+				}, 100);
+
+				$($document).on('change', 'swift-box', function (event) {
+					console.log(event);
+					console.log($(this).swiftbox('value'));
+					console.log(attrs.ngModel);
+					var model = scope.$eval(attrs.ngModel);
+				//	model =
+				console.log(model);
+					model = $(this).swiftbox('value');
+					model = {
+						value: $(this).swiftbox('value')
+					};
+				});
+			}
+		};
+	}
+
+	angular.module('swiftbox', [])
+		.directive('swiftBox', ['$timeout', '$document', swiftboxDirective]);
+
+})(window.angular, window._, window.jQuery);
+
 (function (angular) {
 	'use strict';
 
@@ -875,6 +911,7 @@ var OwlTableReact = React.createClass({
 			'ngCsv',
 			'ui.bootstrap',
 			'angular-ladda',
+			'swiftbox',
 			'owlTablePartials'
 		]
 	);
@@ -2073,6 +2110,89 @@ angular.module('owlTable')
 		
 })(window.angular, window._, window.jQuery, window.Spinner);
 
+(function (angular, _, $) {
+	'use strict';
+
+	function owlMassUpdateDirective ($modal, owlTable) {
+		var link = function (scope, elem, attrs, tableCtrl) {
+			
+		};
+
+		var controller = function ($scope) {
+			this.massUpdate = false;
+
+			this.massUpdateModal = function () {
+				var modal = {
+					templateUrl: 'partials/massUpdateModal.html',
+					controllerAs: 'massUpdateModalCtrl',
+					controller: function ($scope, $modalInstance, columns) {
+						this.columns = columns;
+
+						this.selectedColumn = columns[0];
+
+						this.newValue = undefined;
+
+						this.errors = {
+							valueBlank: false
+						};
+
+						this.newValueDecorated = function () {
+							var returnValue;
+
+							if (!_.isUndefined(this.newValue)) {
+								if (!_.isUndefined(this.newValue.text)) {
+									returnValue = this.newValue.text;
+								} else {
+									returnValue = this.newValue;
+								}
+							} else {
+								this.errors.valueBlank = true;
+							}
+
+							return returnValue;
+						};
+
+						this.currentWizardPage = 1;
+
+						this.nextPage = function () {
+							this.currentWizardPage++;
+						};
+						this.prevPage = function () {
+							if (this.currentWizardPage > 0) {
+								this.currentWizardPage--;
+							}
+						};
+					},
+					resolve: {
+						columns: function () {
+							return $scope.owlCtrl.owlTable.columns;
+						}
+					},
+					backdrop: true,
+					size: 'lg'
+				};
+
+				$modal.open(modal);
+			};
+		};
+
+		return {
+			restrict: 'EA',
+			require: '^owlTable',
+			templateUrl: 'partials/owlMassUpdate.html',
+			link: link,
+			controllerAs: 'massUpdateCtrl',
+			controller: ['$scope', controller]
+		};
+	}
+
+	owlMassUpdateDirective.$inject = ['$modal', 'owlTable'];
+
+	angular.module('owlTable')
+		.directive('owlMassUpdate', owlMassUpdateDirective);
+
+})(window.angular, window._, window.$);
+
 (function(module) {
 try {
   module = angular.module('owlTablePartials');
@@ -2140,6 +2260,30 @@ try {
   module = angular.module('owlTablePartials', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('partials/massUpdateModal.html',
+    '<div class="modal-header"><h3 class="modal-title text-danger">Mass Update Wizard</h3></div><div ng-switch="massUpdateModalCtrl.currentWizardPage" class="modal-body"><div ng-switch-when="1" class="owl-modal-page"><h4 class="text-danger">WARNING</h4><p>Mass Update will affect all currently loaded rows of data. This is irreversible and can potentially destroy data.</p><p>Please be careful. The mass update will take place directly through this wizard.</p></div><div ng-switch-when="2" class="owl-modal-page"><h4 class="text-danger">Select column</h4><p>Please select the column you wish to Mass Update.</p><select ng-model="massUpdateModalCtrl.selectedColumn" ng-options="column.title for column in massUpdateModalCtrl.columns" class="swiftbox modalColumnSelect"></select></div><div ng-switch-when="3" class="owl-modal-page"><h4 class="text-danger">Enter new value</h4><p>Please enter or select the new value you wish to Mass Update.</p><span ng-switch="massUpdateModalCtrl.selectedColumn.type"><input type="input" ng-switch-when="text" ng-model="massUpdateModalCtrl.newValue"><input type="checkbox" ng-switch-when="checkbox" ng-model="massUpdateModalCtrl.newValue"><swift-box ng-switch-when="select" optexp="option.text for option in massUpdateModalCtrl.selectedColumn.options" ng-model="massUpdateModalCtrl.newValue"></swift-box></span></div><div ng-switch-when="4" class="owl-modal-page"><h4 class="text-danger">Review choices</h4><p>Please make sure the following is correct. If you wish to make changes, use the Back button.</p><div class="well"><p>Column: {{massUpdateModalCtrl.selectedColumn.field}}</p><p>New value: {{massUpdateModalCtrl.newValueDecorated()}}</p></div></div></div><div class="modal-footer"><button ng-click="massUpdateModalCtrl.prevPage()" ng-disabled="massUpdateModalCtrl.currentWizardPage === 1" class="pull-left btn btn-sm btn-default">Back</button><button ng-click="massUpdateModalCtrl.nextPage()" ng-if="massUpdateModalCtrl.currentWizardPage &lt; 4" class="btn btn-sm btn-primary">Next</button><button ng-click="massUpdateModalCtrl.executeMassUpdate()" ng-if="massUpdateModalCtrl.currentWizardPage === 4" class="btn btn-sm btn-danger">Run Mass Update</button></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('owlTablePartials');
+} catch (e) {
+  module = angular.module('owlTablePartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('partials/owlMassUpdate.html',
+    '<div ng-if="options.massUpdate === true" class="form-inline owl-top-control-right owl-top-control-mass-update"><div class="form-group"><div class="checkbox"><label><button id="massUpdate" ng-click="massUpdateCtrl.massUpdateModal()" class="btn btn-sm btn-primary">Mass Update</button></label></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('owlTablePartials');
+} catch (e) {
+  module = angular.module('owlTablePartials', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/pagination.html',
     '<div class="owl-pagination-buttons active"><button ng-click="owlCtrl.prevPage()" class="owl-pagination-button owl-previous-page">&lt; Prev</button><div class="owl-page-count">Page <input type="text" size="3" ng-model="owlCtrl.owlTable.page">&nbsp;&nbsp;of {{owlCtrl.owlTable.pages}}</div><button ng-click="owlCtrl.nextPage()" class="owl-pagination-button owl-next-page">Next &gt;</button></div>');
 }]);
@@ -2153,6 +2297,6 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/table.html',
-    '<div class="container-fluid owl-wrapper"><div class="owl-top-controls"><owl-pagination></owl-pagination><owl-export-controls></owl-export-controls><owl-filter-controls></owl-filter-controls><owl-customize-columns ng-if="options.customizeColumns"></owl-customize-columns><span class="owl-top-control-right-buttons"><div ng-if="options.massUpdate === true" class="form-inline owl-top-control-right owl-top-control-mass-update"><div class="form-group"><div class="checkbox"><label><input id="massUpdateToggle" type="checkbox" value="true" ng-model="owlCtrl.massUpdate">Mass Update</label></div></div><div ng-if="owlCtrl.massUpdate" class="form-group"><button id="massUpdate" ng-click="massUpdate()" class="btn btn-sm btn-default">Run Mass Update</button></div></div><div ng-if="options.saveIndividualRows !== true" class="owl-top-control-right owl-top-control-save"><div ng-hide="saved !== true">Saved</div><button id="saveButton" ng-class="{\'btn-danger\': owlCtrl.owlTable.hasChangedData, \'btn-default\': !owlCtrl.owlTable.hasChangedData}" ng-click="owlCtrl.savePage()" ng-disabled="!owlCtrl.owlTable.hasChangedData" ladda="owlCtrl.saving" data-style="expand-left" data-spinner-color="#FFF000" class="btn btn-sm btn-default">Save</button></div></span></div><div ng-class="{\'owl-stretch\': loading}" class="owl-table-wrapper"><div ng-show="owlCtrl.massUpdate" class="owl-mass-update-row"><table><thead><tr><th data-field="{{column.field}}" ng-repeat="column in columns track by $index" class="owl-mass-update-header">{{column.title}}</th></tr></thead><tbody><tr><td ng-repeat="column in columns track by $index" class="owl-mass-update-cell"><input type="text" ng-model="massUpdateData[column.field]"></td></tr></tbody></table></div><div ng-hide="loading === true" class="owl-table-inner-wrapper table-responsive tacky"><div class="owl-react-container"></div></div><owl-spinner></owl-spinner></div><owl-pagination></owl-pagination></div>');
+    '<div class="container-fluid owl-wrapper"><div class="owl-top-controls"><owl-pagination></owl-pagination><owl-export-controls></owl-export-controls><owl-filter-controls></owl-filter-controls><owl-customize-columns ng-if="options.customizeColumns"></owl-customize-columns><span class="owl-top-control-right-buttons"><owl-mass-update></owl-mass-update><div ng-if="options.saveIndividualRows !== true" class="owl-top-control-right owl-top-control-save"><div ng-hide="saved !== true">Saved</div><button id="saveButton" ng-class="{\'btn-danger\': owlCtrl.owlTable.hasChangedData, \'btn-default\': !owlCtrl.owlTable.hasChangedData}" ng-click="owlCtrl.savePage()" ng-disabled="!owlCtrl.owlTable.hasChangedData" ladda="owlCtrl.saving" data-style="expand-left" data-spinner-color="#FFF000" class="btn btn-sm btn-default">Save</button></div></span></div><div ng-class="{\'owl-stretch\': loading}" class="owl-table-wrapper"><div ng-show="owlCtrl.massUpdate" class="owl-mass-update-row"><table><thead><tr><th data-field="{{column.field}}" ng-repeat="column in columns track by $index" class="owl-mass-update-header">{{column.title}}</th></tr></thead><tbody><tr><td ng-repeat="column in columns track by $index" class="owl-mass-update-cell"><input type="text" ng-model="massUpdateData[column.field]"></td></tr></tbody></table></div><div ng-hide="loading === true" class="owl-table-inner-wrapper table-responsive tacky"><div class="owl-react-container"></div></div><owl-spinner></owl-spinner></div><owl-pagination></owl-pagination></div>');
 }]);
 })();

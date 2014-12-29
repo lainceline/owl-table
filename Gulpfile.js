@@ -80,7 +80,7 @@ gulp.task('coffee-tests', helpMessages.coffeeTests, function () {
 });
 
 gulp.task('js', false, function () {
-	return gulp.src(['./src/*.js', './src/services/*.js', './src/directives/owlTable.js', './src/directives/owlCustomizeColumns.js', './src/directives/owlExportControls.js', './src/directives/owlFilterControls.js', './src/directives/owlPagination.js', './src/directives/owlPrint.js', './src/directives/owlSpinner.js', './src/controllers/*.js'])
+	return gulp.src(['./src/directives/swiftbox.js', './src/*.js', './src/services/*.js', './src/directives/owlTable.js', './src/directives/owlCustomizeColumns.js', './src/directives/owlExportControls.js', './src/directives/owlFilterControls.js', './src/directives/owlPagination.js', './src/directives/owlPrint.js', './src/directives/owlSpinner.js', './src/directives/owlMassUpdate.js', './src/controllers/*.js'])
 		.pipe(concat('compiled-js.js'))
 		.pipe(gulp.dest('./build'));
 });
@@ -108,7 +108,7 @@ gulp.task('closure', false, function () {
 			fileName: 'compiled.js',
 			compilerFlags: {
 				language_in: 'ECMASCRIPT5_STRICT',
-				//compilation_level: 'WHITESPACE_ONLY'
+				compilation_level: 'WHITESPACE_ONLY'
 			}
 		}))
 		.pipe(gulp.dest('./build'));
