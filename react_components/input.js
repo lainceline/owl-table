@@ -65,6 +65,18 @@ var OwlInput = React.createClass({
 
 		var optionList;
 
+		function getCheckboxValue (value) {
+			var isChecked = false;
+			
+			if (!_.isUndefined(value) && value !== '') {
+				if (value === 'Y') {
+					isChecked = true;
+				}
+			}
+
+			return isChecked;
+		}
+
 		// refactor this into factory that makes subcomponents
 		// That way we could swap factories out - the below field logic is tailored
 		// to legacy code.
@@ -105,7 +117,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'checkbox':
 				input = <label className="owl-check-label">
-							<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleCheckboxChange} value='Y' defaultChecked={ props.value ? true : false } />
+							<input ref="checkbox" className="owl-input" type="checkbox" onChange={self.handleCheckboxChange} value='Y' defaultChecked={ getCheckboxValue(props.value) } />
 						</label>;
 				break;
 			case 'radio':
