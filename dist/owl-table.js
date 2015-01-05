@@ -1915,7 +1915,7 @@ angular.module('owlTable')
 
 })(window.angular);
 
-(function (angular) {
+(function (angular, $) {
 	'use strict';
 
 	function owlExportControls (owlTable) {
@@ -1933,6 +1933,27 @@ angular.module('owlTable')
 						return column.title;
 					});
 				};
+
+				this.csvData = function () {
+					var columns = $scope.columns;
+
+					return $scope.data.map(function (datum, index) {
+						_.forOwn(datum, function (value, key) {
+							var column = _.where(columns, {'field': key});
+							column = _.first(column) || {};
+							if (typeof column.options !== 'undefined') {
+								var option = _.where(column.options, {'value': value});
+								option = _.first(option) || {};
+								if (typeof option.text !== 'undefined') {
+									// do this jquery thing to strip out any html
+									datum[key] = $(option.text).text();
+								}
+							}
+						});
+
+						return datum;
+					});
+				};
 			}]
 		};
 	}
@@ -1942,7 +1963,7 @@ angular.module('owlTable')
 	angular.module('owlTable')
 		.directive('owlExportControls', owlExportControls);
 
-})(window.angular);
+})(window.angular, window.jQuery);
 
 (function (angular) {
 	'use strict';
@@ -2145,7 +2166,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/export.html',
-    '<div class="owl-export-controls"><span class="owl-control-label">Export:</span><span class="owl-export-buttons"><span type="button" ng-csv="data" filename="focus.csv" csv-header="exportCtrl.csvHeader()" class="owl-export-button-csv"></span><span type="button" owl-print="owl-print" print-element-id="owl-table" class="owl-export-button-print"></span></span></div>');
+    '<div class="owl-export-controls"><span class="owl-control-label">Export:</span><span class="owl-export-buttons"><span type="button" ng-csv="exportCtrl.csvData()" filename="focus.csv" csv-header="exportCtrl.csvHeader()" class="owl-export-button-csv"></span><span type="button" owl-print="owl-print" print-element-id="owl-table" class="owl-export-button-print"></span></span></div>');
 }]);
 })();
 
