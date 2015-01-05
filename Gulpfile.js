@@ -200,7 +200,7 @@ gulp.task('build-unminified', false, function (callback) {
 });
 
 gulp.task('build', helpMessages.build, function (callback) {
-	runSequence('clean', 'build-minified', 'build-unminified', 'clean-build', callback);
+	runSequence('clean', 'build-unminified', 'clean-build', callback);
 });
 
 gulp.task('build-release', false, function (callback) {
