@@ -41,7 +41,7 @@
 		};
 
 		service.initialize = function (settings) {
-			this.data = settings.data;
+			//this.data = settings.data;
 			this.columns = settings.columns;
 			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
@@ -51,6 +51,8 @@
 					column.visible = true;
 				}
 			});
+
+			this.data = settings.data = this.sorted(settings.data);
 
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,

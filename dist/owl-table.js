@@ -1258,7 +1258,7 @@ angular.module('owlTable')
 		};
 
 		service.initialize = function (settings) {
-			this.data = settings.data;
+			//this.data = settings.data;
 			this.columns = settings.columns;
 			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
@@ -1268,6 +1268,8 @@ angular.module('owlTable')
 					column.visible = true;
 				}
 			});
+
+			this.data = settings.data = this.sorted(settings.data);
 
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,
@@ -1778,7 +1780,7 @@ angular.module('owlTable')
 
 					scope.$watch('data', function (newValue) {
 						if (newValue.length > 0) {
-							owlTable.updateData(newValue);
+							owlTable.updateData(owlTable.sorted(newValue));
 
 							scope.loading = false;
 						}

@@ -52,7 +52,7 @@
 
 					scope.$watch('data', function (newValue) {
 						if (newValue.length > 0) {
-							owlTable.updateData(newValue);
+							owlTable.updateData(owlTable.sorted(newValue));
 
 							scope.loading = false;
 						}
