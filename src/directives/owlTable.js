@@ -172,6 +172,14 @@
 						self.saving = false;
 					}, 2000);
 				};
+
+				this.tableWillPrint = function () {
+					owlTable.prepareForPrinting();
+				};
+
+				this.tableDidPrint = function () {
+					owlTable.finishedPrinting();
+				};
 			}]
 		};
 	}

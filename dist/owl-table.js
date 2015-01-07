@@ -1900,6 +1900,14 @@ angular.module('owlTable')
 						self.saving = false;
 					}, 2000);
 				};
+
+				this.tableWillPrint = function () {
+					owlTable.prepareForPrinting();
+				};
+
+				this.tableDidPrint = function () {
+					owlTable.finishedPrinting();
+				};
 			}]
 		};
 	}
@@ -2030,7 +2038,7 @@ angular.module('owlTable')
 (function (angular) {
 	'use strict';
 
-	function owlPrintDirective($window, owlTable) {
+	function owlPrintDirective($window, owlTable, $timeout) {
 		var printSection = document.getElementById('owlPrintSection');
 
 		if (!printSection) {
@@ -2041,10 +2049,19 @@ angular.module('owlTable')
 
 		function link (scope, elem, attrs, tableCtrl) {
 			elem.on('click', function () {
+				elem.tooltip({
+					title: 'Please wait...',
+					trigger: 'manual',
+					placement: 'right'
+				}).tooltip('show');
+
 				var elemToPrint = document.getElementById(attrs.printElementId);
-				if (elemToPrint) {
-					printElement(elemToPrint);
-				}
+
+				$timeout(function () {
+					if (elemToPrint) {
+						printElement(elemToPrint);
+					}
+				}, 200);
 			});
 
 			// This is for Chrome and other browsers that don't support onafterprint
@@ -2078,6 +2095,7 @@ angular.module('owlTable')
 			};
 
 			var afterPrint = function () {
+				elem.tooltip('hide');
 				tableCtrl.tableDidPrint();
 				printSection.innerHTML = '';
 			};
@@ -2090,7 +2108,7 @@ angular.module('owlTable')
 		};
 	}
 
-	owlPrintDirective.$inject = ['$window', 'owlTable'];
+	owlPrintDirective.$inject = ['$window', 'owlTable', '$timeout'];
 	angular.module('owlTable').directive('owlPrint', owlPrintDirective);
 
 })(window.angular);
