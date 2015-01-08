@@ -1959,7 +1959,9 @@ angular.module('owlTable')
 				this.csvData = function () {
 					var columns = $scope.columns;
 
-					return $scope.data.map(function (datum, index) {
+					var data = _.cloneDeep($scope.data);
+
+					return data.map(function (datum, index) {
 						_.forOwn(datum, function (value, key) {
 							var column = _.where(columns, {'field': key});
 							column = _.first(column);
@@ -1968,8 +1970,9 @@ angular.module('owlTable')
 									var option = _.where(column.options, {'value': value});
 									option = _.first(option) || {};
 									if (typeof option.text !== 'undefined') {
-										// do this jquery thing to strip out any html
-										datum[key] = $(option.text).text();
+										var div = document.createElement("div");
+										div.innerHTML = option.text;
+										datum[key] = div.textContent || div.innerText || "";
 									}
 								}
 							} else {
