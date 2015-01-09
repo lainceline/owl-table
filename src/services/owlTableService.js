@@ -169,6 +169,10 @@
 				controller: ['$scope', '$modalInstance', 'columns', function ($scope, $modalInstance, columns) {
 					$scope.columns = columns;
 					$scope.visibleColumns = _.filter(columns, function (column) {
+						if (typeof column.visible === 'undefined') {
+							column.visible = true;
+						}
+						
 						return column.visible !== false;
 					});
 
