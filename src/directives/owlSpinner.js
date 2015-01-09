@@ -25,6 +25,10 @@
 			var target = angular.element('#owl-spin').get(0);
 
 			var spinner = new Spinner(opts).spin(target);
+
+			scope.$on('owlTableAjaxError', function (event, message) {
+				spinner.stop();
+			});
 		}
 
 		return {
@@ -36,5 +40,5 @@
 	}
 	angular.module('owlTable')
 		.directive('owlSpinner', ['owlTable', owlSpinner]);
-		
+
 })(window.angular, window._, window.jQuery, window.Spinner);

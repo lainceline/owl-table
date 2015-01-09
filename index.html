@@ -81,7 +81,7 @@
 	<script src="lib/swift-search.js"></script>
 
 	<script src="bower_components/angular-mocks/angular-mocks.js"></script>
-	<script src="dist/owl-table.min.js"></script>
+	<script src="dist/owl-table.js"></script>
 
 	<script>
 
@@ -121,6 +121,10 @@
 						error: myErrorCallback
 					},
 					massUpdate: true,
+					sort: {
+						column: 'custom_2000000',
+						order: 'asc'
+					},
 					ajaxParams: {
 						post: {
 							csrfToken: '5043292'
@@ -215,7 +219,7 @@
 					type: 'text'
 				}];
 
-				for (var i = 7; i < 50; i++) {
+				for (var i = 7; i < 100; i++) {
 					var col = {
 						field: 'custom_200000' + i,
 						title: 'Custom 200000' + i,
@@ -272,7 +276,7 @@
 								datum['custom_2000000'] = 'N';
 							} else {
 								if (Math.random() >= 0.5) {
-									datum['custom_2000000'] = '21323';
+									datum['custom_2000000'] = '';
 								} else {
 									datum['custom_2000000'] = '1';
 								}
@@ -293,11 +297,21 @@
 						}];
 						$scope.demoCtrl.data = response.data;
 
+						$timeout(function () {
+							self.columns = [{
+								field: 'foo',
+								title: 'foo'
+							}, {
+								field: 'bar',
+								title: 'Bar'
+							}];
+						}, 5000);
+
 					})
 					.error(function (data) {
 						console.log('ajax error while loading');
+						owlTable.ajaxError('Oops, something went wrong!');
 					});
-
 			});
 
 

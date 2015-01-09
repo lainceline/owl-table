@@ -65,6 +65,18 @@ var OwlInput = React.createClass({
 
 		var optionList;
 
+		function getCheckboxValue (value) {
+			var isChecked = false;
+			
+			if (!_.isUndefined(value) && value !== '') {
+				if (value === 'Y') {
+					isChecked = true;
+				}
+			}
+
+			return isChecked;
+		}
+
 		// refactor this into factory that makes subcomponents
 		// That way we could swap factories out - the below field logic is tailored
 		// to legacy code.
@@ -105,7 +117,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'checkbox':
 				input = React.createElement("label", {className: "owl-check-label"}, 
-							React.createElement("input", {ref: "checkbox", className: "owl-input", type: "checkbox", onChange: self.handleCheckboxChange, value: "Y", defaultChecked:  props.value ? true : false})
+							React.createElement("input", {ref: "checkbox", className: "owl-input", type: "checkbox", onChange: self.handleCheckboxChange, value: "Y", defaultChecked:  getCheckboxValue(props.value) })
 						);
 				break;
 			case 'radio':
@@ -125,7 +137,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'date':
 				input =
-					React.createElement("input", {className: "owl-input", defaultValue: props.value, 'data-date-format': "dd/mm/yyyy", 'data-provide': "datepicker"});
+					React.createElement("input", {className: "owl-input", defaultValue: props.value, 'data-date-format': "mm/dd/yyyy", 'data-provide': "datepicker"});
 				break;
 			case 'time':
 				input = React.createElement("input", {className: "owl-input", type: "time", onChange: self.handleSpecialFields, defaultValue: props.value});
@@ -224,16 +236,26 @@ var OwlCell = React.createClass({
 		var classes = 'owl-cell-value-label owl-editable';
 		var self = this;
 
-		if (typeof value === 'undefined') {
+		if (typeof value === 'undefined' || value === '') {
 			value = props.row[props.column.field.toUpperCase()];
-			if (typeof value === 'undefined') {
+			if (typeof value === 'undefined' || value === '') {
 				value = props.row[props.column.field.toLowerCase()];
 
-				if (typeof value === 'undefined') {
+				if (typeof value === 'undefined' || value === '') {
 					var elem;
+					var tdClasses = props.column.field;
+					var spanClasses = '';
+
+					if (typeof props.column.tacky !== 'undefined' && props.column.tacky.left === true) {
+						tdClasses = tdClasses + ' tacky-left';
+					}
+
+					if (props.editable === true) {
+						spanClasses = 'owl-cell-value-label owl-editable';
+					}
 
 					if (!props.isChild && !props.isChildColumn) {
-						elem = (React.createElement("td", null, "---"));
+						elem = (React.createElement("td", {className: tdClasses}, React.createElement("span", {className: spanClasses}, "---")));
 					} else {
 						elem = (React.createElement("td", {className: "owl-empty-child-cell"}));
 					}
@@ -1236,7 +1258,7 @@ angular.module('owlTable')
 		};
 
 		service.initialize = function (settings) {
-			this.data = settings.data;
+			//this.data = settings.data;
 			this.columns = settings.columns;
 			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
@@ -1246,6 +1268,8 @@ angular.module('owlTable')
 					column.visible = true;
 				}
 			});
+
+			this.data = settings.data = this.sorted(settings.data);
 
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,
@@ -1362,6 +1386,10 @@ angular.module('owlTable')
 				controller: ['$scope', '$modalInstance', 'columns', function ($scope, $modalInstance, columns) {
 					$scope.columns = columns;
 					$scope.visibleColumns = _.filter(columns, function (column) {
+						if (typeof column.visible === 'undefined') {
+							column.visible = true;
+						}
+						
 						return column.visible !== false;
 					});
 
@@ -1419,9 +1447,15 @@ angular.module('owlTable')
 				changedData: {}
 			});
 
+			this.hasChangedData = false;
+
 			if (typeof callback !== 'undefined') {
 				callback();
 			}
+		};
+
+		service.ajaxError = function (message) {
+			$rootScope.$broadcast('owlTableAjaxError', [message]);
 		};
 
 		service.tableWithId = function (id) {
@@ -1728,6 +1762,7 @@ angular.module('owlTable')
 					scope.loading = true;
 					scope.takingAWhile = false;
 					scope.saved = false;
+					scope.ajaxError = false;
 
 					scope.printing = false;
 
@@ -1749,7 +1784,7 @@ angular.module('owlTable')
 
 					scope.$watch('data', function (newValue) {
 						if (newValue.length > 0) {
-							owlTable.updateData(newValue);
+							owlTable.updateData(owlTable.sorted(newValue));
 
 							scope.loading = false;
 						}
@@ -1786,6 +1821,13 @@ angular.module('owlTable')
 						rendered.setProps({
 							massUpdate: newValue
 						});
+					});
+
+					scope.$on('owlTableAjaxError', function (event, message) {
+						//scope.loading = false;
+						scope.ajaxError = true;
+
+						scope.ajaxErrorMessage = message[0];
 					});
 
 					// Yeah, totaly gotta get this out of here.
@@ -1862,6 +1904,14 @@ angular.module('owlTable')
 						self.saving = false;
 					}, 2000);
 				};
+
+				this.tableWillPrint = function () {
+					owlTable.prepareForPrinting();
+				};
+
+				this.tableDidPrint = function () {
+					owlTable.finishedPrinting();
+				};
 			}]
 		};
 	}
@@ -1891,7 +1941,7 @@ angular.module('owlTable')
 
 })(window.angular);
 
-(function (angular) {
+(function (angular, $) {
 	'use strict';
 
 	function owlExportControls (owlTable) {
@@ -1909,6 +1959,34 @@ angular.module('owlTable')
 						return column.title;
 					});
 				};
+
+				this.csvData = function () {
+					var columns = $scope.columns;
+
+					var data = _.cloneDeep($scope.data);
+
+					return data.map(function (datum, index) {
+						_.forOwn(datum, function (value, key) {
+							var column = _.where(columns, {'field': key});
+							column = _.first(column);
+							if (typeof column !== 'undefined') {
+								if (typeof column.options !== 'undefined') {
+									var option = _.where(column.options, {'value': value});
+									option = _.first(option) || {};
+									if (typeof option.text !== 'undefined') {
+										var div = document.createElement("div");
+										div.innerHTML = option.text;
+										datum[key] = div.textContent || div.innerText || "";
+									}
+								}
+							} else {
+								delete datum[key];
+							}
+						});
+
+						return datum;
+					});
+				};
 			}]
 		};
 	}
@@ -1918,7 +1996,7 @@ angular.module('owlTable')
 	angular.module('owlTable')
 		.directive('owlExportControls', owlExportControls);
 
-})(window.angular);
+})(window.angular, window.jQuery);
 
 (function (angular) {
 	'use strict';
@@ -1967,7 +2045,7 @@ angular.module('owlTable')
 (function (angular) {
 	'use strict';
 
-	function owlPrintDirective($window, owlTable) {
+	function owlPrintDirective($window, owlTable, $timeout) {
 		var printSection = document.getElementById('owlPrintSection');
 
 		if (!printSection) {
@@ -1978,10 +2056,19 @@ angular.module('owlTable')
 
 		function link (scope, elem, attrs, tableCtrl) {
 			elem.on('click', function () {
+				elem.tooltip({
+					title: 'Please wait...',
+					trigger: 'manual',
+					placement: 'right'
+				}).tooltip('show');
+
 				var elemToPrint = document.getElementById(attrs.printElementId);
-				if (elemToPrint) {
-					printElement(elemToPrint);
-				}
+
+				$timeout(function () {
+					if (elemToPrint) {
+						printElement(elemToPrint);
+					}
+				}, 200);
 			});
 
 			// This is for Chrome and other browsers that don't support onafterprint
@@ -2015,6 +2102,7 @@ angular.module('owlTable')
 			};
 
 			var afterPrint = function () {
+				elem.tooltip('hide');
 				tableCtrl.tableDidPrint();
 				printSection.innerHTML = '';
 			};
@@ -2027,7 +2115,7 @@ angular.module('owlTable')
 		};
 	}
 
-	owlPrintDirective.$inject = ['$window', 'owlTable'];
+	owlPrintDirective.$inject = ['$window', 'owlTable', '$timeout'];
 	angular.module('owlTable').directive('owlPrint', owlPrintDirective);
 
 })(window.angular);
@@ -2059,6 +2147,10 @@ angular.module('owlTable')
 			var target = angular.element('#owl-spin').get(0);
 
 			var spinner = new Spinner(opts).spin(target);
+
+			scope.$on('owlTableAjaxError', function (event, message) {
+				spinner.stop();
+			});
 		}
 
 		return {
@@ -2070,7 +2162,7 @@ angular.module('owlTable')
 	}
 	angular.module('owlTable')
 		.directive('owlSpinner', ['owlTable', owlSpinner]);
-		
+
 })(window.angular, window._, window.jQuery, window.Spinner);
 
 (function(module) {
@@ -2081,7 +2173,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/ajaxLoader.html',
-    '<div ng-show="loading === true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div>');
+    '<div ng-show="loading === true &amp;&amp; ajaxError !== true" class="owl-ajax-loading"><div class="owl-ajax-loading-interior"><div id="owl-spin"><p ng-show="takingAWhile !== true" class="owl-ajax-loading-label">Loading data...</p><p ng-show="takingAWhile === true">Sorry, things are taking a little longer than normal...</p></div></div></div><div ng-show="ajaxError === true" class="owl-ajax-loading owl-ajax-error"><div class="owl-ajax-loading-interior owl-ajax-error-interior"><p ng-show="ajaxError === true" class="owl-ajax-loading-label owl-ajax-error-label">{{ajaxErrorMessage}}</p></div></div>');
 }]);
 })();
 
@@ -2117,7 +2209,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('partials/export.html',
-    '<div class="owl-export-controls"><span class="owl-control-label">Export:</span><span class="owl-export-buttons"><span type="button" ng-csv="data" filename="focus.csv" csv-header="exportCtrl.csvHeader()" class="owl-export-button-csv"></span><span type="button" owl-print="owl-print" print-element-id="owl-table" class="owl-export-button-print"></span></span></div>');
+    '<div class="owl-export-controls"><span class="owl-control-label">Export:</span><span class="owl-export-buttons"><span type="button" ng-csv="exportCtrl.csvData()" filename="focus.csv" csv-header="exportCtrl.csvHeader()" class="owl-export-button-csv"></span><span type="button" owl-print="owl-print" print-element-id="owl-table" class="owl-export-button-print"></span></span></div>');
 }]);
 })();
 

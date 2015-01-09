@@ -1,5 +1,8 @@
-.owl-ajax-loading(ng-show="loading === true")
+.owl-ajax-loading(ng-show="loading === true && ajaxError !== true")
 	.owl-ajax-loading-interior
 		#owl-spin
 			p.owl-ajax-loading-label(ng-show="takingAWhile !== true") Loading data...
 			p(ng-show="takingAWhile === true") Sorry, things are taking a little longer than normal...
+.owl-ajax-loading.owl-ajax-error(ng-show="ajaxError === true")
+	.owl-ajax-loading-interior.owl-ajax-error-interior
+		p.owl-ajax-loading-label.owl-ajax-error-label(ng-show="ajaxError === true") {{ajaxErrorMessage}}

@@ -41,7 +41,7 @@
 		};
 
 		service.initialize = function (settings) {
-			this.data = settings.data;
+			//this.data = settings.data;
 			this.columns = settings.columns;
 			this.childColumns = settings.childColumns;
 			this.options = _.defaults(settings.options, defaults.options);
@@ -51,6 +51,8 @@
 					column.visible = true;
 				}
 			});
+
+			this.data = settings.data = this.sorted(settings.data);
 
 			unrenderedTable = React.createElement(OwlTableReact, {
 				data: settings.data,
@@ -167,6 +169,10 @@
 				controller: ['$scope', '$modalInstance', 'columns', function ($scope, $modalInstance, columns) {
 					$scope.columns = columns;
 					$scope.visibleColumns = _.filter(columns, function (column) {
+						if (typeof column.visible === 'undefined') {
+							column.visible = true;
+						}
+						
 						return column.visible !== false;
 					});
 
@@ -224,9 +230,15 @@
 				changedData: {}
 			});
 
+			this.hasChangedData = false;
+
 			if (typeof callback !== 'undefined') {
 				callback();
 			}
+		};
+
+		service.ajaxError = function (message) {
+			$rootScope.$broadcast('owlTableAjaxError', [message]);
 		};
 
 		service.tableWithId = function (id) {

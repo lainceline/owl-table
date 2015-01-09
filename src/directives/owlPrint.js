@@ -1,7 +1,7 @@
 (function (angular) {
 	'use strict';
 
-	function owlPrintDirective($window, owlTable) {
+	function owlPrintDirective($window, owlTable, $timeout) {
 		var printSection = document.getElementById('owlPrintSection');
 
 		if (!printSection) {
@@ -12,10 +12,19 @@
 
 		function link (scope, elem, attrs, tableCtrl) {
 			elem.on('click', function () {
+				elem.tooltip({
+					title: 'Please wait...',
+					trigger: 'manual',
+					placement: 'right'
+				}).tooltip('show');
+
 				var elemToPrint = document.getElementById(attrs.printElementId);
-				if (elemToPrint) {
-					printElement(elemToPrint);
-				}
+
+				$timeout(function () {
+					if (elemToPrint) {
+						printElement(elemToPrint);
+					}
+				}, 200);
 			});
 
 			// This is for Chrome and other browsers that don't support onafterprint
@@ -49,6 +58,7 @@
 			};
 
 			var afterPrint = function () {
+				elem.tooltip('hide');
 				tableCtrl.tableDidPrint();
 				printSection.innerHTML = '';
 			};
@@ -61,7 +71,7 @@
 		};
 	}
 
-	owlPrintDirective.$inject = ['$window', 'owlTable'];
+	owlPrintDirective.$inject = ['$window', 'owlTable', '$timeout'];
 	angular.module('owlTable').directive('owlPrint', owlPrintDirective);
 
 })(window.angular);
