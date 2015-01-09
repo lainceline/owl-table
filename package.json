@@ -1,6 +1,6 @@
 {
   "name": "owl-table",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "AngularJS table rendered with ReactJS for performance",
   "directories": {
     "test": "tests"
