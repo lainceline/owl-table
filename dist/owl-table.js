@@ -827,13 +827,18 @@ var OwlTableReact = React.createClass({
 			var children = row.children;
 			var hasChildren = !_.isUndefined(children) && _.isArray(children);
 
-			if (hasChildren) {
-				for (var i in children[0]) {
-					if (children[0].hasOwnProperty(i)) {
-						row[i] = children[0][i];
+			// I have no idea why I added this code originally but its causing a bug where the parent
+			// record gets modified...
+			/*
+				if (hasChildren) {
+					for (var i in children[0]) {
+						if (children[0].hasOwnProperty(i)) {
+							console.log(i);
+							row[i] = children[0][i];
+						}
 					}
 				}
-			}
+			*/
 
 			rowsWithChildren.push(
 				React.createElement(OwlRow, {

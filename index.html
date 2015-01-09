@@ -121,10 +121,6 @@
 						error: myErrorCallback
 					},
 					massUpdate: true,
-					sort: {
-						column: 'custom_2000000',
-						order: 'asc'
-					},
 					ajaxParams: {
 						post: {
 							csrfToken: '5043292'
@@ -133,8 +129,7 @@
 					},
 					tacky: {
 						top: true
-					},
-
+					}
 				};
 
 				// You can call the owlTable.lockCell directly from ng-click etc,
@@ -286,26 +281,16 @@
 						});
 						response.data[1].children = [{
 							id: 1,
-							'custom_3000000': 'foo',
+							'custom_2000000': 'foo',
 							'custom_3000001': 'child record',
 							'custom_3000002': 'works just like regular record'
 						}, {
 							id: 2,
-							'custom_3000000': 'bar',
+							'custom_2000000': 'bar',
 							'custom_3000001': 'such text',
 							'custom_3000002': 'wow'
 						}];
 						$scope.demoCtrl.data = response.data;
-
-						$timeout(function () {
-							self.columns = [{
-								field: 'foo',
-								title: 'foo'
-							}, {
-								field: 'bar',
-								title: 'Bar'
-							}];
-						}, 5000);
 
 					})
 					.error(function (data) {
