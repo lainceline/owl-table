@@ -128,7 +128,7 @@ var OwlCell = React.createClass({
 				classes = classes + ' owl-child-cell';
 			}
 
-			if (optionText === '') {
+			if (optionText === '' || typeof optionText === undefined || !optionText) {
 				optionText = '---';
 				classes = classes.replace(' owl-invalid', '');
 			}
@@ -138,10 +138,20 @@ var OwlCell = React.createClass({
 			if (props.isChild) {
 				classes = classes + ' owl-child-cell';
 			}
+
+			if (value === '' || typeof value === undefined || !value) {
+				value = '---';
+			}
+
 			content = <span className={classes} dangerouslySetInnerHTML={{ __html: value }}></span>;
 		}
 
 		if (this.state.open === true) {
+
+			if (value === '---') {
+				value = '';
+			}
+
 			content = <OwlInput
 						className={props.column.field}
 						column={props.column}
