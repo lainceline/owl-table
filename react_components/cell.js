@@ -77,7 +77,7 @@ var OwlCell = React.createClass({
 
 		}
 
-		if (props.column.type === 'checkbox') {
+		if (props.column.type === 'checkbox' && !this.state.open) {
 			value = self.decorateCheckboxValue(value);
 		}
 
@@ -147,7 +147,6 @@ var OwlCell = React.createClass({
 		}
 
 		if (this.state.open === true) {
-
 			if (value === '---') {
 				value = '';
 			}

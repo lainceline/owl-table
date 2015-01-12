@@ -67,13 +67,12 @@ var OwlInput = React.createClass({
 
 		function getCheckboxValue (value) {
 			var isChecked = false;
-			
+
 			if (!_.isUndefined(value) && value !== '') {
-				if (value === 'Y') {
+				if (value === 'Y' || value === true) {
 					isChecked = true;
 				}
 			}
-
 			return isChecked;
 		}
 
