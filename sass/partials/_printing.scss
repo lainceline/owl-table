@@ -21,5 +21,23 @@
 		position: absolute;
 		left: 0;
 		top: 0;
+		width: 100%;
+		max-width: 100% !important;
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+	}
+
+	#owlPrintSection .owl-editable {
+		border: none;
+	}
+
+	#owlPrintSection {
+		font-size: 12pt;
+		color: #000;
+	}
+
+	@page {
+		margin: 2cm;
 	}
 }
