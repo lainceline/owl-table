@@ -85,7 +85,7 @@ var OwlInput = React.createClass({
 			case 'number':
 			case 'text':
 				var containerTd = 'td[data-field="' + props.column.field + '"]';
-				input = React.createElement("input", {className: classNames, 'data-container': "body", 'data-toggle': "tooltip", 'data-trigger': "click", 'data-placement': "right", title: "Numbers only", type: "text", onBlur: self.transmitSaveEvent, defaultValue: props.value, onKeyPress: self.keydown, formNoValidate: true, noValidate: true, onChange: self.inputDidChange});
+				input = React.createElement("input", {className: classNames, "data-container": "body", "data-toggle": "tooltip", "data-trigger": "click", "data-placement": "right", title: "Numbers only", type: "text", onBlur: self.transmitSaveEvent, defaultValue: props.value, onKeyPress: self.keydown, formNoValidate: true, noValidate: true, onChange: self.inputDidChange});
 				break;
 			case 'select': // fall through
 			case 'select_one': // fall through
@@ -137,7 +137,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'date':
 				input =
-					React.createElement("input", {className: "owl-input", defaultValue: props.value, 'data-date-format': "mm/dd/yyyy", 'data-provide': "datepicker"});
+					React.createElement("input", {className: "owl-input", defaultValue: props.value, "data-date-format": "mm/dd/yyyy", "data-provide": "datepicker"});
 				break;
 			case 'time':
 				input = React.createElement("input", {className: "owl-input", type: "time", onChange: self.handleSpecialFields, defaultValue: props.value});
@@ -355,13 +355,13 @@ var OwlCell = React.createClass({
 		if (props.editable === true && cellLocked !== true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				React.createElement("td", {className: tdClasses, 'data-field': props.column.field, onClick: this.open}, 
+				React.createElement("td", {className: tdClasses, "data-field": props.column.field, onClick: this.open}, 
 					content
 				);
 		} else {
 			var innerHTML = props.column.type.indexOf('select') > -1 ? optionText : value;
 			td =
-				React.createElement("td", {className: tdClasses, 'data-field': props.column.field}, 
+				React.createElement("td", {className: tdClasses, "data-field": props.column.field}, 
 					React.createElement("span", {className: "owl-cell-value-label owl-value", dangerouslySetInnerHTML: { __html: innerHTML}})
 				);
 		}
@@ -740,7 +740,7 @@ var OwlTableReact = React.createClass({
 						var buttonClass = index === 0 ? ' owl-filter-button-add' : ' owl-filter-button-remove';
 						var onClick = index === 0 ? props.addFilter.bind(this, column) : props.removeFilter.bind(this, column, index);
 						return (
-							React.createElement("div", {'data-field': column.field, key: index, className: "owl-filter"}, 
+							React.createElement("div", {"data-field": column.field, key: index, className: "owl-filter"}, 
 								React.createElement("div", {onClick: onClick, className: 'owl-filter-button' + buttonClass}), 
 								React.createElement("input", {type: "text", className: "owl-filter-input", onChange: self.filterFieldChanged.bind(null, filter), defaultValue: filter.predicate}), 
 								React.createElement("div", {className: "owl-change-filter-type"})
@@ -793,7 +793,7 @@ var OwlTableReact = React.createClass({
 
 			if (column.visible !== false) {
 				return (
-					React.createElement("th", {onClick: _.partial(self.sortClickHandler, column.field), className: classes, id: id, key: headerCount, 'data-field': column.field}, 
+					React.createElement("th", {onClick: _.partial(self.sortClickHandler, column.field), className: classes, id: id, key: headerCount, "data-field": column.field}, 
 						column.title || 'None'
 					)
 				);
@@ -812,7 +812,7 @@ var OwlTableReact = React.createClass({
 				if (child.visible !== false) {
 					headerCount++;
 					headers.push(
-						React.createElement("th", {className: classes, key: headerCount, id: id, 'data-field': child.field}, 
+						React.createElement("th", {className: classes, key: headerCount, id: id, "data-field": child.field}, 
 							child.title || 'None'
 						)
 					);
