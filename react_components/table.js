@@ -76,6 +76,10 @@ var OwlTableReact = React.createClass({
 			filterList.appendChild(option);
 		}
 
+		$(document).on('click', function (event) {
+			$('.tooltip').hide();
+		});
+
 		$(document).on('click', '.owl-change-filter-type', function (event) {
 			filterList.currentInput = $(this).closest('.owl-filter').find('input');
 			filterList.style.top = event.pageY+'px';
