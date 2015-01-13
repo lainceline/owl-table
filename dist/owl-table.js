@@ -1389,6 +1389,14 @@ angular.module('owlTable')
 
 		service.syncDataFromView = function (row, column, value) {
 			var modelRow = _(this.data).where({id: row.id}).first();
+
+			//if not found it is probably a child record, so check the children
+			if (typeof modelRow === 'undefined') {
+				var modelRow = _.find(this.data, function (data) {
+					return _(data.children).where({id: row.id}).first();
+				});
+			}
+
 			modelRow[column.field] = value;
 			$rootScope.$apply((function () {
 				this.hasChangedData = true;
@@ -1419,7 +1427,7 @@ angular.module('owlTable')
 						if (typeof column.visible === 'undefined') {
 							column.visible = true;
 						}
-						
+
 						return column.visible !== false;
 					});
 
