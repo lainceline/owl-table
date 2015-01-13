@@ -47,6 +47,11 @@ var OwlCell = React.createClass({
 		var classes = 'owl-cell-value-label owl-editable';
 		var self = this;
 
+		//if its a child row but not a child column dont render the row
+		if (props.isChild === true && props.isChildColumn === false) {
+			return (<td className='owl-empty-child-cell'></td>);
+		}
+
 		if (typeof value === 'undefined' || value === '') {
 			value = props.row[props.column.field.toUpperCase()];
 			if (typeof value === 'undefined' || value === '') {

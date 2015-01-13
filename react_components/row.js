@@ -61,8 +61,16 @@ var OwlRow = React.createClass({
 				var ref = 'column_' + cellCount;
 
 				if (column.visible !== false) {
+
+					//if we are rendering a childColumn but received the parent object, use the first child.
+					//this is necessary because the first child is rendered on the parent row.
+					if (typeof props.data.children === 'undefined') {
+						rowData = props.data;
+					} else {
+						rowData = props.data.children[0];
+					}
 					cells.push(
-						<OwlCell column={column} ref={ref} row={props.data} isChildColumn={true} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={cellCount} tableDidChange={props.tableDidChange} />
+						<OwlCell column={column} ref={ref} row={rowData} isChildColumn={true} isChild={props.isChild} editable={editable} focusedCell={state.focusedCell} key={cellCount} tableDidChange={props.tableDidChange} />
 					);
 				}
 
