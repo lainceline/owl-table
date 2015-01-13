@@ -84,7 +84,7 @@ var OwlInput = React.createClass({
 			case 'number':
 			case 'text':
 				var containerTd = 'td[data-field="' + props.column.field + '"]';
-				input = React.createElement("input", {className: classNames, 'data-container': "body", 'data-toggle': "tooltip", 'data-trigger': "click", 'data-placement': "right", title: "Numbers only", type: "text", onBlur: self.transmitSaveEvent, defaultValue: props.value, onKeyPress: self.keydown, formNoValidate: true, noValidate: true, onChange: self.inputDidChange});
+				input = React.createElement("input", {className: classNames, "data-container": "body", "data-toggle": "tooltip", "data-trigger": "click", "data-placement": "right", title: "Numbers only", type: "text", onBlur: self.transmitSaveEvent, defaultValue: props.value, onKeyPress: self.keydown, formNoValidate: true, noValidate: true, onChange: self.inputDidChange});
 				break;
 			case 'select': // fall through
 			case 'select_one': // fall through
@@ -136,7 +136,7 @@ var OwlInput = React.createClass({
 				break;
 			case 'date':
 				input =
-					React.createElement("input", {className: "owl-input", defaultValue: props.value, 'data-date-format': "mm/dd/yyyy", 'data-provide': "datepicker"});
+					React.createElement("input", {className: "owl-input", defaultValue: props.value, "data-date-format": "mm/dd/yyyy", "data-provide": "datepicker"});
 				break;
 			case 'time':
 				input = React.createElement("input", {className: "owl-input", type: "time", onChange: self.handleSpecialFields, defaultValue: props.value});
@@ -234,6 +234,11 @@ var OwlCell = React.createClass({
 		var value = props.row[props.column.field];
 		var classes = 'owl-cell-value-label owl-editable';
 		var self = this;
+
+		//if its a child row but not a child column dont render the row
+		if (props.isChild === true && props.isChildColumn === false) {
+			return (React.createElement("td", {className: "owl-empty-child-cell"}));
+		}
 
 		if (typeof value === 'undefined' || value === '') {
 			value = props.row[props.column.field.toUpperCase()];
@@ -363,13 +368,13 @@ var OwlCell = React.createClass({
 		if (props.editable === true && cellLocked !== true) {
 			// refactor the cell and input class into each other in the future
 			td =
-				React.createElement("td", {className: tdClasses, 'data-field': props.column.field, onClick: this.open}, 
+				React.createElement("td", {className: tdClasses, "data-field": props.column.field, onClick: this.open}, 
 					content
 				);
 		} else {
 			var innerHTML = props.column.type.indexOf('select') > -1 ? optionText : value;
 			td =
-				React.createElement("td", {className: tdClasses, 'data-field': props.column.field}, 
+				React.createElement("td", {className: tdClasses, "data-field": props.column.field}, 
 					React.createElement("span", {className: "owl-cell-value-label owl-value", dangerouslySetInnerHTML: { __html: innerHTML}})
 				);
 		}
@@ -500,8 +505,16 @@ var OwlRow = React.createClass({
 				var ref = 'column_' + cellCount;
 
 				if (column.visible !== false) {
+
+					//if we are rendering a childColumn but received the parent object, use the first child.
+					//this is necessary because the first child is rendered on the parent row.
+					if (typeof props.data.children === 'undefined') {
+						rowData = props.data;
+					} else {
+						rowData = props.data.children[0];
+					}
 					cells.push(
-						React.createElement(OwlCell, {column: column, ref: ref, row: props.data, isChildColumn: true, isChild: props.isChild, editable: editable, focusedCell: state.focusedCell, key: cellCount, tableDidChange: props.tableDidChange})
+						React.createElement(OwlCell, {column: column, ref: ref, row: rowData, isChildColumn: true, isChild: props.isChild, editable: editable, focusedCell: state.focusedCell, key: cellCount, tableDidChange: props.tableDidChange})
 					);
 				}
 
@@ -752,7 +765,7 @@ var OwlTableReact = React.createClass({
 						var buttonClass = index === 0 ? ' owl-filter-button-add' : ' owl-filter-button-remove';
 						var onClick = index === 0 ? props.addFilter.bind(this, column) : props.removeFilter.bind(this, column, index);
 						return (
-							React.createElement("div", {'data-field': column.field, key: index, className: "owl-filter"}, 
+							React.createElement("div", {"data-field": column.field, key: index, className: "owl-filter"}, 
 								React.createElement("div", {onClick: onClick, className: 'owl-filter-button' + buttonClass}), 
 								React.createElement("input", {type: "text", className: "owl-filter-input", onChange: self.filterFieldChanged.bind(null, filter), defaultValue: filter.predicate}), 
 								React.createElement("div", {className: "owl-change-filter-type"})
@@ -805,7 +818,7 @@ var OwlTableReact = React.createClass({
 
 			if (column.visible !== false) {
 				return (
-					React.createElement("th", {onClick: _.partial(self.sortClickHandler, column.field), className: classes, id: id, key: headerCount, 'data-field': column.field}, 
+					React.createElement("th", {onClick: _.partial(self.sortClickHandler, column.field), className: classes, id: id, key: headerCount, "data-field": column.field}, 
 						column.title || 'None'
 					)
 				);
@@ -824,7 +837,7 @@ var OwlTableReact = React.createClass({
 				if (child.visible !== false) {
 					headerCount++;
 					headers.push(
-						React.createElement("th", {className: classes, key: headerCount, id: id, 'data-field': child.field}, 
+						React.createElement("th", {className: classes, key: headerCount, id: id, "data-field": child.field}, 
 							child.title || 'None'
 						)
 					);
